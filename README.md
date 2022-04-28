@@ -42,8 +42,10 @@ Tools for biomedical ontologies.
 
 ## 💪 Getting Started
 
-This package lets you get OBO Graphs from ontologies registered in the
-Bioregistry:
+This package lets you get OBO Graphs from ontologies based on their OWL
+files, OBO files, or [Bioregistry](https://bioregistry.io) prefixes. Internally,
+it uses [ROBOT](https://robot.obolibrary.org) to convert from these formats
+to [OBO Graph JSON](https://github.com/geneontology/obographs).
 
 ```python
 import bioontologies
@@ -56,7 +58,7 @@ parse_results = bioontologies.convert_to_obograph(owl_iri)
 obo_iri = "http://purl.obolibrary.org/obo/go.obo"
 parse_results = bioontologies.convert_to_obograph(obo_iri)
 
-# Get an ontology by its prefix
+# Get an ontology by its Bioregistry prefix
 parse_results = bioontologies.get_obograph_by_prefix("go")
 go_graph_document = parse_results.graphs
 ```
@@ -103,7 +105,7 @@ at [Harvard Medical School](https://hms.harvard.edu/).
 
 ### 💰 Funding
 
-The development of the Bioregistry is funded by the DARPA Young Faculty Award W911NF2010255 (PI: Benjamin M. Gyori).
+The development of this package is funded by the DARPA Young Faculty Award W911NF2010255 (PI: Benjamin M. Gyori).
 
 ### 🍪 Cookiecutter
 
