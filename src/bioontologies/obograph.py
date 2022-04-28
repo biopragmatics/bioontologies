@@ -3,7 +3,7 @@
 .. seealso:: https://github.com/geneontology/obographs
 """
 
-from typing import Any, Optional, TypedDict
+from typing import Any, List, Optional, TypedDict
 
 __all__ = [
     "Edge",
@@ -33,12 +33,12 @@ class Meta(TypedDict):
     """Represents the metadata about a node or ontology."""
 
     definition: str
-    subsets: list
-    xrefs: list
-    synonyms: list
-    comments: list
+    subsets: List
+    xrefs: List
+    synonyms: List
+    comments: List
     version: Optional[str]
-    basicPropertyValues: list[Property]  # noqa:N815
+    basicPropertyValues: List[Property]  # noqa:N815
 
 
 class Graph(TypedDict):
@@ -46,8 +46,8 @@ class Graph(TypedDict):
 
     id: str
     meta: Meta
-    nodes: list
-    edges: list[Edge]
+    nodes: List
+    edges: List[Edge]
     equivalentNodesSets: Any  # noqa:N815
     logicalDefinitionAxioms: Any  # noqa:N815
     domainRangeAxioms: Any  # noqa:N815
@@ -57,4 +57,4 @@ class Graph(TypedDict):
 class Graphs(TypedDict):
     """Represents a list of OBO graphs."""
 
-    graphs: list[Graph]
+    graphs: List[Graph]
