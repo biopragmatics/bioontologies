@@ -47,7 +47,7 @@ jobs:
         run: tox -e docs-test
   tests:
     name: Tests
-    runs-on: ${{ ubuntu-latest }}
+    runs-on: ubuntu-latest
     container: obolibrary/odkfull:v1.2.30
     steps:
       - uses: actions/checkout@v2
