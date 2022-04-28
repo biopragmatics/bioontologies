@@ -14,7 +14,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from subprocess import check_output
-from typing import Literal, Optional, Union
+from typing import List, Literal, Optional, Union
 
 import bioregistry
 import requests
@@ -37,7 +37,7 @@ class ParseResults:
     """A dataclass containing an OBO Graph JSON and text output from ROBOT."""
 
     graphs: Graphs
-    messages: list[str]
+    messages: List[str]
 
 
 def get_obograph_by_prefix(
