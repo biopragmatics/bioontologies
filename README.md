@@ -42,31 +42,34 @@ Tools for biomedical ontologies.
 
 ## 💪 Getting Started
 
-> TODO show in a very small amount of space the **MOST** useful thing your package can do.
-Make it as short as possible! You have an entire set of docs for later.
+This package lets you get OBO Graphs from ontologies registered in the
+Bioregistry:
 
-### Command Line Interface
+```python
+import bioontologies
 
-The bioontologies command line tool is automatically installed. It can
-be used from the shell with the `--help` flag to show all subcommands:
+# Get an ontology and convert to OBO Graph object via an OWL IRI
+owl_iri = "http://purl.obolibrary.org/obo/go.owl"
+parse_results = bioontologies.convert_to_obograph(owl_iri)
 
-```shell
-$ bioontologies --help
+# Get an ontology and convert to OBO Graph object via an OBO IRI
+obo_iri = "http://purl.obolibrary.org/obo/go.obo"
+parse_results = bioontologies.convert_to_obograph(obo_iri)
+
+# Get an ontology by its prefix
+parse_results = bioontologies.get_obograph_by_prefix("go")
+go_graph_document = parse_results.graphs
 ```
-
-> TODO show the most useful thing the CLI does! The CLI will have documentation auto-generated
-by `sphinx`.
 
 ## 🚀 Installation
 
-<!-- Uncomment this section after your first ``tox -e finish``
 The most recent release can be installed from
 [PyPI](https://pypi.org/project/bioontologies/) with:
 
 ```bash
 $ pip install bioontologies
 ```
--->
+
 
 The most recent code and data can be installed directly from GitHub with:
 
@@ -91,24 +94,16 @@ The code in this package is licensed under the MIT License.
 Citation goes here!
 -->
 
-<!--
 ### 🎁 Support
 
-This project has been supported by the following organizations (in alphabetical order):
+The Bioregistry was developed by the [INDRA Lab](https://indralab.github.io), a part of the
+[Laboratory of Systems Pharmacology](https://hits.harvard.edu/the-program/laboratory-of-systems-pharmacology/about/)
+and the [Harvard Program in Therapeutic Science (HiTS)](https://hits.harvard.edu)
+at [Harvard Medical School](https://hms.harvard.edu/).
 
-- [Harvard Program in Therapeutic Science - Laboratory of Systems Pharmacology](https://hits.harvard.edu/the-program/laboratory-of-systems-pharmacology/)
-
--->
-
-<!--
 ### 💰 Funding
 
-This project has been supported by the following grants:
-
-| Funding Body                                             | Program                                                                                                                       | Grant           |
-|----------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-----------------|
-| DARPA                                                    | [Automating Scientific Knowledge Extraction (ASKE)](https://www.darpa.mil/program/automating-scientific-knowledge-extraction) | HR00111990009   |
--->
+The development of the Bioregistry is funded by the DARPA Young Faculty Award W911NF2010255 (PI: Benjamin M. Gyori).
 
 ### 🍪 Cookiecutter
 

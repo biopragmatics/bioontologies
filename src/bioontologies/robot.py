@@ -6,7 +6,9 @@
 """
 
 import json
+import logging
 import os
+import subprocess
 import tempfile
 from contextlib import contextmanager
 from dataclasses import dataclass
@@ -14,14 +16,20 @@ from pathlib import Path
 from subprocess import check_output
 from typing import Literal, Optional, Union
 
+import bioregistry
+import requests
+
 from .obograph import Graphs
 
 __all__ = [
     "ParseResults",
-    "robot_parse_json_local",
-    "robot_parse_json_remote",
-    "robot_parse_json",
+    "convert_to_obograph_local",
+    "convert_to_obograph_remote",
+    "convert_to_obograph",
+    "get_obograph_by_prefix",
 ]
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -32,7 +40,38 @@ class ParseResults:
     messages: list[str]
 
 
-def robot_parse_json_local(
+def get_obograph_by_prefix(
+    prefix: str, *, json_path: Union[None, str, Path] = None
+) -> ParseResults:
+    """Get an ontology by its Bioregistry prefix."""
+    if prefix != bioregistry.normalize_prefix(prefix):
+        raise ValueError("this function requires bioregistry canonical prefixes")
+
+    json_iri = bioregistry.get_json_download(prefix)
+
+    if json_iri is not None:
+        graphs = requests.get(json_iri).json()
+        return ParseResults(graphs=graphs, messages=[])
+
+    owl_iri = bioregistry.get_owl_download(prefix)
+    obo_iri = bioregistry.get_obo_download(prefix)
+
+    for iri in [owl_iri, obo_iri]:
+        if iri is None:
+            continue
+
+        try:
+            parse_results = convert_to_obograph_remote(iri, json_path=json_path)
+        except subprocess.CalledProcessError:
+            logger.info("could not parse OBO for %s from %s", prefix, iri)
+            continue
+        else:
+            return parse_results
+
+    raise RuntimeError(f"no IRI available for Bioregistry prefix {prefix}")
+
+
+def convert_to_obograph_local(
     path: Union[str, Path],
     *,
     json_path: Union[None, str, Path] = None,
@@ -47,10 +86,10 @@ def robot_parse_json_local(
     :returns: An object with the parsed OBO Graph JSON and text
         output from the ROBOT conversion program
     """
-    return robot_parse_json(input_str=path, flag="-i", json_path=json_path)
+    return convert_to_obograph(input_str=path, flag="-i", json_path=json_path)
 
 
-def robot_parse_json_remote(
+def convert_to_obograph_remote(
     iri: str,
     *,
     json_path: Union[None, str, Path] = None,
@@ -65,10 +104,10 @@ def robot_parse_json_remote(
     :returns: An object with the parsed OBO Graph JSON and text
         output from the ROBOT conversion program
     """
-    return robot_parse_json(input_str=iri, flag="-I", json_path=json_path)
+    return convert_to_obograph(input_str=iri, flag="-I", json_path=json_path)
 
 
-def robot_parse_json(
+def convert_to_obograph(
     input_str: Union[str, Path],
     *,
     flag: Optional[Literal["-i", "-I"]] = None,
