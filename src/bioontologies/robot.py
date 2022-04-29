@@ -139,8 +139,11 @@ def convert_to_obograph(
         args = ["robot", "convert", flag, str(input_str), "-o", str(path), "--format", "json"]
         ret = check_output(args, cwd=os.path.dirname(__file__))  # noqa:S603
         messages = ret.decode().strip().splitlines()
-        path_json = json.loads(path.read_text())
-        graph_document = GraphDocument(**path_json)
+        graph_document_raw = json.loads(path.read_text())
+        for i, graph in enumerate(graph_document_raw["graphs"]):
+            if "id" not in graph:
+                raise ValueError(f"{input_str} graph [{i}] missing id")
+        graph_document = GraphDocument(**graph_document_raw)
         return ParseResults(graph_document=graph_document, messages=messages)
 
 
