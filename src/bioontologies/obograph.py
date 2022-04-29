@@ -84,7 +84,7 @@ class Node(BaseModel):
     id: str
     lbl: Optional[str]
     meta: Optional[Meta]
-    type: Literal["CLASS", "PROPERTY"]
+    type: Optional[Literal["CLASS", "PROPERTY", "INDIVIDUAL"]]
     alternative_ids: Optional[List[str]]
 
     @property
