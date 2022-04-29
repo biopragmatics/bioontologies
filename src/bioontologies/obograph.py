@@ -133,9 +133,9 @@ class Graph(BaseModel):
     propertyChainAxioms: Any  # noqa:N815
 
     @property
-    def root(self) -> Optional[str]:
-        """Get the ontology root term."""
-        return self._get_property(
+    def roots(self) -> List[str]:
+        """Get the ontology root terms."""
+        return self._get_properties(
             [
                 "http://purl.obolibrary.org/obo/IAO_0000700",
                 "IAO:0000700",
@@ -173,12 +173,17 @@ class Graph(BaseModel):
         return self._get_property("http://www.geneontology.org/formats/oboInOwl#default-namespace")
 
     def _get_property(self, pred: Union[str, List[str]]) -> Optional[str]:
+        p = self._get_properties(pred)
+        return p[0] if p else None
+
+    def _get_properties(self, pred: Union[str, List[str]]) -> Optional[str]:
         if isinstance(pred, str):
             pred = [pred]
-        for prop in self.meta.basicPropertyValues or []:
-            if any(prop.pred == p for p in pred):
-                return prop.val
-        return None
+        return [
+            prop.val
+            for prop in self.meta.basicPropertyValues or []
+            if any(prop.pred == p for p in pred)
+        ]
 
     def standardize(self, keep_invalid: bool = False) -> "Graph":
         """Standardize the OBO graph.
