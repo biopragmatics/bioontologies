@@ -5,7 +5,7 @@
 
 from collections import defaultdict
 from operator import attrgetter
-from typing import Any, List, Literal, Mapping, Optional, Set, Union
+from typing import Any, Iterable, List, Literal, Mapping, Optional, Set, Union
 
 from bioregistry import normalize_curie
 from pydantic import BaseModel
@@ -238,6 +238,15 @@ class Graph(BaseModel):
             if replaced_by := node.replaced_by:
                 rv[replaced_by].add(node.id)
         return {k: sorted(v) for k, v in rv.items()}
+
+    def nodes_from(self, prefix: str) -> Iterable[Node]:
+        """Iterate non-deprecated nodes whose identifiers start with the given prefix."""
+        for node in self.nodes:
+            if node.deprecated:
+                continue
+            if not node.id.startswith(prefix):
+                continue
+            yield node
 
 
 def _clean_uri(s: str, *, keep_invalid: bool) -> Optional[str]:
