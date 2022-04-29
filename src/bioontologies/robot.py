@@ -5,6 +5,7 @@
 .. seealso:: https://robot.obolibrary.org
 """
 
+import dataclasses
 import json
 import logging
 import os
@@ -19,7 +20,7 @@ from typing import List, Literal, Optional, Union
 import bioregistry
 import requests
 
-from .obograph import Graphs
+from .obograph import Graph, GraphDocument
 
 __all__ = [
     "ParseResults",
@@ -36,8 +37,12 @@ logger = logging.getLogger(__name__)
 class ParseResults:
     """A dataclass containing an OBO Graph JSON and text output from ROBOT."""
 
-    graphs: Graphs
-    messages: List[str]
+    graph_document: GraphDocument
+    messages: List[str] = dataclasses.field(default_factory=list)
+
+    def squeeze(self) -> Graph:
+        """Get the first graph."""
+        return self.graph_document.graphs[0]
 
 
 def get_obograph_by_prefix(
@@ -50,8 +55,9 @@ def get_obograph_by_prefix(
     json_iri = bioregistry.get_json_download(prefix)
 
     if json_iri is not None:
-        graphs = requests.get(json_iri).json()
-        return ParseResults(graphs=graphs, messages=[])
+        res_json = requests.get(json_iri).json()
+        graph_document = GraphDocument(**res_json)
+        return ParseResults(graph_document=graph_document)
 
     owl_iri = bioregistry.get_owl_download(prefix)
     obo_iri = bioregistry.get_obo_download(prefix)
@@ -133,8 +139,9 @@ def convert_to_obograph(
         args = ["robot", "convert", flag, str(input_str), "-o", str(path), "--format", "json"]
         ret = check_output(args, cwd=os.path.dirname(__file__))  # noqa:S603
         messages = ret.decode().strip().splitlines()
-        graphs = json.loads(path.read_text())
-        return ParseResults(graphs=graphs, messages=messages)
+        path_json = json.loads(path.read_text())
+        graph_document = GraphDocument(**path_json)
+        return ParseResults(graph_document=graph_document, messages=messages)
 
 
 #: Prefixes that denote remote resources

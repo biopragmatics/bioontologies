@@ -60,7 +60,7 @@ parse_results = bioontologies.convert_to_obograph(obo_iri)
 
 # Get an ontology by its Bioregistry prefix
 parse_results = bioontologies.get_obograph_by_prefix("go")
-go_graph_document = parse_results.graphs
+go_graph_document = parse_results.graph_document
 ```
 
 ## 🚀 Installation

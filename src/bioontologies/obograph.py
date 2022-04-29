@@ -3,58 +3,266 @@
 .. seealso:: https://github.com/geneontology/obographs
 """
 
-from typing import Any, List, Optional, TypedDict
+from collections import defaultdict
+from operator import attrgetter
+from typing import Any, List, Literal, Mapping, Optional, Set, Union
+
+from bioregistry import normalize_curie
+from pydantic import BaseModel
 
 __all__ = [
-    "Edge",
     "Property",
+    "Definition",
+    "Xref",
+    "Synonym",
     "Meta",
+    "Edge",
+    "Node",
     "Graph",
-    "Graphs",
+    "GraphDocument",
 ]
 
-
-class Edge(TypedDict):
-    """Represents an edge in an OBO Graph."""
-
-    sub: str
-    pred: str
-    obj: str
+OBO_URI_PREFIX = "http://purl.obolibrary.org/obo/"
 
 
-class Property(TypedDict):
+class Property(BaseModel):
     """Represent a property inside a metadata element."""
 
     pred: str
     val: str
 
 
-class Meta(TypedDict):
+class Definition(BaseModel):
+    """Represents a definition for a node."""
+
+    val: str
+    # Just a list of CURIEs/IRIs
+    xrefs: Optional[List[str]]
+
+
+class Xref(BaseModel):
+    """Represents a cross-reference."""
+
+    val: str
+
+
+class Synonym(BaseModel):
+    """Represents a synonym inside an object meta."""
+
+    pred: str
+    val: str
+    # Just a list of CURIEs/IRIs
+    xrefs: List[str]
+    synonymType: Optional[str]  # noqa:N815
+
+
+class Meta(BaseModel):
     """Represents the metadata about a node or ontology."""
 
-    definition: str
-    subsets: List
-    xrefs: List
-    synonyms: List
-    comments: List
+    definition: Optional[Definition]
+    subsets: Optional[List[str]]
+    xrefs: Optional[List[Xref]]
+    synonyms: Optional[List[Synonym]]
+    comments: Optional[List]
     version: Optional[str]
-    basicPropertyValues: List[Property]  # noqa:N815
+    basicPropertyValues: Optional[List[Property]]  # noqa:N815
+    deprecated: bool = False
 
 
-class Graph(TypedDict):
+class Edge(BaseModel):
+    """Represents an edge in an OBO Graph."""
+
+    sub: str
+    pred: str
+    obj: str
+    meta: Optional[Meta]
+
+
+class Node(BaseModel):
+    """Represents a node in an OBO Graph."""
+
+    id: str
+    lbl: Optional[str]
+    meta: Optional[Meta]
+    type: Literal["CLASS", "PROPERTY"]
+    alternative_ids: Optional[List[str]]
+
+    @property
+    def deprecated(self) -> bool:
+        """Get if the node is deprecated."""
+        if self.meta is None:
+            return False
+        return self.meta.deprecated
+
+    @property
+    def synonyms(self) -> List[Synonym]:
+        """Get the synonyms for the node."""
+        if self.meta and self.meta.synonyms:
+            return self.meta.synonyms
+        return []
+
+    @property
+    def xrefs(self) -> List[Xref]:
+        """Get the xrefs for the node."""
+        if self.meta and self.meta.xrefs:
+            return self.meta.xrefs
+        return []
+
+    @property
+    def replaced_by(self) -> Optional[str]:
+        """Get the identifier that this node was replaced by."""
+        if not self.meta:
+            return None
+        preds = ["http://purl.obolibrary.org/obo/IAO_0100001", "IAO:0100001", "iao:0100001"]
+        for prop in self.meta.basicPropertyValues or []:
+            if any(prop.pred == pred for pred in preds):
+                return prop.val
+        return None
+
+
+class Graph(BaseModel):
     """A graph corresponds to an ontology."""
 
     id: str
     meta: Meta
-    nodes: List
+    nodes: List[Node]
     edges: List[Edge]
     equivalentNodesSets: Any  # noqa:N815
     logicalDefinitionAxioms: Any  # noqa:N815
     domainRangeAxioms: Any  # noqa:N815
     propertyChainAxioms: Any  # noqa:N815
 
+    @property
+    def root(self) -> Optional[str]:
+        """Get the ontology root term."""
+        return self._get_property(
+            [
+                "http://purl.obolibrary.org/obo/IAO_0000700",
+                "IAO:0000700",
+            ]
+        )
 
-class Graphs(TypedDict):
+    @property
+    def license(self):
+        """Get the license of the ontology."""
+        return self._get_property("http://purl.org/dc/terms/license")
+
+    @property
+    def title(self):
+        """Get the title of the ontology."""
+        return self._get_property("http://purl.org/dc/elements/1.1/title")
+
+    @property
+    def description(self):
+        """Get the license of the ontology."""
+        return self._get_property("http://purl.org/dc/elements/1.1/description")
+
+    @property
+    def version_iri(self) -> Optional[str]:
+        """Get the version of the ontology."""
+        return self.meta.version
+
+    @property
+    def version(self):
+        """Get the version of the ontology."""
+        return self._get_property("http://www.w3.org/2002/07/owl#versionInfo")
+
+    @property
+    def default_namespace(self):
+        """Get the version of the ontology."""
+        return self._get_property("http://www.geneontology.org/formats/oboInOwl#default-namespace")
+
+    def _get_property(self, pred: Union[str, List[str]]) -> Optional[str]:
+        if isinstance(pred, str):
+            pred = [pred]
+        for prop in self.meta.basicPropertyValues or []:
+            if any(prop.pred == p for p in pred):
+                return prop.val
+        return None
+
+    def standardize(self, keep_invalid: bool = False) -> "Graph":
+        """Standardize the OBO graph.
+
+        :param keep_invalid: Should CURIEs/IRIs that aren't handled
+            by the Bioregistry be kept? Defaults to false.
+        :returns: This OBO graph, modified in place as follows:
+
+            1. Convert IRIs to CURIEs (in many places) using :mod:`bioregistry`
+            2. Add alternative identifiers to :class:`Node` objects
+        """
+        # Convert URIs to CURIEs
+        for node in self.nodes:
+            if node.id.startswith(OBO_URI_PREFIX):
+                node.id = _clean_uri(node.id, keep_invalid=True)  # type:ignore
+            if node.meta:
+                for prop in node.meta.basicPropertyValues or []:
+                    prop.pred = _clean_uri(prop.pred, keep_invalid=True)  # type:ignore
+                    prop.val = _clean_uri(prop.val, keep_invalid=True)  # type:ignore
+
+                for synonym in node.meta.synonyms or []:
+                    synonym.pred = _clean_uri(synonym.pred, keep_invalid=True)  # type:ignore
+                    if synonym.synonymType:
+                        synonym.synonymType = _clean_uri(
+                            synonym.synonymType, keep_invalid=True
+                        )  # type:ignore
+
+                # Remove self-xrefs, duplicate xrefs
+                xrefs: List[Xref] = []
+                xrefs_vals: Set[str] = set()
+                for xref in node.meta.xrefs or []:
+                    if xref.val == node.id:
+                        continue
+                    new_xref_val = _clean_uri(xref.val, keep_invalid=keep_invalid)
+                    if new_xref_val is None:
+                        continue
+                    xref.val = new_xref_val
+                    if xref.val == node.id or xref.val in xrefs_vals:
+                        continue
+                    xrefs_vals.add(xref.val)
+                    xrefs.append(xref)
+                node.meta.xrefs = sorted(xrefs, key=attrgetter("val"))
+
+        # TODO add xrefs from definition into node if the are "real" CURIEs
+
+        # Add alt ids
+        alt_ids = self.get_alternative_ids()
+        for node in self.nodes:
+            node.alternative_ids = alt_ids.get(node.id, [])
+
+        return self
+
+    def get_alternative_ids(self) -> Mapping[str, List[str]]:
+        """Get a mapping of primary identifiers to secondary identifiers."""
+        rv = defaultdict(set)
+        for node in self.nodes:
+            if replaced_by := node.replaced_by:
+                rv[replaced_by].add(node.id)
+        return {k: sorted(v) for k, v in rv.items()}
+
+
+def _clean_uri(s: str, *, keep_invalid: bool) -> Optional[str]:
+    s = _compress_uri(s)
+    n = normalize_curie(s)
+    if n:
+        return n
+    elif keep_invalid:
+        return s
+    else:
+        return None
+
+
+def _compress_uri(s: str) -> str:
+    if s.startswith(OBO_URI_PREFIX):
+        s = s[len(OBO_URI_PREFIX) :]
+        if s.split("_")[0].isupper():
+            s = s.replace("_", ":", 1)
+    if s.startswith("http://www.geneontology.org/formats/oboInOwl#"):
+        s = s[len("http://www.geneontology.org/formats/oboInOwl#") :]
+        s = "oboinowl:" + s
+    return s
+
+
+class GraphDocument(BaseModel):
     """Represents a list of OBO graphs."""
 
     graphs: List[Graph]

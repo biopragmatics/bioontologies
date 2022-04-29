@@ -1,4 +1,7 @@
 Usage
 =====
-.. automodule:: bioontologies.api
-    :members:
+.. automodapi:: bioontologies.robot
+    :no-inheritance-diagram:
+
+.. automodapi:: bioontologies.obograph
+    :no-inheritance-diagram:

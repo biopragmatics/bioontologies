@@ -15,3 +15,7 @@ class TestAPI(unittest.TestCase):
         uri = "https://raw.githubusercontent.com/pato-ontology/pato/master/pato.owl"
         result = convert_to_obograph_remote(uri)
         self.assertIsInstance(result, ParseResults)
+        graph = result.squeeze()
+        self.assertEqual("PATO - the Phenotype And Trait Ontology", graph.title)
+        self.assertEqual("quality", graph.default_namespace)
+        self.assertEqual("http://purl.obolibrary.org/obo/PATO_0000001", graph.root)
