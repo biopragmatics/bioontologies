@@ -28,6 +28,7 @@ __all__ = [
     "convert_to_obograph_remote",
     "convert_to_obograph",
     "get_obograph_by_prefix",
+    "get_obograph_by_iri",
 ]
 
 logger = logging.getLogger(__name__)
@@ -43,6 +44,15 @@ class ParseResults:
     def squeeze(self) -> Graph:
         """Get the first graph."""
         return self.graph_document.graphs[0]
+
+
+def get_obograph_by_iri(
+    iri: str,
+) -> ParseResults:
+    """Get an ontology by its OBO Graph JSON iri."""
+    res_json = requests.get(iri).json()
+    graph_document = GraphDocument(**res_json)
+    return ParseResults(graph_document=graph_document)
 
 
 def get_obograph_by_prefix(
