@@ -248,8 +248,8 @@ class Graph(BaseModel):
         """Get a mapping of primary identifiers to secondary identifiers."""
         rv = defaultdict(set)
         for node in self.nodes:
-            if replaced_by := node.replaced_by:
-                rv[replaced_by].add(node.id)
+            if node.replaced_by:
+                rv[node.replaced_by].add(node.id)
         return {k: sorted(v) for k, v in rv.items()}
 
     def nodes_from(self, prefix: str) -> Iterable[Node]:
