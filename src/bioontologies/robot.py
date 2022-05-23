@@ -79,7 +79,7 @@ def get_obograph_by_prefix(
         try:
             parse_results = convert_to_obograph_remote(iri, json_path=json_path)
         except subprocess.CalledProcessError:
-            logger.info("could not parse OBO for %s from %s", prefix, iri)
+            logger.warning("could not parse OBO for %s from %s", prefix, iri)
             continue
         else:
             return parse_results
@@ -142,6 +142,7 @@ def convert_to_obograph(
         and deleted after the function finishes.
     :returns: An object with the parsed OBO Graph JSON and text
         output from the ROBOT conversion program
+    :raises ValueError: if a graph is missing an ID
     """
     if flag is None:
         flag = "-I" if _is_remote(input_str) else "-i"

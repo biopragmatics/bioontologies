@@ -9,6 +9,7 @@ from typing import Any, Iterable, List, Literal, Mapping, Optional, Set, Union
 
 from bioregistry import normalize_curie
 from pydantic import BaseModel
+from tqdm import tqdm
 
 __all__ = [
     "Property",
@@ -23,6 +24,8 @@ __all__ = [
 ]
 
 OBO_URI_PREFIX = "http://purl.obolibrary.org/obo/"
+IDENTIFIERS_HTTP_PREFIX = "http://identifiers.org/"
+IDENTIFIERS_HTTPS_PREFIX = "https://identifiers.org/"
 
 
 class Property(BaseModel):
@@ -143,17 +146,17 @@ class Graph(BaseModel):
         )
 
     @property
-    def license(self):
+    def license(self) -> Optional[str]:
         """Get the license of the ontology."""
         return self._get_property("http://purl.org/dc/terms/license")
 
     @property
-    def title(self):
+    def title(self) -> Optional[str]:
         """Get the title of the ontology."""
         return self._get_property("http://purl.org/dc/elements/1.1/title")
 
     @property
-    def description(self):
+    def description(self) -> Optional[str]:
         """Get the license of the ontology."""
         return self._get_property("http://purl.org/dc/elements/1.1/description")
 
@@ -163,12 +166,12 @@ class Graph(BaseModel):
         return self.meta.version
 
     @property
-    def version(self):
+    def version(self) -> Optional[str]:
         """Get the version of the ontology."""
         return self._get_property("http://www.w3.org/2002/07/owl#versionInfo")
 
     @property
-    def default_namespace(self):
+    def default_namespace(self) -> Optional[str]:
         """Get the version of the ontology."""
         return self._get_property("http://www.geneontology.org/formats/oboInOwl#default-namespace")
 
@@ -176,7 +179,7 @@ class Graph(BaseModel):
         p = self._get_properties(pred)
         return p[0] if p else None
 
-    def _get_properties(self, pred: Union[str, List[str]]) -> Optional[str]:
+    def _get_properties(self, pred: Union[str, List[str]]) -> List[str]:
         if isinstance(pred, str):
             pred = [pred]
         return [
@@ -196,7 +199,7 @@ class Graph(BaseModel):
             2. Add alternative identifiers to :class:`Node` objects
         """
         # Convert URIs to CURIEs
-        for node in self.nodes:
+        for node in tqdm(self.nodes, desc="standardizing nodes", unit_scale=True):
             if node.id.startswith(OBO_URI_PREFIX):
                 node.id = _clean_uri(node.id, keep_invalid=True)  # type:ignore
             if node.meta:
@@ -226,6 +229,11 @@ class Graph(BaseModel):
                     xrefs_vals.add(xref.val)
                     xrefs.append(xref)
                 node.meta.xrefs = sorted(xrefs, key=attrgetter("val"))
+
+        for edge in tqdm(self.edges, desc="standardizing edges", unit_scale=True):
+            edge.sub = _clean_uri(edge.sub, keep_invalid=True)
+            edge.pred = _clean_uri(edge.pred, keep_invalid=True)
+            edge.obj = _clean_uri(edge.obj, keep_invalid=True)
 
         # TODO add xrefs from definition into node if the are "real" CURIEs
 
@@ -265,11 +273,23 @@ def _clean_uri(s: str, *, keep_invalid: bool) -> Optional[str]:
         return None
 
 
+IS_A_STRINGS = {"is_a", "isa"}
+
+
 def _compress_uri(s: str) -> str:
+    if s in IS_A_STRINGS:
+        return "rdfs:subClassOf"
     if s.startswith(OBO_URI_PREFIX):
         s = s[len(OBO_URI_PREFIX) :]
-        if s.split("_")[0].isupper():
+        if "_" in s and s.split("_")[1].isnumeric():  # best guess that it's an identifier
             s = s.replace("_", ":", 1)
+    for identifiers_prefix in (IDENTIFIERS_HTTP_PREFIX, IDENTIFIERS_HTTPS_PREFIX):
+        if s.startswith(identifiers_prefix):
+            s = s[len(identifiers_prefix) :]
+            if ":" in s:
+                return s
+            else:
+                return s.replace("/", ":", 1)
     if s.startswith("http://www.geneontology.org/formats/oboInOwl#"):
         s = s[len("http://www.geneontology.org/formats/oboInOwl#") :]
         s = "oboinowl:" + s

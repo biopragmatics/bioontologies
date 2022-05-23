@@ -18,4 +18,4 @@ class TestAPI(unittest.TestCase):
         graph = result.squeeze()
         self.assertEqual("PATO - the Phenotype And Trait Ontology", graph.title)
         self.assertEqual("quality", graph.default_namespace)
-        self.assertEqual("http://purl.obolibrary.org/obo/PATO_0000001", graph.root)
+        self.assertIn("http://purl.obolibrary.org/obo/PATO_0000001", graph.roots)
