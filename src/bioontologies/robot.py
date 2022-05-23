@@ -15,10 +15,11 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from subprocess import check_output
-from typing import List, Literal, Optional, Union
+from typing import List, Optional, Union
 
 import bioregistry
 import requests
+from typing_extensions import Literal
 
 from .obograph import Graph, GraphDocument
 
