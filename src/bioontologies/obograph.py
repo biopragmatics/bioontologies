@@ -5,11 +5,12 @@
 
 from collections import defaultdict
 from operator import attrgetter
-from typing import Any, Iterable, List, Literal, Mapping, Optional, Set, Union
+from typing import Any, Iterable, List, Mapping, Optional, Set, Union
 
 from bioregistry import normalize_curie
 from pydantic import BaseModel
 from tqdm import tqdm
+from typing_extensions import Literal
 
 __all__ = [
     "Property",
