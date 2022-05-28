@@ -39,11 +39,13 @@ logger = logging.getLogger(__name__)
 class ParseResults:
     """A dataclass containing an OBO Graph JSON and text output from ROBOT."""
 
-    graph_document: GraphDocument
+    graph_document: Optional[GraphDocument]
     messages: List[str] = dataclasses.field(default_factory=list)
 
     def squeeze(self) -> Graph:
         """Get the first graph."""
+        if self.graph_document is None:
+            raise ValueError(f"graph document was not successfully parsed: {self.messages}")
         return self.graph_document.graphs[0]
 
 
@@ -63,29 +65,37 @@ def get_obograph_by_prefix(
     if prefix != bioregistry.normalize_prefix(prefix):
         raise ValueError("this function requires bioregistry canonical prefixes")
 
+    messages = []
     json_iri = bioregistry.get_json_download(prefix)
 
     if json_iri is not None:
-        res_json = requests.get(json_iri).json()
-        graph_document = GraphDocument(**res_json)
-        return ParseResults(graph_document=graph_document)
+        try:
+            return get_obograph_by_iri(json_iri)
+        except (IOError, ValueError):
+            msg = f"could not parse JSON for {prefix} from {json_iri}"
+            messages.append(msg)
+            logger.warning(msg)
 
     owl_iri = bioregistry.get_owl_download(prefix)
     obo_iri = bioregistry.get_obo_download(prefix)
 
-    for iri in [owl_iri, obo_iri]:
+    for label, iri in [("OWL", owl_iri), ("OBO", obo_iri)]:
         if iri is None:
             continue
 
         try:
             parse_results = convert_to_obograph_remote(iri, json_path=json_path)
         except subprocess.CalledProcessError:
-            logger.warning("could not parse OBO for %s from %s", prefix, iri)
+            msg = f"could not parse {label} for {prefix} from {iri}"
+            messages.append(msg)
+            logger.warning(msg)
             continue
         else:
+            # stick all messages before
+            parse_results.messages = [*messages, *parse_results.messages]
             return parse_results
 
-    raise RuntimeError(f"no IRI available for Bioregistry prefix {prefix}")
+    return ParseResults(graph_document=None, messages=messages)
 
 
 def convert_to_obograph_local(

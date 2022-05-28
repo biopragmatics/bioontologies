@@ -5,7 +5,7 @@
 
 from collections import defaultdict
 from operator import attrgetter
-from typing import Any, Iterable, List, Mapping, Optional, Set, Union
+from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union
 
 from bioregistry import normalize_curie
 from pydantic import BaseModel
@@ -80,6 +80,10 @@ class Edge(BaseModel):
     pred: str
     obj: str
     meta: Optional[Meta]
+
+    def as_tuple(self) -> Tuple[str, str, str]:
+        """Get the edge as a tuple."""
+        return self.sub, self.pred, self.obj
 
 
 class Node(BaseModel):
@@ -189,18 +193,22 @@ class Graph(BaseModel):
             if any(prop.pred == p for p in pred)
         ]
 
-    def standardize(self, keep_invalid: bool = False) -> "Graph":
+    def standardize(self, keep_invalid: bool = False, use_tqdm: bool = True) -> "Graph":
         """Standardize the OBO graph.
 
         :param keep_invalid: Should CURIEs/IRIs that aren't handled
             by the Bioregistry be kept? Defaults to false.
+        :param use_tqdm:
+            Should a progress bar be used?
         :returns: This OBO graph, modified in place as follows:
 
             1. Convert IRIs to CURIEs (in many places) using :mod:`bioregistry`
             2. Add alternative identifiers to :class:`Node` objects
         """
         # Convert URIs to CURIEs
-        for node in tqdm(self.nodes, desc="standardizing nodes", unit_scale=True):
+        for node in tqdm(
+            self.nodes, desc="standardizing nodes", unit_scale=True, disable=not use_tqdm
+        ):
             if node.id.startswith(OBO_URI_PREFIX):
                 node.id = _clean_uri(node.id, keep_invalid=True)  # type:ignore
             if node.meta:
@@ -231,7 +239,9 @@ class Graph(BaseModel):
                     xrefs.append(xref)
                 node.meta.xrefs = sorted(xrefs, key=attrgetter("val"))
 
-        for edge in tqdm(self.edges, desc="standardizing edges", unit_scale=True):
+        for edge in tqdm(
+            self.edges, desc="standardizing edges", unit_scale=True, disable=not use_tqdm
+        ):
             edge.sub = _clean_uri(edge.sub, keep_invalid=True)
             edge.pred = _clean_uri(edge.pred, keep_invalid=True)
             edge.obj = _clean_uri(edge.obj, keep_invalid=True)
@@ -274,12 +284,18 @@ def _clean_uri(s: str, *, keep_invalid: bool) -> Optional[str]:
         return None
 
 
-IS_A_STRINGS = {"is_a", "isa"}
+IS_A_STRINGS = {
+    "is_a",
+    "isa",
+    "type",  # used for instance to class
+}
 
 
 def _compress_uri(s: str) -> str:
     if s in IS_A_STRINGS:
         return "rdfs:subClassOf"
+    if s == "subPropertyOf":
+        return "rdfs:subPropertyOf"
     if s.startswith(OBO_URI_PREFIX):
         s = s[len(OBO_URI_PREFIX) :]
         if "_" in s and s.split("_")[1].isnumeric():  # best guess that it's an identifier
@@ -291,9 +307,13 @@ def _compress_uri(s: str) -> str:
                 return s
             else:
                 return s.replace("/", ":", 1)
-    if s.startswith("http://www.geneontology.org/formats/oboInOwl#"):
-        s = s[len("http://www.geneontology.org/formats/oboInOwl#") :]
-        s = "oboinowl:" + s
+    for uri_prefix, prefix in [
+        ("http://www.geneontology.org/formats/oboInOwl#", "oboinowl"),
+        ("http://www.w3.org/2002/07/owl#", "owl"),
+    ]:
+        if s.startswith(uri_prefix):
+            s = s[len(uri_prefix) :]
+            s = f"{prefix}:{s}"
     return s
 
 
