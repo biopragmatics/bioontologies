@@ -298,7 +298,9 @@ def _compress_uri(s: str) -> str:
         return "rdfs:subPropertyOf"
     if s.startswith(OBO_URI_PREFIX):
         s = s[len(OBO_URI_PREFIX) :]
-        if "_" in s and s.split("_")[1].isnumeric():  # best guess that it's an identifier
+        if s.startswith("APOLLO_SV"):  # those monsters put an underscore in their prefix...
+            s = "apollosv:" + s[len("APOLLO_SV") :]
+        elif "_" in s and s.split("_")[1].isnumeric():  # best guess that it's an identifier
             s = s.replace("_", ":", 1)
     for identifiers_prefix in (IDENTIFIERS_HTTP_PREFIX, IDENTIFIERS_HTTPS_PREFIX):
         if s.startswith(identifiers_prefix):
