@@ -4,11 +4,15 @@
 
 import unittest
 
-from bioontologies.robot import ParseResults, convert_to_obograph_remote
+from bioontologies.robot import ParseResults, convert_to_obograph_remote, is_available
 
 
 class TestAPI(unittest.TestCase):
     """Test parsing a remote file."""
+
+    def test_robot_is_available(self):
+        """Test ROBOT is available."""
+        self.assertTrue(is_available())
 
     def test_parse_owl(self):
         """Test parsing a remote JSON graph, should take less than a minute."""

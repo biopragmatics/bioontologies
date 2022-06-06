@@ -24,6 +24,7 @@ from typing_extensions import Literal
 from .obograph import Graph, GraphDocument
 
 __all__ = [
+    "is_available",
     "ParseResults",
     "convert_to_obograph_local",
     "convert_to_obograph_remote",
@@ -33,6 +34,14 @@ __all__ = [
 ]
 
 logger = logging.getLogger(__name__)
+
+
+def is_available() -> bool:
+    """Check if ROBOT is available."""
+    # suggested in https://stackoverflow.com/questions/11210104/check-if-a-program-exists-from-a-python-script
+    from shutil import which
+
+    return which("robot") is not None
 
 
 @dataclass
