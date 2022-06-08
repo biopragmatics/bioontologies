@@ -287,7 +287,6 @@ def _clean_uri(s: str, *, keep_invalid: bool) -> Optional[str]:
 IS_A_STRINGS = {
     "is_a",
     "isa",
-    "type",  # used for instance to class
 }
 
 
@@ -296,6 +295,8 @@ def _compress_uri(s: str) -> str:
         return "rdfs:subClassOf"
     if s == "subPropertyOf":
         return "rdfs:subPropertyOf"
+    if s == "type":  # instance of
+        return "rdf:type"
     if s.startswith(OBO_URI_PREFIX):
         s = s[len(OBO_URI_PREFIX) :]
         if s.startswith("APOLLO_SV"):  # those monsters put an underscore in their prefix...
