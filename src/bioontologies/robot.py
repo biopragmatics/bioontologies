@@ -173,7 +173,11 @@ def convert_to_obograph(
     :returns: An object with the parsed OBO Graph JSON and text
         output from the ROBOT conversion program
     :raises ValueError: if a graph is missing an ID
+    :raises TypeError: if ``input_as_iri`` is marked as true but a path
+        object is given for the ``input_path``
     """
+    if input_is_iri and not isinstance(input_path, str):
+        raise TypeError
     with _path_context(json_path) as path:
         ret = convert(
             input_path=input_path,
