@@ -155,6 +155,7 @@ def convert_to_obograph(
     input_flag: Optional[Literal["-i", "-I"]] = None,
     json_path: Union[None, str, Path] = None,
     input_is_iri: bool = False,
+    extra_args: Optional[List[str]] = None,
 ) -> ParseResults:
     """Convert a local OWL file to a JSON file.
 
@@ -170,8 +171,12 @@ def convert_to_obograph(
     :param input_is_iri:
         Should the ``input_path`` varible be considered as an IRI that
         gets stored in the returned parse results?
+    :param extra_args:
+        Extra positional arguments to pass in the command line
+
     :returns: An object with the parsed OBO Graph JSON and text
         output from the ROBOT conversion program
+
     :raises ValueError: if a graph is missing an ID
     :raises TypeError: if ``input_as_iri`` is marked as true but a path
         object is given for the ``input_path``
@@ -184,6 +189,7 @@ def convert_to_obograph(
             input_flag=input_flag,
             output_path=path,
             fmt="json",
+            extra_args=extra_args,
         )
         messages = ret.strip().splitlines()
         graph_document_raw = json.loads(path.read_text())
@@ -194,7 +200,7 @@ def convert_to_obograph(
         return ParseResults(
             graph_document=graph_document,
             messages=messages,
-            iri=input_path if input_is_iri else None,
+            iri=input_path if input_is_iri else None,  # type:ignore
         )
 
 
@@ -226,11 +232,20 @@ def convert(
     input_flag: Optional[Literal["-i", "-I"]] = None,
     *,
     fmt: Optional[str] = None,
+    extra_args: Optional[List[str]] = None,
 ) -> str:
     """Convert an OBO file to an OWL file with ROBOT."""
     if input_flag is None:
         input_flag = "-I" if _is_remote(input_path) else "-i"
-    args = ["robot", "convert", input_flag, str(input_path), "-o", str(output_path)]
+    args = [
+        "robot",
+        "convert",
+        input_flag,
+        str(input_path),
+        "-o",
+        str(output_path),
+        *(extra_args or []),
+    ]
     if fmt:
         args.extend(("--format", fmt))
     logger.debug("Running shell command: %s", args)
