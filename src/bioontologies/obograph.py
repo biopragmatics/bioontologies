@@ -7,7 +7,7 @@ from collections import defaultdict
 from operator import attrgetter
 from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union
 
-from bioregistry import normalize_curie
+import bioregistry
 from pydantic import BaseModel
 from tqdm import tqdm
 from typing_extensions import Literal
@@ -27,6 +27,8 @@ __all__ = [
 OBO_URI_PREFIX = "http://purl.obolibrary.org/obo/"
 IDENTIFIERS_HTTP_PREFIX = "http://identifiers.org/"
 IDENTIFIERS_HTTPS_PREFIX = "https://identifiers.org/"
+
+MaybeCURIE = Union[Tuple[str, str], Tuple[None, None]]
 
 
 class Property(BaseModel):
@@ -85,6 +87,14 @@ class Edge(BaseModel):
         """Get the edge as a tuple."""
         return self.sub, self.pred, self.obj
 
+    def parse_curies(self) -> Tuple[MaybeCURIE, MaybeCURIE, MaybeCURIE]:
+        """Get parsed CURIEs for this relationship."""
+        return (
+            bioregistry.parse_curie(self.sub),
+            bioregistry.parse_curie(self.pred),
+            bioregistry.parse_curie(self.obj),
+        )
+
 
 class Node(BaseModel):
     """Represents a node in an OBO Graph."""
@@ -126,6 +136,10 @@ class Node(BaseModel):
             if any(prop.pred == pred for pred in preds):
                 return prop.val
         return None
+
+    def parse_curie(self) -> Union[Tuple[str, str], Tuple[None, None]]:
+        """Parse the identifier into a pair, assuming it's a CURIE."""
+        return bioregistry.parse_curie(self.id)
 
 
 class Graph(BaseModel):
@@ -193,22 +207,37 @@ class Graph(BaseModel):
             if any(prop.pred == p for p in pred)
         ]
 
-    def standardize(self, keep_invalid: bool = False, use_tqdm: bool = True) -> "Graph":
+    def standardize(
+        self,
+        keep_invalid: bool = False,
+        use_tqdm: bool = True,
+        tqdm_kwargs: Optional[Mapping[str, Any]] = None,
+        prefix: Optional[str] = None,
+    ) -> "Graph":
         """Standardize the OBO graph.
 
         :param keep_invalid: Should CURIEs/IRIs that aren't handled
             by the Bioregistry be kept? Defaults to false.
         :param use_tqdm:
             Should a progress bar be used?
+        :param tqdm_kwargs:
+            Arguments to pass to tqdm if used
+        :param prefix:
+            The prefix this graph came from (used for logging purposes)
         :returns: This OBO graph, modified in place as follows:
 
             1. Convert IRIs to CURIEs (in many places) using :mod:`bioregistry`
             2. Add alternative identifiers to :class:`Node` objects
         """
+        _node_tqdm_kwargs = dict(
+            desc="standardizing nodes" if not prefix else f"[{prefix}] standardizing nodes",
+            unit_scale=True,
+            disable=not use_tqdm,
+        )
+        if tqdm_kwargs:
+            _node_tqdm_kwargs.update(tqdm_kwargs)
         # Convert URIs to CURIEs
-        for node in tqdm(
-            self.nodes, desc="standardizing nodes", unit_scale=True, disable=not use_tqdm
-        ):
+        for node in tqdm(self.nodes, **_node_tqdm_kwargs):
             if node.id.startswith(OBO_URI_PREFIX):
                 node.id = _clean_uri(node.id, keep_invalid=True)  # type:ignore
             if node.meta:
@@ -239,9 +268,14 @@ class Graph(BaseModel):
                     xrefs.append(xref)
                 node.meta.xrefs = sorted(xrefs, key=attrgetter("val"))
 
-        for edge in tqdm(
-            self.edges, desc="standardizing edges", unit_scale=True, disable=not use_tqdm
-        ):
+        _edge_tqdm_kwargs = dict(
+            desc="standardizing edges" if not prefix else f"[{prefix}] standardizing edges",
+            unit_scale=True,
+            disable=not use_tqdm,
+        )
+        if tqdm_kwargs:
+            _edge_tqdm_kwargs.update(tqdm_kwargs)
+        for edge in tqdm(self.edges, **_edge_tqdm_kwargs):
             edge.sub = _clean_uri(edge.sub, keep_invalid=True)
             edge.pred = _clean_uri(edge.pred, keep_invalid=True)
             edge.obj = _clean_uri(edge.obj, keep_invalid=True)
@@ -275,7 +309,7 @@ class Graph(BaseModel):
 
 def _clean_uri(s: str, *, keep_invalid: bool) -> Optional[str]:
     s = _compress_uri(s)
-    n = normalize_curie(s)
+    n = bioregistry.normalize_curie(s)
     if n:
         return n
     elif keep_invalid:
