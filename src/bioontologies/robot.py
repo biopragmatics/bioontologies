@@ -55,11 +55,14 @@ class ParseResults:
     messages: List[str] = dataclasses.field(default_factory=list)
     iri: Optional[str] = None
 
-    def squeeze(self) -> Graph:
+    def squeeze(self, standardize: bool = False) -> Graph:
         """Get the first graph."""
         if self.graph_document is None:
             raise ValueError(f"graph document was not successfully parsed: {self.messages}")
-        return self.graph_document.graphs[0]
+        rv = self.graph_document.graphs[0]
+        if standardize:
+            rv = rv.standardize()
+        return rv
 
 
 def get_obograph_by_iri(
