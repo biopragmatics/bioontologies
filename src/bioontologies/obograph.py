@@ -3,6 +3,7 @@
 .. seealso:: https://github.com/geneontology/obographs
 """
 
+import logging
 from collections import defaultdict
 from operator import attrgetter
 from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union
@@ -24,7 +25,10 @@ __all__ = [
     "GraphDocument",
 ]
 
+logger = logging.getLogger(__name__)
+
 OBO_URI_PREFIX = "http://purl.obolibrary.org/obo/"
+OBO_URI_PREFIX_LEN = len(OBO_URI_PREFIX)
 IDENTIFIERS_HTTP_PREFIX = "http://identifiers.org/"
 IDENTIFIERS_HTTPS_PREFIX = "https://identifiers.org/"
 
@@ -137,7 +141,7 @@ class Node(BaseModel):
                 return prop.val
         return None
 
-    def parse_curie(self) -> Union[Tuple[str, str], Tuple[None, None]]:
+    def parse_curie(self) -> MaybeCURIE:
         """Parse the identifier into a pair, assuming it's a CURIE."""
         return bioregistry.parse_curie(self.id)
 
@@ -325,18 +329,24 @@ IS_A_STRINGS = {
 
 
 def _compress_uri(s: str) -> str:
+    if s.startswith(OBO_URI_PREFIX):
+        s = s[OBO_URI_PREFIX_LEN:]
+        if s.startswith("APOLLO_SV"):  # those monsters put an underscore in their prefix...
+            return "apollosv:" + s[9:]  # hard-coded length of APOLLO_SV
+        for delimiter in [
+            "_",  # best guess that it's an identifier
+            "#",  # local property like in chebi#...
+            "/",  # local property like in chebi/charge
+        ]:
+            if delimiter in s:
+                return s.replace(delimiter, ":", 1)
+        return s
     if s in IS_A_STRINGS:
         return "rdfs:subClassOf"
     if s == "subPropertyOf":
         return "rdfs:subPropertyOf"
     if s == "type":  # instance of
         return "rdf:type"
-    if s.startswith(OBO_URI_PREFIX):
-        s = s[len(OBO_URI_PREFIX) :]
-        if s.startswith("APOLLO_SV"):  # those monsters put an underscore in their prefix...
-            s = "apollosv:" + s[len("APOLLO_SV") :]
-        elif "_" in s and s.split("_")[1].isnumeric():  # best guess that it's an identifier
-            s = s.replace("_", ":", 1)
     for identifiers_prefix in (IDENTIFIERS_HTTP_PREFIX, IDENTIFIERS_HTTPS_PREFIX):
         if s.startswith(identifiers_prefix):
             s = s[len(identifiers_prefix) :]
@@ -349,8 +359,9 @@ def _compress_uri(s: str) -> str:
         ("http://www.w3.org/2002/07/owl#", "owl"),
     ]:
         if s.startswith(uri_prefix):
-            s = s[len(uri_prefix) :]
-            s = f"{prefix}:{s}"
+            return f"{prefix}:{s[len(uri_prefix):]}"
+
+    # couldn't parse anything...
     return s
 
 
