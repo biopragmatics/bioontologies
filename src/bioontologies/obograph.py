@@ -242,8 +242,7 @@ class Graph(BaseModel):
             _node_tqdm_kwargs.update(tqdm_kwargs)
         # Convert URIs to CURIEs
         for node in tqdm(self.nodes, **_node_tqdm_kwargs):
-            if node.id.startswith(OBO_URI_PREFIX):
-                node.id = _clean_uri(node.id, keep_invalid=True)  # type:ignore
+            node.id = _clean_uri(node.id, keep_invalid=True)  # type:ignore
             if node.meta:
                 for prop in node.meta.basicPropertyValues or []:
                     prop.pred = _clean_uri(prop.pred, keep_invalid=True)  # type:ignore
@@ -312,15 +311,21 @@ class Graph(BaseModel):
 
 
 def _clean_uri(s: str, *, keep_invalid: bool) -> Optional[str]:
-    s = _compress_uri(s)
-    n = bioregistry.normalize_curie(s)
-    if n:
-        return n
-    elif keep_invalid:
-        return s
-    else:
-        return None
+    prefix, identifier = _compress_uri(s)
+    if prefix is None:
+        if keep_invalid:
+            return s
+        else:
+            return None
 
+    norm_prefix = bioregistry.normalize_prefix(prefix)
+    if norm_prefix is None:
+        if keep_invalid:
+            return s
+        else:
+            return None
+
+    return f"{norm_prefix}:{identifier}"
 
 IS_A_STRINGS = {
     "is_a",
@@ -328,41 +333,42 @@ IS_A_STRINGS = {
 }
 
 
-def _compress_uri(s: str) -> str:
+def _compress_uri(s: str) -> Union[Tuple[str, str], Tuple[None, str]]:
     if s.startswith(OBO_URI_PREFIX):
         s = s[OBO_URI_PREFIX_LEN:]
         if s.startswith("APOLLO_SV"):  # those monsters put an underscore in their prefix...
-            return "apollosv:" + s[9:]  # hard-coded length of APOLLO_SV
+            return "apollosv", s[10:]  # hard-coded length of APOLLO_SV_
         for delimiter in [
             "_",  # best guess that it's an identifier
             "#",  # local property like in chebi#...
             "/",  # local property like in chebi/charge
         ]:
             if delimiter in s:
-                return s.replace(delimiter, ":", 1)
-        return s
+                return s.split(delimiter, 1)
+        return None, s
     if s in IS_A_STRINGS:
-        return "rdfs:subClassOf"
+        return "rdfs", "subClassOf"
     if s == "subPropertyOf":
-        return "rdfs:subPropertyOf"
+        return "rdfs", "subPropertyOf"
     if s == "type":  # instance of
-        return "rdf:type"
+        return "rdf", "type"
     for identifiers_prefix in (IDENTIFIERS_HTTP_PREFIX, IDENTIFIERS_HTTPS_PREFIX):
         if s.startswith(identifiers_prefix):
             s = s[len(identifiers_prefix) :]
             if ":" in s:
-                return s
+                return s.split(":", 1)
             else:
-                return s.replace("/", ":", 1)
+                return s.split("/", 1)
     for uri_prefix, prefix in [
         ("http://www.geneontology.org/formats/oboInOwl#", "oboinowl"),
         ("http://www.w3.org/2002/07/owl#", "owl"),
+        ("http://www.w3.org/2000/01/rdf-schema#", "rdfs"),
     ]:
         if s.startswith(uri_prefix):
-            return f"{prefix}:{s[len(uri_prefix):]}"
+            return prefix, s[len(uri_prefix):]
 
     # couldn't parse anything...
-    return s
+    return None, s
 
 
 class GraphDocument(BaseModel):
