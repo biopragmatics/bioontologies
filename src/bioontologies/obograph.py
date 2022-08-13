@@ -258,7 +258,10 @@ class Node(BaseModel, StandardizeMixin):
     def replaced_by(self) -> Optional[str]:
         """Get the identifier that this node was replaced by."""
         preds = ["http://purl.obolibrary.org/obo/IAO_0100001", "IAO:0100001", "iao:0100001"]
-        return self._get_property(preds)
+        rv = self._get_property(preds)
+        if not rv:
+            return None
+        return bioregistry.normalize_curie(rv)
 
     @property
     def alternative_ids(self) -> List[str]:
