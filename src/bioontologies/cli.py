@@ -106,6 +106,7 @@ def index(prefix: str, graph_id: Optional[int], directory: Optional[Path], save_
                 uri=node.id,
                 curie=node.curie,
                 label=node.lbl,
+                definition=node.definition,
                 synonyms=[
                     synonym.val for synonym in node.synonyms
                 ],

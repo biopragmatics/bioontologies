@@ -193,7 +193,6 @@ class Node(BaseModel, StandardizeMixin):
     lbl: Optional[str]
     meta: Optional[Meta]
     type: Optional[Literal["CLASS", "PROPERTY", "INDIVIDUAL"]]
-    xxx: Optional[List[str]]
     prefix: Optional[str]
     luid: Optional[str]
     standardized: bool = False
@@ -299,6 +298,13 @@ class Node(BaseModel, StandardizeMixin):
             "oboinowl:creation_date",
         ]
         return self._get_property(preds)
+
+    @property
+    def definition(self) -> Optional[str]:
+        """Get the definition of the node."""
+        if self.meta and self.meta.definition:
+            return self.meta.definition.val
+        return None
 
     def _get_property(self, pred: Union[str, List[str]]) -> Optional[str]:
         p = self._get_properties(pred)
@@ -427,12 +433,6 @@ class Graph(BaseModel, StandardizeMixin):
             edge.standardize()
 
         # TODO add xrefs from definition into node if the are "real" CURIEs
-        # TODO add alt ids. from http://www.geneontology.org/formats/oboInOwl#hasAlternativeId
-        # Add alt ids
-        alt_ids = self.get_alternative_ids()
-        for node in self.nodes:
-            node.xxx = alt_ids.get(node.id, [])
-
         return self
 
     def get_alternative_ids(self) -> Mapping[str, List[str]]:
