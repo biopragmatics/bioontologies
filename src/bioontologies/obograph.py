@@ -6,7 +6,7 @@
 import logging
 from collections import defaultdict
 from operator import attrgetter
-from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union
+from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union, cast
 
 import bioregistry
 from pydantic import BaseModel
@@ -36,10 +36,14 @@ MaybeCURIE = Union[Tuple[str, str], Tuple[None, None]]
 
 
 class StandardizeMixin:
+    """A mixin for classes representing standardizable data."""
+
     def standardize(self):
+        """Standardize the data in this class."""
         raise NotImplementedError
 
     def raise_on_unstandardized(self):
+        """Raise an exception if standarization has not occurred."""
         if not self.standardized:
             raise ValueError
 
@@ -59,17 +63,20 @@ class Property(BaseModel, StandardizeMixin):
 
     @property
     def pred_curie(self) -> str:
+        """Get the predicate's CURIE or error if unparsable."""
         if self.pred_prefix is None or self.pred_identifier is None:
             raise
         return bioregistry.curie_to_str(self.pred_prefix, self.pred_identifier)
 
     @property
     def val_curie(self) -> str:
+        """Get the value's CURIE or error if unparsable."""
         if self.val_prefix is None or self.val_identifier is None:
             raise
         return bioregistry.curie_to_str(self.val_prefix, self.val_identifier)
 
     def standardize(self):
+        """Standardize this property."""
         self.pred_prefix, self.pred_identifier = _help_ground(self.pred)
         self.val_prefix, self.val_identifier = _help_ground(self.val)
         self.standardized = True
@@ -106,6 +113,7 @@ class Xref(BaseModel, StandardizeMixin):
             self.prefix, self.identifier = bioregistry.parse_curie(self.val)
         self.standardized = True
 
+
 class Synonym(BaseModel, StandardizeMixin):
     """Represents a synonym inside an object meta."""
 
@@ -117,6 +125,7 @@ class Synonym(BaseModel, StandardizeMixin):
     standardized: bool = False
 
     def standardize(self):
+        """Standardize the synoynm."""
         self.pred = _clean_uri(self.pred, keep_invalid=True)  # type:ignore
         if self.synonymType:
             self.synonymType = _clean_uri(self.synonymType, keep_invalid=True)  # type:ignore
@@ -157,6 +166,7 @@ class Edge(BaseModel):
         )
 
     def standardize(self):
+        """Standardize the edge."""
         self.sub = _clean_uri(self.sub, keep_invalid=True)
         self.pred = _clean_uri(self.pred, keep_invalid=True)
         self.obj = _clean_uri(self.obj, keep_invalid=True)
@@ -197,7 +207,7 @@ class Node(BaseModel, StandardizeMixin):
     luid: Optional[str]
     standardized: bool = False
 
-    def standardize(self) -> bool:
+    def standardize(self) -> None:
         """Ground the node to a standard prefix and luid based on its id (URI)."""
         self.prefix, self.luid = _help_ground(self.id)
 
@@ -228,6 +238,7 @@ class Node(BaseModel, StandardizeMixin):
 
     @property
     def curie(self) -> str:
+        """Get the CURIE string representing this node or error if not normalized."""
         if self.prefix is None or self.luid is None:
             raise ValueError("can not give curie for node")
         return bioregistry.curie_to_str(self.prefix, self.luid)
@@ -270,14 +281,11 @@ class Node(BaseModel, StandardizeMixin):
             "oboinowl:hasAlternativeId",
             "oboInOwl:hasAlternativeId",
         ]
-        return [
-            bioregistry.normalize_curie(curie)
-            for curie in self._get_properties(preds)
-        ]
+        return [bioregistry.normalize_curie(curie) for curie in self._get_properties(preds)]
 
     @property
     def namespace(self) -> Optional[str]:
-        """Get the OBO namespace"""
+        """Get the OBO namespace."""
         preds = [
             "http://www.geneontology.org/formats/oboInOwl#hasOBONamespace",
             "oboinowl:hasOBONamespace",
@@ -445,10 +453,6 @@ class Graph(BaseModel, StandardizeMixin):
                 rv[x].add(node.id)
         return {k: sorted(v) for k, v in rv.items()}
 
-    def raise_on_unstandardized(self):
-        if not self.standardized:
-            raise ValueError("graph isn't standardized")
-
     def nodes_from(self, prefix: str) -> Iterable[Node]:
         """Iterate non-deprecated nodes whose identifiers start with the given prefix."""
         self.raise_on_unstandardized()
@@ -512,7 +516,7 @@ def _compress_uri(s: str) -> Union[Tuple[str, str], Tuple[None, str]]:
             "/",  # local property like in chebi/charge
         ]:
             if delimiter in s:
-                return s.split(delimiter, 1)
+                return cast(Tuple[str, str], s.split(delimiter, 1))
         return None, s
     if s in IS_A_STRINGS:
         return "rdfs", "subClassOf"
@@ -522,18 +526,18 @@ def _compress_uri(s: str) -> Union[Tuple[str, str], Tuple[None, str]]:
         return "rdf", "type"
     for identifiers_prefix in (IDENTIFIERS_HTTP_PREFIX, IDENTIFIERS_HTTPS_PREFIX):
         if s.startswith(identifiers_prefix):
-            s = s[len(identifiers_prefix):]
+            s = s[len(identifiers_prefix) :]
             if ":" in s:
-                return s.split(":", 1)
+                return cast(Tuple[str, str], s.split(":", 1))
             else:
-                return s.split("/", 1)
+                return cast(Tuple[str, str], s.split("/", 1))
     for uri_prefix, prefix in [
         ("http://www.geneontology.org/formats/oboInOwl#", "oboinowl"),
         ("http://www.w3.org/2002/07/owl#", "owl"),
         ("http://www.w3.org/2000/01/rdf-schema#", "rdfs"),
     ]:
         if s.startswith(uri_prefix):
-            return prefix, s[len(uri_prefix):]
+            return prefix, s[len(uri_prefix) :]
 
     # couldn't parse anything...
     return None, s

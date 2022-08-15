@@ -41,13 +41,11 @@ def main():
 @click.option("--directory", type=Path)
 @click.option("--graph-id", type=int)
 @click.option("--save-obograph", is_flag=True)
-def index(prefix: str, graph_id: Optional[int], directory: Optional[Path], save_obograph: bool):
+def index(prefix: str, graph_id: Optional[str], directory: Optional[Path], save_obograph: bool):
     """Generate a node index file."""
     from .robot import get_obograph_by_prefix
 
-    prefix = bioregistry.normalize_prefix(prefix)
-    if prefix is None:
-        raise ValueError(f"Invalid prefix given")
+    prefix = bioregistry.normalize_prefix(prefix, strict=True)
 
     if directory is None:
         directory = pystow.join("bioontologies", "index", prefix)
@@ -56,9 +54,9 @@ def index(prefix: str, graph_id: Optional[int], directory: Optional[Path], save_
     parse_results = get_obograph_by_prefix(
         prefix, json_path=directory.joinpath(prefix).with_suffix(".json") if save_obograph else None
     )
+    if parse_results.graph_document is None:
+        raise ValueError("missing graph document")
 
-    if not parse_results.graph_document.graphs:
-        raise
     elif len(parse_results.graph_document.graphs) == 1:
         graph_id = parse_results.graph_document.graphs[0].id
     elif len(parse_results.graph_document.graphs) > 1 and graph_id is None:
@@ -91,7 +89,7 @@ def index(prefix: str, graph_id: Optional[int], directory: Optional[Path], save_
         "creation_date",
     )
     with nodes_tsv_path.open("w") as file:
-        print(
+        print(  # noqa:T201
             *header,
             sep="\t",
             file=file,
@@ -99,20 +97,13 @@ def index(prefix: str, graph_id: Optional[int], directory: Optional[Path], save_
         for node in sorted(graph.nodes, key=attrgetter("id")):
             if node.prefix != prefix:
                 continue
-            cells = (
-
-            )
             jd = dict(
                 uri=node.id,
                 curie=node.curie,
                 label=node.lbl,
                 definition=node.definition,
-                synonyms=[
-                    synonym.val for synonym in node.synonyms
-                ],
-                xrefs=[
-                    xref.curie for xref in node.xrefs
-                ],
+                synonyms=[synonym.val for synonym in node.synonyms],
+                xrefs=[xref.curie for xref in node.xrefs],
                 deprecated=node.deprecated,
                 replaced_by=node.replaced_by,
                 alternative_ids=node.alternative_ids,
@@ -120,8 +111,8 @@ def index(prefix: str, graph_id: Optional[int], directory: Optional[Path], save_
                 created_by=node.created_by,
                 creation_date=node.creation_date,
             )
-            jv[node.luid] = {k:v for k,v in jd.items() if v}
-            print(
+            jv[node.luid] = {k: v for k, v in jd.items() if v}
+            print(  # noqa:T201
                 node.curie,
                 node.lbl or "",
                 " | ".join(synonym.val for synonym in node.synonyms),
