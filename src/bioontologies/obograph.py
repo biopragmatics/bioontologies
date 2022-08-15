@@ -234,6 +234,7 @@ class Node(BaseModel, StandardizeMixin):
                     xrefs.append(xref)
                 self.meta.xrefs = sorted(xrefs, key=attrgetter("prefix"))
         # tqdm.write("\t".join((self.curie, *(x.curie for x in self.xrefs))))
+        # TODO add xrefs from definition into node if the are "real" CURIEs
         self.standardized = True
 
     @property
@@ -419,6 +420,7 @@ class Graph(BaseModel, StandardizeMixin):
             2. Add alternative identifiers to :class:`Node` objects
         """
         self.standardized = True
+
         _node_tqdm_kwargs = dict(
             desc="standardizing nodes" if not prefix else f"[{prefix}] standardizing nodes",
             unit_scale=True,
@@ -426,7 +428,6 @@ class Graph(BaseModel, StandardizeMixin):
         )
         if tqdm_kwargs:
             _node_tqdm_kwargs.update(tqdm_kwargs)
-        # Convert URIs to CURIE
         for node in tqdm(self.nodes, **_node_tqdm_kwargs):
             node.standardize()
 
@@ -440,7 +441,6 @@ class Graph(BaseModel, StandardizeMixin):
         for edge in tqdm(self.edges, **_edge_tqdm_kwargs):
             edge.standardize()
 
-        # TODO add xrefs from definition into node if the are "real" CURIEs
         return self
 
     def get_alternative_ids(self) -> Mapping[str, List[str]]:
