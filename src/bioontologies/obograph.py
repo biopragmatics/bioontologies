@@ -511,8 +511,8 @@ def _compress_uri(s: str) -> Union[Tuple[str, str], Tuple[None, str]]:
         if s.startswith("APOLLO_SV"):  # those monsters put an underscore in their prefix...
             return "apollosv", s[10:]  # hard-coded length of APOLLO_SV_
         for delimiter in [
+            "#",  # local property like in chebi#... This needs to be first priority!
             "_",  # best guess that it's an identifier
-            "#",  # local property like in chebi#...
             "/",  # local property like in chebi/charge
         ]:
             if delimiter in s:
