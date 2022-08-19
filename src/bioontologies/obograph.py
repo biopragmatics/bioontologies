@@ -535,6 +535,7 @@ def _compress_uri(s: str) -> Union[Tuple[str, str], Tuple[None, str]]:
         ("http://www.geneontology.org/formats/oboInOwl#", "oboinowl"),
         ("http://www.w3.org/2002/07/owl#", "owl"),
         ("http://www.w3.org/2000/01/rdf-schema#", "rdfs"),
+        ("http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=", "hgnc"),
     ]:
         if s.startswith(uri_prefix):
             return prefix, s[len(uri_prefix) :]
