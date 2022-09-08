@@ -539,9 +539,16 @@ CLEANUP = {
     "http://purl.obolibrary.org/obo/activates": ("ro", "0002213"), # this is some inference
     "http://purl.obolibrary.org/obo/inheres_in": ("ro", "0004096"),
     "http://purl.obolibrary.org/obo/bearer_of": ("ro", "0004097"),
-    "http://purl.obolibrary.org/obo/uberon/core#synapsed_by": ("ro", "0002103"),
+    "http://purl.obolibrary.org/obo/unfolds_in": ("bfo", "0000066"),
     "http://purl.obolibrary.org/obo/nbo#has_participant": ("ro", "0000057"),
+    "http://purl.obolibrary.org/obo/uberon/core#synapsed_by": ("ro", "0002103"),
     "http://purl.obolibrary.org/obo/uberon/core#existence_starts_and_ends_during": ("ro", "0002491"),
+    "http://purl.obolibrary.org/obo/uberon/core#conduit_for": ("ro", "0002570"),
+    "http://purl.obolibrary.org/obo:pato#reciprocal_of": ("ro", "0015012"),
+    "http://purl.obolibrary.org/obo:pato#has_cross_section": ("ro", "0015011"),
+    "http://purl.obolibrary.org/obo:pato#increased_in_magnitude_relative_to": ("ro", "0015007"),
+    "http://purl.obolibrary.org/obo:pato#decreased_in_magnitude_relative_to": ("ro", "0015008"),
+    "http://purl.obolibrary.org/obo:exo#interacts_with": ("ro", "0002434"),
 }
 WARNED = set()
 YEARS = {f"{n}-" for n in range(1000, 2030)}
