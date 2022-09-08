@@ -15,6 +15,7 @@ from pydantic import BaseModel
 from tqdm import tqdm
 from typing_extensions import Literal
 
+from . import upgrade
 from .relations import ground_relation
 
 __all__ = [
@@ -498,51 +499,6 @@ def _clean_uri(s: str, *, keep_invalid: bool, debug: bool = False) -> Optional[s
         return None
 
 
-CLEANUP = {
-    "inverseOf": ("owl", "inverseOf"),
-    "hasExactSynonym": ("oboinowl", "hasExactSynonym"),
-    "hasNarrowSynonym": ("oboinowl", "hasNarrowSynonym"),
-    "hasBroadSynonym": ("oboinowl", "hasBroadSynonym"),
-    "hasRelatedSynonym": ("oboinowl", "hasRelatedSynonym"),
-    "immediately_precedes": ("ro", "0002090"),
-    "immediately_preceded_by": ("ro", "0002087"),
-    "starts_at_end_of": ("ro", "0002583"),
-    "ends_at_start_of": ("ro", "0002593"),
-    "innervates": ("ro", "0002134"),
-    "connected_to": ("ro", "0002170"),
-    "dc-contributor": ("dc", "contributor"),
-    "dc-title": ("dc", "title"),
-    "dc-description": ("dc", "description"),
-    "dc-creator": ("dc", "creator"),
-    "dc-license": ("dc", "license"),
-    "is_a": ("rdfs", "subClassOf"),
-    "isa": ("rdfs", "subClassOf"),
-    "subPropertyOf": ("rdfs", "subPropertyOf"),
-    "type": ("rdf", "type"),
-    "http://example.com/bfo-spec-label": ("bfo", "0000179"),
-    "http://www.obofoundry.org/ro/ro.owl#proper_part_of": ("sio", "000093"),
-    # see https://www.ebi.ac.uk/ols/ontologies/ero/properties?iri=http%3A%2F%2F
-    # www.obofoundry.org%2Fro%2Fro.owl%23improper_part_of&lang=en&viewMode=All&siblings=false
-    "http://www.obofoundry.org/ro/ro.owl#improper_part_of": ("bfo", "0000050"),
-    "http://www.obofoundry.org/ro/ro.owl#has_agent": ("ro", "0002218"),
-    "http://purl.obolibrary.org/obo/bearer_of": ("ro", "0000053"),  # 0004097 is the deprecated one
-    "http://purl.obolibrary.org/obo/activates": ("ro", "0002213"),  # this is some inference
-    "http://purl.obolibrary.org/obo/inheres_in": ("ro", "0004096"),
-    "http://purl.obolibrary.org/obo/unfolds_in": ("bfo", "0000066"),
-    "http://purl.obolibrary.org/obo/nbo#has_participant": ("ro", "0000057"),
-    "http://purl.obolibrary.org/obo/uberon/core#synapsed_by": ("ro", "0002103"),
-    "http://purl.obolibrary.org/obo/uberon/core#existence_starts_and_ends_during": (
-        "ro",
-        "0002491",
-    ),
-    "http://purl.obolibrary.org/obo/uberon/core#conduit_for": ("ro", "0002570"),
-    "http://purl.obolibrary.org/obo:pato#reciprocal_of": ("ro", "0015012"),
-    "http://purl.obolibrary.org/obo:pato#has_cross_section": ("ro", "0015011"),
-    "http://purl.obolibrary.org/obo:pato#increased_in_magnitude_relative_to": ("ro", "0015007"),
-    "http://purl.obolibrary.org/obo:pato#decreased_in_magnitude_relative_to": ("ro", "0015008"),
-    "http://purl.obolibrary.org/obo:exo#interacts_with": ("ro", "0002434"),
-    "http://purl.obolibrary.org/obo/RO#_is_a": ("rdfs", "subClassOf"),
-}
 WARNED = set()
 YEARS = {f"{n}-" for n in range(1000, 2030)}
 
@@ -559,7 +515,7 @@ def _parse_obo_rel(s: str, identifier: str) -> Union[Tuple[str, str], Tuple[None
 
 
 def _compress_uri(s: str, *, debug: bool = False) -> Union[Tuple[str, str], Tuple[None, str]]:
-    cv = CLEANUP.get(s)
+    cv = upgrade.upgrade(s)
     if cv:
         return cv
 
@@ -579,6 +535,7 @@ def _compress_uri(s: str, *, debug: bool = False) -> Union[Tuple[str, str], Tupl
         if s.startswith(x):
             prefix, identifier = ground_relation(s[len(x) :])
             if prefix and identifier:
+                upgrade.insert(s, prefix, identifier)
                 return prefix, identifier
             elif s not in WARNED:
                 tqdm.write(f"could not parse legacy RO: {s}")
