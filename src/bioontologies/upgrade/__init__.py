@@ -49,3 +49,7 @@ def insert(term: str, prefix: str, identifier: str) -> None:
     terms[term] = prefix, identifier
     write(terms)
     load.cache_clear()
+
+
+if __name__ == '__main__':
+    write(load())  # lints and sorts
