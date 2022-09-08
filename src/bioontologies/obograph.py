@@ -541,9 +541,21 @@ CLEANUP = {
     "http://purl.obolibrary.org/obo:pato#increased_in_magnitude_relative_to": ("ro", "0015007"),
     "http://purl.obolibrary.org/obo:pato#decreased_in_magnitude_relative_to": ("ro", "0015008"),
     "http://purl.obolibrary.org/obo:exo#interacts_with": ("ro", "0002434"),
+    "http://purl.obolibrary.org/obo/RO#_is_a": ("rdfs", "subClassOf"),
 }
 WARNED = set()
 YEARS = {f"{n}-" for n in range(1000, 2030)}
+
+
+def _parse_obo_rel(s: str, identifier: str) -> Union[Tuple[str, str], Tuple[None, str]]:
+    _, inner_identifier = identifier.split("#", 1)
+    _p, _i = ground_relation(inner_identifier)
+    if _p and _i:
+        return _p, _i
+    if s not in WARNED:
+        tqdm.write(f"could not parse OBO internal relation: {s}")
+        WARNED.add(s)
+    return None, s
 
 
 def _compress_uri(s: str, *, debug: bool = False) -> Union[Tuple[str, str], Tuple[None, str]]:
@@ -553,6 +565,8 @@ def _compress_uri(s: str, *, debug: bool = False) -> Union[Tuple[str, str], Tupl
 
     prefix, identifier = converter.parse_uri(s)
     if prefix and identifier:
+        if prefix == "obo" and "#" in identifier:
+            return _parse_obo_rel(s, identifier)
         return prefix, identifier
 
     if "upload.wikimedia.org" in s:
@@ -566,6 +580,8 @@ def _compress_uri(s: str, *, debug: bool = False) -> Union[Tuple[str, str], Tupl
             prefix, identifier = ground_relation(s[len(x) :])
             if prefix and identifier:
                 return prefix, identifier
+            elif s not in WARNED:
+                tqdm.write(f"could not parse legacy RO: {s}")
 
     prefix, identifier = ground_relation(s)
     if prefix and identifier:
