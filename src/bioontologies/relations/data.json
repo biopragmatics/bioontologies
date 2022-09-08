@@ -3,138 +3,161 @@
     "identifier": "0002291",
     "label": "ubiquitously expressed in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002292",
     "label": "expresses",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002297",
     "label": "results in formation of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002298",
     "label": "results in morphogenesis of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002299",
     "label": "results in maturation of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002293",
     "label": "ubiquitously expresses",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002295",
     "label": "results in developmental progression of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002296",
     "label": "results in development of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002286",
     "label": "developmentally succeeded by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002287",
     "label": "part of developmental precursor of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002285",
     "label": "developmentally replaces",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0019501",
     "label": "confers susceptibility to condition",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000092",
     "label": "disposition of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000091",
     "label": "has disposition",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002026",
     "label": "in register with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002029",
     "label": "has increased age-specific mortality rate",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0016004",
     "label": "has exposure medium",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0016001",
     "label": "has phenotype or disease",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0016002",
     "label": "has disease",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000081",
     "label": "role of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000080",
     "label": "quality of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000085",
     "label": "has function",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002264",
     "label": "acts upstream of or within",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "affects"
     ]
@@ -143,204 +166,238 @@
     "identifier": "0002022",
     "label": "directly regulated by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002023",
     "label": "directly negatively regulated by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002024",
     "label": "directly positively regulated by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002025",
     "label": "has effector activity",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002260",
     "label": "has biological role",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002261",
     "label": "has application role",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000087",
     "label": "has role",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002020",
     "label": "transports",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002262",
     "label": "has chemical role",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000086",
     "label": "has quality",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002021",
     "label": "occurs across",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002263",
     "label": "acts upstream of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002019",
     "label": "has ligand",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000079",
     "label": "function of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002015",
     "label": "has positive regulatory component activity",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002257",
     "label": "developmentally induces",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002258",
     "label": "developmentally preceded by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002016",
     "label": "has necessary component activity",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002017",
     "label": "has component activity",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002259",
     "label": "defined by inverse",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002018",
     "label": "has component process",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002490",
     "label": "existence overlaps",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002495",
     "label": "immediate transformation of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002011",
     "label": "regulates transport of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002253",
     "label": "has connecting branch",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002012",
     "label": "occurrent part of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002496",
     "label": "existence starts during or after",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002254",
     "label": "has developmental contribution from",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002013",
     "label": "has regulatory component activity",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002255",
     "label": "developmentally contributes to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002497",
     "label": "existence ends during or before",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002014",
     "label": "has negative regulatory component activity",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002256",
     "label": "developmentally induced by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002491",
     "label": "existence starts and ends during",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "exists during"
     ]
@@ -349,78 +406,91 @@
     "identifier": "0002492",
     "label": "existence ends during",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002493",
     "label": "existence ends with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002252",
     "label": "connecting branch of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002010",
     "label": "regulates in other organism",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002494",
     "label": "transformation of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002008",
     "label": "coincident with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002009",
     "label": "cell expresses",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002004",
     "label": "tracheates",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002488",
     "label": "existence starts during",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002246",
     "label": "under-expressed in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002005",
     "label": "innervated_by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002489",
     "label": "existence starts with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002248",
     "label": "has active ingredient",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "has active pharmaceutical ingredient",
       "has active substance"
@@ -430,582 +500,679 @@
     "identifier": "0002006",
     "label": "has synaptic terminal of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002007",
     "label": "bounding layer of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002249",
     "label": "active ingredient in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002000",
     "label": "2D boundary of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002242",
     "label": "has exposure route",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002484",
     "label": "curator guidance link",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002001",
     "label": "aligned with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002485",
     "label": "receives input from",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002243",
     "label": "has exposure transport path",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002002",
     "label": "has 2D boundary",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002486",
     "label": "sends output to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002244",
     "label": "related via exposure to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002487",
     "label": "relation between physical entity and a process or stage",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002003",
     "label": "electrically_synapsed_to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002245",
     "label": "over-expressed in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002480",
     "label": "ubiquitinates",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002481",
     "label": "is kinase activity",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002240",
     "label": "has exposure receptor",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002482",
     "label": "is ubiquitination",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002241",
     "label": "has exposure stressor",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002483",
     "label": "inherited annotation property",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000059",
     "label": "concretizes",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000058",
     "label": "is concretized as",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000057",
     "label": "has participant",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002235",
     "label": "stem parasite of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002477",
     "label": "child nucleus of in hermaphrodite",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002478",
     "label": "child nucleus of in male",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002236",
     "label": "root parasite of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002479",
     "label": "has part that occurs in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002237",
     "label": "hemiparasite of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002238",
     "label": "has component participant",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002231",
     "label": "has start location",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002473",
     "label": "composed primarily of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000052",
     "label": "characteristic of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002232",
     "label": "has end location",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002474",
     "label": "dispositional interpretation",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002233",
     "label": "has input",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002475",
     "label": "has no connections with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002234",
     "label": "has output",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002476",
     "label": "child nucleus of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000056",
     "label": "participates in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002470",
     "label": "eats",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002471",
     "label": "is eaten by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002472",
     "label": "is evidence for",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000053",
     "label": "has characteristic",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002230",
     "label": "ends with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002228",
     "label": "facultative parasite of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002229",
     "label": "ends",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002224",
     "label": "starts with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002466",
     "label": "is commensalism",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002225",
     "label": "develops from part of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002467",
     "label": "is mutualism",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002226",
     "label": "develops in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002468",
     "label": "is parasitism",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002469",
     "label": "provides nutrients for",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002227",
     "label": "obligate parasite of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002220",
     "label": "adjacent to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002462",
     "label": "subject participant in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0003310",
     "label": "condition ameliorated by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002221",
     "label": "surrounds",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002463",
     "label": "target participant in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002222",
     "label": "temporally related to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002464",
     "label": "helper property (not for use in curation)",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002223",
     "label": "starts",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002465",
     "label": "is symbiosis",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0003311",
     "label": "condition exacerbated by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002460",
     "label": "has vector",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002461",
     "label": "partner in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0003307",
     "label": "ameliorates condition",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002217",
     "label": "obsolete actively participates in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002459",
     "label": "is vector for",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002218",
     "label": "obsolete has active participant",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0003306",
     "label": "contributes to frequency of condition",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0003309",
     "label": "exacerbates condition",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002219",
     "label": "surrounded by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0003308",
     "label": "correlated with condition",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002213",
     "label": "positively regulates",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0003303",
     "label": "causes condition",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002455",
     "label": "pollinates",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002456",
     "label": "pollinated by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0003302",
     "label": "causes or contributes to condition",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002214",
     "label": "has prototype",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002457",
     "label": "acquires nutrients from",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002215",
     "label": "capable of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0003305",
     "label": "contributes to severity of condition",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0003304",
     "label": "contributes to condition",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002458",
     "label": "preyed upon by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002216",
     "label": "capable of part of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002451",
     "label": "transmitted by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002210",
     "label": "directly develops into",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002452",
     "label": "has symptom",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002211",
     "label": "regulates",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002453",
     "label": "host of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0003301",
     "label": "has role in modeling",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002454",
     "label": "has host",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002212",
     "label": "negatively regulates",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002450",
     "label": "directly positively regulates activity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "molecularly increases activity of"
     ]
@@ -1014,12 +1181,14 @@
     "identifier": "0002206",
     "label": "expressed in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002448",
     "label": "directly regulates activity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "molecularly controls"
     ]
@@ -1028,6 +1197,7 @@
     "identifier": "0002449",
     "label": "directly negatively regulates activity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "molecularly decreases activity of"
     ]
@@ -1036,30 +1206,35 @@
     "identifier": "0002207",
     "label": "directly develops from",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002208",
     "label": "parasitoid of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002209",
     "label": "has parasitoid",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002202",
     "label": "develops from",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002444",
     "label": "parasite of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "direct parasite of"
     ]
@@ -1068,12 +1243,14 @@
     "identifier": "0002203",
     "label": "develops into",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002445",
     "label": "parasitized by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "directly parasitized by"
     ]
@@ -1082,6 +1259,7 @@
     "identifier": "0002446",
     "label": "participates in a abiotic-biotic interaction with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "semibiotically interacts with"
     ]
@@ -1090,150 +1268,175 @@
     "identifier": "0002204",
     "label": "gene product of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002205",
     "label": "has gene product",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002447",
     "label": "phosphorylates",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000116",
     "label": "editor note",
     "prefix": "iao",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000117",
     "label": "term editor",
     "prefix": "iao",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000114",
     "label": "has curation status",
     "prefix": "iao",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000115",
     "label": "definition",
     "prefix": "iao",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0018002",
     "label": "myristoylates",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000112",
     "label": "example of usage",
     "prefix": "iao",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0018001",
     "label": "is myristoyltransferase activity",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000111",
     "label": "editor preferred term",
     "prefix": "iao",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0018003",
     "label": "myristoylated by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000118",
     "label": "alternative term",
     "prefix": "iao",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000119",
     "label": "definition source",
     "prefix": "iao",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002440",
     "label": "symbiotically interacts with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002441",
     "label": "commensually interacts with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002200",
     "label": "has phenotype",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002442",
     "label": "mutualistically interacts with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002443",
     "label": "interacts with via parasite-host interaction",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002201",
     "label": "phenotype of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002437",
     "label": "biotically interacts with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002438",
     "label": "trophically interacts with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002439",
     "label": "preys on",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002433",
     "label": "contributes to morphology of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002434",
     "label": "interacts with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "in pairwise interaction with"
     ]
@@ -1242,30 +1445,35 @@
     "identifier": "0002435",
     "label": "genetically interacts with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002436",
     "label": "molecularly interacts with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002430",
     "label": "involved in negative regulation of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002431",
     "label": "involved in or involved in regulation of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002432",
     "label": "is active in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "enables activity in"
     ]
@@ -1274,72 +1482,84 @@
     "identifier": "0002426",
     "label": "differs in attribute",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002427",
     "label": "causally downstream of or within",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002428",
     "label": "involved in regulation of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002429",
     "label": "involved in positive regulation of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002422",
     "label": "logical macro assertion on an object property",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002423",
     "label": "logical macro assertion on an annotation property",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002424",
     "label": "differs in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002425",
     "label": "differs in attribute of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002420",
     "label": "logical macro assertion on a class",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002421",
     "label": "logical macro assertion on a property",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002416",
     "label": "logical macro assertion",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002418",
     "label": "causally upstream of or within",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "affects"
     ]
@@ -1348,150 +1568,175 @@
     "identifier": "0002411",
     "label": "causally upstream of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002412",
     "label": "immediately causally upstream of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002413",
     "label": "directly provides input for",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002414",
     "label": "transitively provides input for",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002419",
     "label": "annotation property cardinality",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002410",
     "label": "causally related to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002404",
     "label": "causally downstream of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002405",
     "label": "immediately causally downstream of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002406",
     "label": "directly activates",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002407",
     "label": "indirectly activates",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002400",
     "label": "has direct input",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002401",
     "label": "obsolete has indirect input",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002402",
     "label": "obsolete has direct output",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002403",
     "label": "obsolete has indirect output",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002408",
     "label": "directly inhibits",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002409",
     "label": "indirectly inhibits",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002640",
     "label": "intracellular endoparasite of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002641",
     "label": "has intracellular endoparasite",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002635",
     "label": "has endoparasite",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002636",
     "label": "mesoparasite of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002637",
     "label": "has mesoparasite",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002638",
     "label": "intercellular endoparasite of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002632",
     "label": "ectoparasite of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002633",
     "label": "has ectoparasite",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002634",
     "label": "endoparasite of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "lives inside of"
     ]
@@ -1500,141 +1745,164 @@
     "identifier": "0002639",
     "label": "has intercellular endoparasite",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "hasDbXref",
     "label": "database_cross_reference",
     "prefix": "oboinowl",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002630",
     "label": "directly negatively regulates",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002624",
     "label": "lays eggs in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002625",
     "label": "has eggs laid in by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002626",
     "label": "kills",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002627",
     "label": "is killed by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002622",
     "label": "visits flowers of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002623",
     "label": "has flowers visited by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002629",
     "label": "directly positively regulates",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002613",
     "label": "axiom contradicted by evidence",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002614",
     "label": "is evidence with support from",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002615",
     "label": "has model",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002616",
     "label": "related via evidence or inference to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002610",
     "label": "correlated with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002611",
     "label": "evidential logical macro assertion on an axiom",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002612",
     "label": "axiom has evidence",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000589",
     "label": "OBO foundry unique label",
     "prefix": "iao",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002617",
     "label": "is representative IRI for equivalence set",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002618",
     "label": "visits",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002619",
     "label": "visited by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "HOM0000028",
     "label": "in heterochronous homology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
-      "heterochrony",
-      "heterochronous homologous to"
+      "heterochronous homologous to",
+      "heterochrony"
     ]
   },
   {
     "identifier": "HOM0000029",
     "label": "in paedomorphorsis relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "juvenification",
       "pedomorphosis"
@@ -1644,6 +1912,7 @@
     "identifier": "HOM0000026",
     "label": "in semi-orthology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "semi-orthologous to"
     ]
@@ -1652,6 +1921,7 @@
     "identifier": "HOM0000027",
     "label": "in serial homology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "homonomy",
       "serial homologous to"
@@ -1661,24 +1931,28 @@
     "identifier": "0000302",
     "label": "obsolete downstream in neural circuit with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "HOM0000031",
     "label": "in progenesis relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000301",
     "label": "obsolete upstream in neural circuit with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "HOM0000032",
     "label": "in neoteny relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "juvenilization",
       "neotenous to"
@@ -1688,28 +1962,32 @@
     "identifier": "0000300",
     "label": "obsolete in neural circuit with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "HOM0000030",
     "label": "in peramorphosis relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "HOM0000036",
     "label": "in many to many homology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
-      "many:many homology ",
       "many to many homologous to",
-      "many-to-many homology"
+      "many-to-many homology",
+      "many:many homology "
     ]
   },
   {
     "identifier": "HOM0000033",
     "label": "in mimicry relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "mimicrous to"
     ]
@@ -1718,24 +1996,27 @@
     "identifier": "HOM0000034",
     "label": "in 1 to many orthology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
-      "one-to-many orthology",
+      "1 to many orthologous to",
       "1:many orthology",
       "co-orthology",
       "many to 1 orthology",
-      "1 to many orthologous to"
+      "one-to-many orthology"
     ]
   },
   {
     "identifier": "0010002",
     "label": "is carrier of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0010001",
     "label": "generically depends on",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "g-depends on"
     ]
@@ -1744,6 +2025,7 @@
     "identifier": "HOM0000017",
     "label": "in orthology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "orthologous to"
     ]
@@ -1752,6 +2034,7 @@
     "identifier": "HOM0000018",
     "label": "in xenology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "xenologous to"
     ]
@@ -1760,6 +2043,7 @@
     "identifier": "HOM0000015",
     "label": "in protein structural homology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "protein structural homologous to"
     ]
@@ -1768,15 +2052,17 @@
     "identifier": "HOM0000016",
     "label": "in non functional homology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
-      "pseudogene",
-      "non functional homologous to"
+      "non functional homologous to",
+      "pseudogene"
     ]
   },
   {
     "identifier": "HOM0000019",
     "label": "in 1 to 1 homology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "1 to 1 homologous to",
       "1:1 homology",
@@ -1787,6 +2073,7 @@
     "identifier": "HOM0000020",
     "label": "in 1 to 1 orthology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "1 to 1 orthologous to",
       "1:1 orthology",
@@ -1797,16 +2084,18 @@
     "identifier": "HOM0000024",
     "label": "in out-paralogy relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "alloparalogy",
-      "outparalogy",
-      "out-paralogous to"
+      "out-paralogous to",
+      "outparalogy"
     ]
   },
   {
     "identifier": "HOM0000025",
     "label": "in pro-orthology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "pro-orthologous to"
     ]
@@ -1815,39 +2104,43 @@
     "identifier": "HOM0000022",
     "label": "in ohnology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
-      "ohnologous to",
-      "homoeology"
+      "homoeology",
+      "ohnologous to"
     ]
   },
   {
     "identifier": "HOM0000023",
     "label": "in in-paralogy relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
+      "in-paralogous to",
       "inparalogy",
-      "symparalogy",
-      "in-paralogous to"
+      "symparalogy"
     ]
   },
   {
     "identifier": "HOM0000006",
     "label": "in structural homology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
-      "structural homologous to",
-      "idealistic homology"
+      "idealistic homology",
+      "structural homologous to"
     ]
   },
   {
     "identifier": "HOM0000007",
     "label": "in historical homology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
-      "historical homologous to",
-      "phylogenetic homology",
-      "homology",
       "cladistic homology",
+      "historical homologous to",
+      "homology",
+      "phylogenetic homology",
       "taxic homology",
       "true homology"
     ]
@@ -1856,6 +2149,7 @@
     "identifier": "HOM0000004",
     "label": "in convergence relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "analogy"
     ]
@@ -1864,6 +2158,7 @@
     "identifier": "HOM0000005",
     "label": "in parallelism relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "parallel evolution"
     ]
@@ -1872,6 +2167,7 @@
     "identifier": "HOM0000008",
     "label": "in biological homology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "biological homologous to",
       "transformational homology"
@@ -1881,9 +2177,10 @@
     "identifier": "HOM0000009",
     "label": "in reversal relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
-      "reversion",
       "atavism",
+      "reversion",
       "rudiment"
     ]
   },
@@ -1891,6 +2188,7 @@
     "identifier": "HOM0000010",
     "label": "in syntenic homology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "syntenic homologous to",
       "synteny"
@@ -1900,6 +2198,7 @@
     "identifier": "HOM0000013",
     "label": "in syntenic orthology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "syntenic orthologous to"
     ]
@@ -1908,20 +2207,22 @@
     "identifier": "HOM0000014",
     "label": "in partial homology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
-      "percent homology",
-      "segmental homology",
-      "mixed homology",
-      "partial homologous to",
       "fractional homology",
+      "mixed homology",
       "modular homology",
-      "partial correspondence"
+      "partial correspondence",
+      "partial homologous to",
+      "percent homology",
+      "segmental homology"
     ]
   },
   {
     "identifier": "HOM0000011",
     "label": "in paralogy relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "paralogous to"
     ]
@@ -1930,16 +2231,18 @@
     "identifier": "HOM0000012",
     "label": "in syntenic paralogy relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "duplicon",
-      "syntenic paralogous to",
-      "paralogon"
+      "paralogon",
+      "syntenic paralogous to"
     ]
   },
   {
     "identifier": "HOM0000002",
     "label": "in homoplasy relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "analogy",
       "homoplasous to"
@@ -1949,6 +2252,7 @@
     "identifier": "HOM0000003",
     "label": "in homocracy relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "homocracous to"
     ]
@@ -1957,17 +2261,19 @@
     "identifier": "HOM0000000",
     "label": "in similarity relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
+      "correspondence",
       "resemblance",
       "sameness",
-      "similar to",
-      "correspondence"
+      "similar to"
     ]
   },
   {
     "identifier": "HOM0000001",
     "label": "in homology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "homologous to"
     ]
@@ -1976,6 +2282,7 @@
     "identifier": "HOM0000075",
     "label": "in regulogy relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "regulogous to"
     ]
@@ -1984,6 +2291,7 @@
     "identifier": "HOM0000073",
     "label": "in homoeology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "homoeologous to"
     ]
@@ -1992,6 +2300,7 @@
     "identifier": "HOM0000074",
     "label": "in paramorphism relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "axis paramorphism"
     ]
@@ -2000,6 +2309,7 @@
     "identifier": "HOM0000071",
     "label": "in homotopy relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "homotopous to"
     ]
@@ -2008,6 +2318,7 @@
     "identifier": "HOM0000072",
     "label": "in homeosis relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "heterotopy"
     ]
@@ -2016,6 +2327,7 @@
     "identifier": "HOM0000065",
     "label": "in functional equivalence relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "functional similarity"
     ]
@@ -2024,6 +2336,7 @@
     "identifier": "HOM0000062",
     "label": "in equivalogy relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "equivalogous to"
     ]
@@ -2032,6 +2345,7 @@
     "identifier": "HOM0000063",
     "label": "in interology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "interologous to"
     ]
@@ -2040,9 +2354,10 @@
     "identifier": "HOM0000068",
     "label": "in paraxenology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
-      "multiple xenology",
       "duplicate xenology",
+      "multiple xenology",
       "paraxenologous to"
     ]
   },
@@ -2050,6 +2365,7 @@
     "identifier": "HOM0000069",
     "label": "in plerology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "plerologous to"
     ]
@@ -2058,6 +2374,7 @@
     "identifier": "HOM0000066",
     "label": "in iterative homology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "iterative homologous to"
     ]
@@ -2066,10 +2383,11 @@
     "identifier": "HOM0000060",
     "label": "in apparent orthology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
+      "1:1 paralogy",
       "apparent 1:1 orthology",
       "apparent orthologous to",
-      "1:1 paralogy",
       "pseudoorthology"
     ]
   },
@@ -2077,6 +2395,7 @@
     "identifier": "HOM0000061",
     "label": "in pseudoparalogy relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "pseudoparalogous to"
     ]
@@ -2085,25 +2404,28 @@
     "identifier": "0004096",
     "label": "DEPRECATED inheres in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "HOM0000048",
     "label": "in many to many orthology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "co-orthology",
-      "trans-homology",
+      "many to many orthologous to",
       "many-to-many orthology",
-      "trans-orthology",
       "many:many orthology",
-      "many to many orthologous to"
+      "trans-homology",
+      "trans-orthology"
     ]
   },
   {
     "identifier": "HOM0000049",
     "label": "in within-species paralogy relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "within-species paralogous to"
     ]
@@ -2112,12 +2434,14 @@
     "identifier": "0004097",
     "label": "DEPRECATED bearer of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "HOM0000053",
     "label": "in synology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "synologous to"
     ]
@@ -2126,6 +2450,7 @@
     "identifier": "HOM0000054",
     "label": "in isoorthology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "isoorthologous to"
     ]
@@ -2134,6 +2459,7 @@
     "identifier": "HOM0000051",
     "label": "in postdisplacement relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "post-displacement"
     ]
@@ -2142,19 +2468,21 @@
     "identifier": "HOM0000052",
     "label": "in hypermorphosis relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "HOM0000057",
     "label": "in latent homology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
-      "re-awakening",
-      "cryptic homology",
-      "homoplastic tendency",
       "apomorphic tendency",
-      "latent homologous to",
+      "cryptic homology",
       "homoiology",
+      "homoplastic tendency",
+      "latent homologous to",
+      "re-awakening",
       "underlying synapomorphy"
     ]
   },
@@ -2162,15 +2490,17 @@
     "identifier": "HOM0000058",
     "label": "in syngeny relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
-      "syngenous to",
-      "generative homology"
+      "generative homology",
+      "syngenous to"
     ]
   },
   {
     "identifier": "HOM0000055",
     "label": "in tandem paralogy relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "iterative paralogy",
       "serial paralogy",
@@ -2181,12 +2511,14 @@
     "identifier": "0012001",
     "label": "has small molecule activator",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "HOM0000050",
     "label": "in between-species paralogy relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "between-species paralogous to"
     ]
@@ -2195,82 +2527,94 @@
     "identifier": "0012002",
     "label": "has small molecule inhibitor",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0012000",
     "label": "has small molecule regulator",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0012005",
     "label": "is small molecule activator of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0012006",
     "label": "is small molecule inhibitor of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0012003",
     "label": "acts on population of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0012004",
     "label": "is small molecule regulator of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0012007",
     "label": "results in adhesion of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0012008",
     "label": "results in fusion of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "HOM0000037",
     "label": "in 1 to many homology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
+      "1 to many homologous to",
       "1:many homology",
-      "one-to-many homology",
-      "1 to many homologous to"
+      "one-to-many homology"
     ]
   },
   {
     "identifier": "HOM0000042",
     "label": "in apomorphy relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
-      "synapomorphy",
-      "apomorphous to"
+      "apomorphous to",
+      "synapomorphy"
     ]
   },
   {
     "identifier": "HOM0000043",
     "label": "in plesiomorphy relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
-      "symplesiomorphy",
-      "plesiomorphous to"
+      "plesiomorphous to",
+      "symplesiomorphy"
     ]
   },
   {
     "identifier": "HOM0000046",
     "label": "in gametology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "gametologous to"
     ]
@@ -2279,6 +2623,7 @@
     "identifier": "HOM0000047",
     "label": "in chromosomal homology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "chromosomal homologous to"
     ]
@@ -2287,17 +2632,19 @@
     "identifier": "HOM0000044",
     "label": "in deep homology relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
-      "homoiology",
       "deep genetic homology",
+      "deep homologous to",
       "generative homology",
-      "deep homologous to"
+      "homoiology"
     ]
   },
   {
     "identifier": "HOM0000045",
     "label": "in hemiplasy relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "hemiplasous to"
     ]
@@ -2306,18 +2653,21 @@
     "identifier": "hasNarrowSynonym",
     "label": "has_narrow_synonym",
     "prefix": "oboinowl",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004050",
     "label": "is negative form of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0009501",
     "label": "realized in response to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "triggered by process"
     ]
@@ -2326,636 +2676,742 @@
     "identifier": "hasOBOFormatVersion",
     "label": "has_obo_format_version",
     "prefix": "oboinowl",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004047",
     "label": "causally upstream of or within, positive effect",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004046",
     "label": "causally upstream of or within, negative effect",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004049",
     "label": "is positive form of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004048",
     "label": "is directional form of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002091",
     "label": "starts during",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002092",
     "label": "happens during",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002093",
     "label": "ends during",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004030",
     "label": "disease arises from alteration in structure",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002090",
     "label": "immediately precedes",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004036",
     "label": "nominally disjoint with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004035",
     "label": "acts upstream of, negative effect",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004032",
     "label": "acts upstream of or within, positive effect",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004031",
     "label": "enables subfunction",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004034",
     "label": "acts upstream of, positive effect",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004033",
     "label": "acts upstream of or within, negative effect",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004029",
     "label": "disease has feature",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004028",
     "label": "realized in response to stimulus",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0014001",
     "label": "disease has infectious agent",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002081",
     "label": "before or simultaneous with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002082",
     "label": "simultaneous with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002083",
     "label": "before",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004025",
     "label": "disease causes dysfunction of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002088",
     "label": "during which starts",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004024",
     "label": "disease causes disruption of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002089",
     "label": "starts before",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004027",
     "label": "disease has inflammation site",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004026",
     "label": "disease has location",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004021",
     "label": "disease has basis in disruption of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002084",
     "label": "during which ends",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002085",
     "label": "encompasses",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004020",
     "label": "disease has basis in dysfunction of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004023",
     "label": "causal relationship with disease as subject",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002086",
     "label": "ends after",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002087",
     "label": "immediately preceded by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004022",
     "label": "disease has basis in feature",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004018",
     "label": "is basis for realizable",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004017",
     "label": "realizable has basis in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004019",
     "label": "disease has basis in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "hasBroadSynonym",
     "label": "has_broad_synonym",
     "prefix": "oboinowl",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004014",
     "label": "is causal somatic mutation in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004013",
     "label": "is causal germline mutation in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004016",
     "label": "is causal germline mutation partially giving rise to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004015",
     "label": "is causal susceptibility factor for",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004010",
     "label": "is genetic basis for condition",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004012",
     "label": "is causal loss of function germline mutation of in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004011",
     "label": "is causal gain of function germline mutation of in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004007",
     "label": "has primary input or output",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004006",
     "label": "has partial material basis in germline mutation in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004009",
     "label": "has primary input",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004008",
     "label": "has primary output",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004003",
     "label": "has material basis in germline mutation in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004002",
     "label": "has material basis in loss of function germline mutation in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004005",
     "label": "has major susceptibility factor",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004004",
     "label": "has material basis in somatic mutation in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004001",
     "label": "has material basis in gain of function germline mutation in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0004000",
     "label": "condition has genetic basis in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002170",
     "label": "connected to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002171",
     "label": "mutually spatially disjoint with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0015006",
     "label": "different in magnitude relative to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0015007",
     "label": "increased in magnitude relative to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0015008",
     "label": "decreased in magnitude relative to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0015009",
     "label": "similar in magnitude relative to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002176",
     "label": "connects",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002177",
     "label": "attached to part of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002178",
     "label": "supplies",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002179",
     "label": "drains",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002172",
     "label": "taxonomic class assertion",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002173",
     "label": "ambiguous for taxon",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002174",
     "label": "dubious for taxon",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002175",
     "label": "present in taxon",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0015015",
     "label": "has high plasma membrane amount",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0015016",
     "label": "has low plasma membrane amount",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0015010",
     "label": "has relative magnitude",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0015011",
     "label": "has cross section",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0015012",
     "label": "reciprocal of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002160",
     "label": "only in taxon",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002161",
     "label": "never in taxon",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002162",
     "label": "in taxon",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002163",
     "label": "spatially disjoint from",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002158",
     "label": "shares ancestor with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002159",
     "label": "serially homologous to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0003002",
     "label": "represses expression of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0003001",
     "label": "produced by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002156",
     "label": "derived by descent from",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0003003",
     "label": "increases expression of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002157",
     "label": "has derived by descendant",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002150",
     "label": "continuous with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002151",
     "label": "partially overlaps",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0003000",
     "label": "produces",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000412",
     "label": "imported from",
     "prefix": "iao",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002380",
     "label": "branching part of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0100001",
     "label": "term replaced by",
     "prefix": "iao",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002385",
     "label": "has potential to developmentally contribute to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002386",
     "label": "has potential to developmentally induce",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002387",
     "label": "has potential to develop into",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002388",
     "label": "has potential to directly develop into",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002381",
     "label": "main stem of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002382",
     "label": "proper distributary of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002383",
     "label": "proper tributary of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002384",
     "label": "has developmental potential involving",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002378",
     "label": "anabranch of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002379",
     "label": "spatially coextensive with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000424",
     "label": "expand expression to",
     "prefix": "iao",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000425",
     "label": "expand assertion to",
     "prefix": "iao",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002374",
     "label": "derived from ancestral fusion of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "has fused element"
     ]
@@ -2964,132 +3420,154 @@
     "identifier": "0002132",
     "label": "has fasciculating neuron projection",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002375",
     "label": "in branching relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002376",
     "label": "tributary of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002134",
     "label": "innervates",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002377",
     "label": "distributary of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002371",
     "label": "attached to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002372",
     "label": "has muscle origin",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002130",
     "label": "has synaptic terminal in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002131",
     "label": "overlaps",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002373",
     "label": "has muscle insertion",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002121",
     "label": "dendrite synapsed in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002360",
     "label": "has dendrite location",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002120",
     "label": "synapsed to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002356",
     "label": "results in specification of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002114",
     "label": "synapsed_via_type_III_bouton_to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0001025",
     "label": "located in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002598",
     "label": "capable of positively regulating",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002115",
     "label": "synapsed_by_via_type_III_bouton",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002357",
     "label": "results in developmental induction of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002599",
     "label": "capable of inhibiting or preventing pathological process",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000600",
     "label": "elucidation",
     "prefix": "iao",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0017001",
     "label": "device utilizes material",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "utilizes"
     ]
@@ -3098,618 +3576,721 @@
     "identifier": "0002110",
     "label": "has postsynaptic terminal in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0001021",
     "label": "is autoimmune trigger for",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002594",
     "label": "is relational form of a class",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002352",
     "label": "input of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002111",
     "label": "releases neurotransmitter",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002595",
     "label": "causal relation between material entity and a process",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002353",
     "label": "output of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0001022",
     "label": "has allergic trigger",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002112",
     "label": "synapsed_by_via_type_Is_bouton",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002596",
     "label": "capable of regulating",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002354",
     "label": "formed as result of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0001023",
     "label": "has autoimmune trigger",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002113",
     "label": "has presynaptic terminal in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002597",
     "label": "capable of negatively regulating",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002355",
     "label": "results in structural organization of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002590",
     "label": "results in disassembly of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002591",
     "label": "results in remodeling of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002350",
     "label": "member of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002592",
     "label": "results in organization of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0001020",
     "label": "is allergic trigger for",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002351",
     "label": "has member",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002593",
     "label": "existence ends at start of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002107",
     "label": "synapsed_via_type_II_bouton_to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0001018",
     "label": "contained in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002349",
     "label": "results in determination of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0001019",
     "label": "contains",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002108",
     "label": "synapsed_by_via_type_II_bouton",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002109",
     "label": "synapsed_by_via_type_Ib_bouton",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "shorthand",
     "label": "shorthand",
     "prefix": "oboinowl",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002103",
     "label": "synapsed by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002345",
     "label": "exports",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002587",
     "label": "results in synthesis of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002588",
     "label": "results in assembly of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002104",
     "label": "has plasma membrane part",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0001015",
     "label": "location of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002589",
     "label": "results in catabolism of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002105",
     "label": "synapsed_via_type_Ib_bouton_to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002348",
     "label": "results in commitment to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002106",
     "label": "synapsed_via_type_Is_bouton_to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002341",
     "label": "results in transport along",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002583",
     "label": "existence starts at end of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002584",
     "label": "has part structure that is capable of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002100",
     "label": "has soma location",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002342",
     "label": "results in transport across",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002101",
     "label": "fasciculates with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002343",
     "label": "results in growth of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002585",
     "label": "results in closure of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002586",
     "label": "results in breakdown of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002344",
     "label": "results in transport to from or in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002102",
     "label": "axon synapses in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002580",
     "label": "logical macro assertion on an axiom",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002581",
     "label": "is a defining property chain axiom",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002340",
     "label": "imports",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002582",
     "label": "is a defining property chain axiom where second argument is reflexive",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002338",
     "label": "has target start location",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002339",
     "label": "has target end location",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002576",
     "label": "skeleton of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002334",
     "label": "regulated by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002335",
     "label": "negatively regulated by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002578",
     "label": "directly regulates",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002336",
     "label": "positively regulated by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002579",
     "label": "is indirect form of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002337",
     "label": "related via localization to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002572",
     "label": "luminal space of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002330",
     "label": "genomically related to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0001000",
     "label": "derives from",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002331",
     "label": "involved in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002573",
     "label": "has modifier",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002574",
     "label": "participates in a biotic-biotic interaction with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002332",
     "label": "regulates levels of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0001001",
     "label": "derives into",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002333",
     "label": "enabled by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002575",
     "label": "is direct form of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0040042",
     "label": "is homeomorphic for",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002570",
     "label": "conduit for",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002571",
     "label": "lumen of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002569",
     "label": "has branching part",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002327",
     "label": "enables",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002328",
     "label": "functionally related to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002329",
     "label": "part of structure that is capable of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002323",
     "label": "mereotopologically related to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002565",
     "label": "results in movement of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002566",
     "label": "causally influences",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002324",
     "label": "developmentally related to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002567",
     "label": "biomechanically related to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002325",
     "label": "colocalizes with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002326",
     "label": "contributes to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002568",
     "label": "has muscle antagonist",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000232",
     "label": "curator note",
     "prefix": "iao",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002000",
     "label": "defined by construct",
     "prefix": "omo",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0040035",
     "label": "disease relationship",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002561",
     "label": "is symmetric relational form of process class",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002320",
     "label": "evolutionarily related to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002562",
     "label": "is relational form of process class",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0040036",
     "label": "results in changes to anatomical or cellular structure",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002321",
     "label": "ecologically related to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002563",
     "label": "interaction relation helper property",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002564",
     "label": "molecular interaction relation helper property",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002322",
     "label": "confers advantage in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002560",
     "label": "is asymmetric relational form of process class",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002558",
     "label": "has evidence",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002559",
     "label": "causally influenced by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002554",
     "label": "hyperparasitized by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "has epiparasite",
       "has hyperparasite",
@@ -3720,66 +4301,77 @@
     "identifier": "0002312",
     "label": "evolutionary variant of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002555",
     "label": "allelopath of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002313",
     "label": "transports or maintains localization of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002314",
     "label": "characteristic of part of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002556",
     "label": "pathogen of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002315",
     "label": "results in acquisition of features of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002557",
     "label": "has pathogen",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002550",
     "label": "end, weeks post birth",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002551",
     "label": "has skeleton",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002552",
     "label": "results in ending of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002553",
     "label": "hyperparasite of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "epiparasite of",
       "hyperparasitoid of"
@@ -3789,606 +4381,707 @@
     "identifier": "0002547",
     "label": "start, days post coitum",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002305",
     "label": "causally upstream of, negative effect",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002548",
     "label": "end, days post coitum",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002549",
     "label": "start, weeks post birth",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002543",
     "label": "start, months post birth",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002301",
     "label": "results in developmental regression of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002302",
     "label": "is treated by substance",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002544",
     "label": "end, months post birth",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002303",
     "label": "has habitat",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002545",
     "label": "month of gestation",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002304",
     "label": "causally upstream of, positive effect",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002546",
     "label": "has developmental stage marker",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002309",
     "label": "has exposure stimulus",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002540",
     "label": "end, days post fertilization",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002541",
     "label": "start, years post birth",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002542",
     "label": "end, years post birth",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002300",
     "label": "results in disappearance of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002536",
     "label": "measurement property has unit",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002537",
     "label": "has start time value",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0019001",
     "label": "positively regulates characteristic",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002538",
     "label": "has end time value",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0019000",
     "label": "regulates characteristic",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002539",
     "label": "start, days post fertilization",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002535",
     "label": "temporal logical macro assertion on a class",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0019002",
     "label": "negatively regulates characteristic",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000426",
     "label": "first order logic expression",
     "prefix": "iao",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002530",
     "label": "is immediately downstream of sequence of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002531",
     "label": "is immediately upstream of sequence of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002525",
     "label": "is subsequence of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002526",
     "label": "overlaps sequence of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002527",
     "label": "does not overlap sequence of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002528",
     "label": "is upstream of sequence of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002521",
     "label": "is sequentially aligned with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002522",
     "label": "bounds sequence of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "inSubset",
     "label": "in_subset",
     "prefix": "oboinowl",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002523",
     "label": "is bound by sequence of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002524",
     "label": "has subsequence",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002529",
     "label": "is downstream of sequence of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002520",
     "label": "is consecutive sequence of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002514",
     "label": "sequentially related to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002515",
     "label": "sequentially adjacent to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002516",
     "label": "has start sequence",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002517",
     "label": "is start sequence of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002510",
     "label": "transcribed from",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002511",
     "label": "transcribed to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002512",
     "label": "ribosomal translation of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002513",
     "label": "ribosomally translates to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002518",
     "label": "has end sequence",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002519",
     "label": "is end sequence of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002503",
     "label": "towards",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002504",
     "label": "always present in taxon",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002505",
     "label": "has intermediate",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002506",
     "label": "causal relation between entities",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002500",
     "label": "causal agent in process",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002501",
     "label": "causal relation between processes",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002502",
     "label": "depends on",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002507",
     "label": "determined by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002508",
     "label": "determines",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002509",
     "label": "determined by part of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0009002",
     "label": "has substance removed",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0009001",
     "label": "has substance added",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0009005",
     "label": "has primary substance added",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0009004",
     "label": "has consumer",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0009003",
     "label": "immersed in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002602",
     "label": "in approximate one to one relationship with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002603",
     "label": "is approximately equivalent to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002604",
     "label": "is opposite of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002605",
     "label": "is indistinguishable from",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002600",
     "label": "capable of upregulating or causing pathological process",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002601",
     "label": "logical macro assertion involving identity",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002606",
     "label": "is substance that treats",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002607",
     "label": "is marker for",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002608",
     "label": "process has causal agent",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002609",
     "label": "obsolete related via dependence to",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "hasRelatedSynonym",
     "label": "has_related_synonym",
     "prefix": "oboinowl",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0011004",
     "label": "indirectly regulates activity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0011002",
     "label": "regulates activity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0011003",
     "label": "regulates quantity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0011008",
     "label": "increases by expression quantity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0011009",
     "label": "directly positively regulates quantity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0011007",
     "label": "decreases by repression quantity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002801",
     "label": "co-roosts with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0011010",
     "label": "directly negatively regulates quantity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0011015",
     "label": "stabilizes quantity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0011016",
     "label": "indirectly negatively regulates activity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0011013",
     "label": "indirectly positively regulates activity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0011014",
     "label": "destabilizes quantity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0011022",
     "label": "indirectly regulates quantity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0011023",
     "label": "indirectly negatively regulates quantity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0011021",
     "label": "directly regulates quantity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0007000",
     "label": "has driver",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0011024",
     "label": "indirectly positively regulates quantity of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0007001",
     "label": "has disease driver",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000050",
     "label": "part of",
     "prefix": "bfo",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000055",
     "label": "realizes",
     "prefix": "bfo",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000051",
     "label": "has part",
     "prefix": "bfo",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000054",
     "label": "realized in",
     "prefix": "bfo",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0001900",
     "label": "temporal interpretation",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0013003",
     "label": "sends synaptic output to region",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0013002",
     "label": "receives synaptic input in region",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0013001",
     "label": "has synaptic IO in region",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "has synaptic input or output in"
     ]
@@ -4397,9 +5090,10 @@
     "identifier": "0013007",
     "label": "has sensory dendrite in",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
-      "has sensory terminal in",
       "has sensory dendrite location",
+      "has sensory terminal in",
       "has sensory terminal location"
     ]
   },
@@ -4407,138 +5101,161 @@
     "identifier": "0013006",
     "label": "sends synaptic output throughout",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0013005",
     "label": "receives synaptic input throughout",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0013004",
     "label": "has synaptic IO throughout",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0013009",
     "label": "sends synaptic output to cell",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0013008",
     "label": "receives synaptic input from neuron",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000060",
     "label": "obsolete preceded by",
     "prefix": "bfo",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000066",
     "label": "occurs in",
     "prefix": "bfo",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000067",
     "label": "contains process",
     "prefix": "bfo",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000062",
     "label": "preceded by",
     "prefix": "bfo",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0000063",
     "label": "precedes",
     "prefix": "bfo",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0008508",
     "label": "has eggs laid on by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0008507",
     "label": "lays eggs on",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0008506",
     "label": "ecologically co-occurs with",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0008505",
     "label": "creates habitat for",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0008504",
     "label": "kleptoparasitized by",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0008503",
     "label": "kleptoparasite of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0008502",
     "label": "has epiphyte",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0008501",
     "label": "epiphyte of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "hasExactSynonym",
     "label": "has_exact_synonym",
     "prefix": "oboinowl",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0002180",
     "label": "has component",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0015002",
     "label": "exemplar data of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0015003",
     "label": "subcluster of",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0015004",
     "label": "has characterizing marker set",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": [
       "has marker gene combination",
       "has marker signature set"
@@ -4548,12 +5265,14 @@
     "identifier": "SubsetProperty",
     "label": "subset_property",
     "prefix": "oboinowl",
+    "source": "ro",
     "synonyms": []
   },
   {
     "identifier": "0015001",
     "label": "has exemplar data",
     "prefix": "ro",
+    "source": "ro",
     "synonyms": []
   }
 ]

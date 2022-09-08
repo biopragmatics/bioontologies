@@ -6,11 +6,11 @@
 import logging
 from collections import defaultdict
 from operator import attrgetter
-from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union, cast
+from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union
 
-from curies import Converter
 import bioregistry
 from bioregistry import manager
+from curies import Converter
 from pydantic import BaseModel
 from tqdm import tqdm
 from typing_extensions import Literal
@@ -38,9 +38,7 @@ IDENTIFIERS_HTTPS_PREFIX = "https://identifiers.org/"
 
 MaybeCURIE = Union[Tuple[str, str], Tuple[None, None]]
 
-converter = Converter.from_reverse_prefix_map(
-    manager.get_reverse_prefix_map(include_prefixes=True)
-)
+converter = Converter.from_reverse_prefix_map(manager.get_reverse_prefix_map(include_prefixes=True))
 
 
 class StandardizeMixin:
@@ -85,8 +83,8 @@ class Property(BaseModel, StandardizeMixin):
 
     def standardize(self):
         """Standardize this property."""
-        self.pred_prefix, self.pred_identifier = _help_ground(self.pred)
-        self.val_prefix, self.val_identifier = _help_ground(self.val)
+        self.pred_prefix, self.pred_identifier = _parse_uri(self.pred)
+        self.val_prefix, self.val_identifier = _parse_uri(self.val)
         self.standardized = True
 
 
@@ -117,7 +115,7 @@ class Xref(BaseModel, StandardizeMixin):
         """Standardize the xref."""
         # TODO now use omni-parser
         if self.val.startswith("http") or self.val.startswith("https"):
-            self.prefix, self.identifier = _help_ground(self.val)
+            self.prefix, self.identifier = _parse_uri(self.val)
         else:
             self.prefix, self.identifier = bioregistry.parse_curie(self.val)
         self.standardized = True
@@ -177,19 +175,8 @@ class Edge(BaseModel):
     def standardize(self):
         """Standardize the edge."""
         self.sub = _clean_uri(self.sub, keep_invalid=True)
-        self.pred = _clean_uri(self.pred, keep_invalid=True, p=True)
+        self.pred = _clean_uri(self.pred, keep_invalid=True, debug=True)
         self.obj = _clean_uri(self.obj, keep_invalid=True)
-
-
-def _help_ground(uri: str, p: bool = False) -> Union[Tuple[str, str], Tuple[None, None]]:
-    """Ground the node to a standard prefix and luid based on its id (URI)."""
-    prefix, identifier = _compress_uri(uri, p=p)
-    if prefix is None:
-        return None, None
-    resource = bioregistry.get_resource(prefix)
-    if resource is not None:
-        return resource.prefix, identifier
-    return None, None
 
 
 def _help_get_properties(self, pred: Union[str, List[str]]) -> List[str]:
@@ -218,7 +205,7 @@ class Node(BaseModel, StandardizeMixin):
 
     def standardize(self) -> None:
         """Ground the node to a standard prefix and luid based on its id (URI)."""
-        self.prefix, self.luid = _help_ground(self.id)
+        self.prefix, self.luid = _parse_uri(self.id)
 
         if self.meta:
             for prop in self.meta.basicPropertyValues or []:
@@ -448,7 +435,6 @@ class Graph(BaseModel, StandardizeMixin):
         if tqdm_kwargs:
             _edge_tqdm_kwargs.update(tqdm_kwargs)
         for edge in tqdm(self.edges, **_edge_tqdm_kwargs):
-            edge: Edge
             edge.standardize()
 
         return self
@@ -491,22 +477,25 @@ class Graph(BaseModel, StandardizeMixin):
         return xrefs
 
 
-def _clean_uri(s: str, *, keep_invalid: bool, use_preferred: bool = False, p: bool = False) -> Optional[str]:
-    prefix, identifier = _compress_uri(s, p=p)
+def _parse_uri(s: str, *, debug: bool = False) -> Union[Tuple[str, str], Tuple[None, None]]:
+    """Ground the node to a standard prefix and luid based on its id (URI)."""
+    prefix, identifier = _compress_uri(s, debug=debug)
     if prefix is None:
-        if keep_invalid:
-            return s
-        else:
-            return None
-
+        return None, None
     resource = bioregistry.get_resource(prefix)
     if resource is None:
-        if keep_invalid:
-            return s
-        else:
-            return None
+        return None, None
+    return resource.prefix, resource.standardize_identifier(identifier)
 
-    return resource.get_curie(identifier, use_preferred=use_preferred)
+
+def _clean_uri(s: str, *, keep_invalid: bool, debug: bool = False) -> Optional[str]:
+    prefix, identifier = _parse_uri(s=s, debug=debug)
+    if prefix is not None and identifier is not None:
+        return bioregistry.curie_to_str(prefix, identifier)
+    elif keep_invalid:
+        return s
+    else:
+        return None
 
 
 CLEANUP = {
@@ -532,17 +521,20 @@ CLEANUP = {
     "type": ("rdf", "type"),
     "http://example.com/bfo-spec-label": ("bfo", "0000179"),
     "http://www.obofoundry.org/ro/ro.owl#proper_part_of": ("sio", "000093"),
-    # see https://www.ebi.ac.uk/ols/ontologies/ero/properties?iri=http%3A%2F%2Fwww.obofoundry.org%2Fro%2Fro.owl%23improper_part_of&lang=en&viewMode=All&siblings=false
+    # see https://www.ebi.ac.uk/ols/ontologies/ero/properties?iri=http%3A%2F%2F
+    # www.obofoundry.org%2Fro%2Fro.owl%23improper_part_of&lang=en&viewMode=All&siblings=false
     "http://www.obofoundry.org/ro/ro.owl#improper_part_of": ("bfo", "0000050"),
     "http://www.obofoundry.org/ro/ro.owl#has_agent": ("ro", "0002218"),
-    "http://purl.obolibrary.org/obo/bearer_of": ("ro", "0000053"),
-    "http://purl.obolibrary.org/obo/activates": ("ro", "0002213"), # this is some inference
+    "http://purl.obolibrary.org/obo/bearer_of": ("ro", "0000053"),  # 0004097 is the deprecated one
+    "http://purl.obolibrary.org/obo/activates": ("ro", "0002213"),  # this is some inference
     "http://purl.obolibrary.org/obo/inheres_in": ("ro", "0004096"),
-    "http://purl.obolibrary.org/obo/bearer_of": ("ro", "0004097"),
     "http://purl.obolibrary.org/obo/unfolds_in": ("bfo", "0000066"),
     "http://purl.obolibrary.org/obo/nbo#has_participant": ("ro", "0000057"),
     "http://purl.obolibrary.org/obo/uberon/core#synapsed_by": ("ro", "0002103"),
-    "http://purl.obolibrary.org/obo/uberon/core#existence_starts_and_ends_during": ("ro", "0002491"),
+    "http://purl.obolibrary.org/obo/uberon/core#existence_starts_and_ends_during": (
+        "ro",
+        "0002491",
+    ),
     "http://purl.obolibrary.org/obo/uberon/core#conduit_for": ("ro", "0002570"),
     "http://purl.obolibrary.org/obo:pato#reciprocal_of": ("ro", "0015012"),
     "http://purl.obolibrary.org/obo:pato#has_cross_section": ("ro", "0015011"),
@@ -554,7 +546,7 @@ WARNED = set()
 YEARS = {f"{n}-" for n in range(1000, 2030)}
 
 
-def _compress_uri(s: str, p: bool = False) -> Union[Tuple[str, str], Tuple[None, str]]:
+def _compress_uri(s: str, *, debug: bool = False) -> Union[Tuple[str, str], Tuple[None, str]]:
     cv = CLEANUP.get(s)
     if cv:
         return cv
@@ -571,7 +563,7 @@ def _compress_uri(s: str, p: bool = False) -> Union[Tuple[str, str], Tuple[None,
         "http://www.obofoundry.org/ro/ro.owl#",
     ]:
         if s.startswith(x):
-            prefix, identifier = ground_relation(s[len(x):])
+            prefix, identifier = ground_relation(s[len(x) :])
             if prefix and identifier:
                 return prefix, identifier
 
@@ -580,7 +572,7 @@ def _compress_uri(s: str, p: bool = False) -> Union[Tuple[str, str], Tuple[None,
         return prefix, identifier
 
     # couldn't parse anything...
-    if p and (
+    if debug and (
         not s.startswith("_:")
         and " " not in s
         and "upload.wikimedia.org" not in s

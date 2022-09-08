@@ -1,3 +1,5 @@
+"""Tools for grounding relations."""
+
 from .api import ground_relation
 
 __all__ = [
