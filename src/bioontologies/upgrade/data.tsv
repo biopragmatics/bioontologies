@@ -71,3 +71,6 @@ isa	rdfs	subClassOf
 starts_at_end_of	ro	0002583
 subPropertyOf	rdfs	subPropertyOf
 type	rdf	type
+http://purl.obolibrary.org/obo/fbbt#develops_directly_from	ro	0002207
+http://purl.obolibrary.org/obo/fbbt#has_synaptic_terminals_of	ro	0002006
+http://purl.obolibrary.org/obo/fbbt#has_function_in	ro	0002216
