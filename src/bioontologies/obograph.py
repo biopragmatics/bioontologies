@@ -6,12 +6,17 @@
 import logging
 from collections import defaultdict
 from operator import attrgetter
-from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union, cast
+from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union
 
 import bioregistry
+from bioregistry import manager
+from curies import Converter
 from pydantic import BaseModel
 from tqdm import tqdm
 from typing_extensions import Literal
+
+from . import upgrade
+from .relations import ground_relation
 
 __all__ = [
     "Property",
@@ -33,6 +38,8 @@ IDENTIFIERS_HTTP_PREFIX = "http://identifiers.org/"
 IDENTIFIERS_HTTPS_PREFIX = "https://identifiers.org/"
 
 MaybeCURIE = Union[Tuple[str, str], Tuple[None, None]]
+
+converter = Converter.from_reverse_prefix_map(manager.get_reverse_prefix_map(include_prefixes=True))
 
 
 class StandardizeMixin:
@@ -77,8 +84,8 @@ class Property(BaseModel, StandardizeMixin):
 
     def standardize(self):
         """Standardize this property."""
-        self.pred_prefix, self.pred_identifier = _help_ground(self.pred)
-        self.val_prefix, self.val_identifier = _help_ground(self.val)
+        self.pred_prefix, self.pred_identifier = _parse_uri(self.pred)
+        self.val_prefix, self.val_identifier = _parse_uri(self.val)
         self.standardized = True
 
 
@@ -107,8 +114,9 @@ class Xref(BaseModel, StandardizeMixin):
 
     def standardize(self) -> None:
         """Standardize the xref."""
+        # TODO now use omni-parser
         if self.val.startswith("http") or self.val.startswith("https"):
-            self.prefix, self.identifier = _help_ground(self.val)
+            self.prefix, self.identifier = _parse_uri(self.val)
         else:
             self.prefix, self.identifier = bioregistry.parse_curie(self.val)
         self.standardized = True
@@ -168,19 +176,8 @@ class Edge(BaseModel):
     def standardize(self):
         """Standardize the edge."""
         self.sub = _clean_uri(self.sub, keep_invalid=True)
-        self.pred = _clean_uri(self.pred, keep_invalid=True)
+        self.pred = _clean_uri(self.pred, keep_invalid=True, debug=True)
         self.obj = _clean_uri(self.obj, keep_invalid=True)
-
-
-def _help_ground(uri: str) -> Union[Tuple[str, str], Tuple[None, None]]:
-    """Ground the node to a standard prefix and luid based on its id (URI)."""
-    prefix, identifier = _compress_uri(uri)
-    if prefix is None:
-        return None, None
-    resource = bioregistry.get_resource(prefix)
-    if resource is not None:
-        return resource.prefix, identifier
-    return None, None
 
 
 def _help_get_properties(self, pred: Union[str, List[str]]) -> List[str]:
@@ -209,7 +206,7 @@ class Node(BaseModel, StandardizeMixin):
 
     def standardize(self) -> None:
         """Ground the node to a standard prefix and luid based on its id (URI)."""
-        self.prefix, self.luid = _help_ground(self.id)
+        self.prefix, self.luid = _parse_uri(self.id)
 
         if self.meta:
             for prop in self.meta.basicPropertyValues or []:
@@ -481,66 +478,84 @@ class Graph(BaseModel, StandardizeMixin):
         return xrefs
 
 
-def _clean_uri(s: str, *, keep_invalid: bool, use_preferred: bool = False) -> Optional[str]:
-    prefix, identifier = _compress_uri(s)
+def _parse_uri(s: str, *, debug: bool = False) -> Union[Tuple[str, str], Tuple[None, None]]:
+    """Ground the node to a standard prefix and luid based on its id (URI)."""
+    prefix, identifier = _compress_uri(s, debug=debug)
     if prefix is None:
-        if keep_invalid:
-            return s
-        else:
-            return None
-
+        return None, None
     resource = bioregistry.get_resource(prefix)
     if resource is None:
-        if keep_invalid:
-            return s
-        else:
-            return None
-
-    return resource.get_curie(identifier, use_preferred=use_preferred)
+        return None, None
+    return resource.prefix, resource.standardize_identifier(identifier)
 
 
-IS_A_STRINGS = {
-    "is_a",
-    "isa",
-}
+def _clean_uri(s: str, *, keep_invalid: bool, debug: bool = False) -> Optional[str]:
+    prefix, identifier = _parse_uri(s=s, debug=debug)
+    if prefix is not None and identifier is not None:
+        return bioregistry.curie_to_str(prefix, identifier)
+    elif keep_invalid:
+        return s
+    else:
+        return None
 
 
-def _compress_uri(s: str) -> Union[Tuple[str, str], Tuple[None, str]]:
-    if s.startswith(OBO_URI_PREFIX):
-        s = s[OBO_URI_PREFIX_LEN:]
-        if s.startswith("APOLLO_SV"):  # those monsters put an underscore in their prefix...
-            return "apollosv", s[10:]  # hard-coded length of APOLLO_SV_
-        for delimiter in [
-            "#",  # local property like in chebi#... This needs to be first priority!
-            "_",  # best guess that it's an identifier
-            "/",  # local property like in chebi/charge
-        ]:
-            if delimiter in s:
-                return cast(Tuple[str, str], s.split(delimiter, 1))
+WARNED = set()
+YEARS = {f"{n}-" for n in range(1000, 2030)}
+
+
+def _parse_obo_rel(s: str, identifier: str) -> Union[Tuple[str, str], Tuple[None, str]]:
+    _, inner_identifier = identifier.split("#", 1)
+    _p, _i = ground_relation(inner_identifier)
+    if _p and _i:
+        return _p, _i
+    if s not in WARNED:
+        tqdm.write(f"could not parse OBO internal relation: {s}")
+        WARNED.add(s)
+    return None, s
+
+
+def _compress_uri(s: str, *, debug: bool = False) -> Union[Tuple[str, str], Tuple[None, str]]:
+    cv = upgrade.upgrade(s)
+    if cv:
+        return cv
+
+    prefix, identifier = converter.parse_uri(s)
+    if prefix and identifier:
+        if prefix == "obo" and "#" in identifier:
+            return _parse_obo_rel(s, identifier)
+        return prefix, identifier
+
+    if "upload.wikimedia.org" in s:
         return None, s
-    if s in IS_A_STRINGS:
-        return "rdfs", "subClassOf"
-    if s == "subPropertyOf":
-        return "rdfs", "subPropertyOf"
-    if s == "type":  # instance of
-        return "rdf", "type"
-    for identifiers_prefix in (IDENTIFIERS_HTTP_PREFIX, IDENTIFIERS_HTTPS_PREFIX):
-        if s.startswith(identifiers_prefix):
-            s = s[len(identifiers_prefix) :]
-            if ":" in s:
-                return cast(Tuple[str, str], s.split(":", 1))
-            else:
-                return cast(Tuple[str, str], s.split("/", 1))
-    for uri_prefix, prefix in [
-        ("http://www.geneontology.org/formats/oboInOwl#", "oboinowl"),
-        ("http://www.w3.org/2002/07/owl#", "owl"),
-        ("http://www.w3.org/2000/01/rdf-schema#", "rdfs"),
-        ("http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=", "hgnc"),
+
+    for x in [
+        "http://www.obofoundry.org/ro/#OBO_REL:",
+        "http://www.obofoundry.org/ro/ro.owl#",
     ]:
-        if s.startswith(uri_prefix):
-            return prefix, s[len(uri_prefix) :]
+        if s.startswith(x):
+            prefix, identifier = ground_relation(s[len(x) :])
+            if prefix and identifier:
+                upgrade.insert(s, prefix, identifier)
+                return prefix, identifier
+            elif s not in WARNED:
+                tqdm.write(f"could not parse legacy RO: {s}")
+
+    prefix, identifier = ground_relation(s)
+    if prefix and identifier:
+        return prefix, identifier
 
     # couldn't parse anything...
+    if debug and (
+        not s.startswith("_:")
+        and " " not in s
+        and "upload.wikimedia.org" not in s
+        and "violinID:" not in s
+        and s not in WARNED
+        and s[:5] not in YEARS
+        and not s.isnumeric()
+    ):
+        tqdm.write(f"could not parse {s}")
+        WARNED.add(s)
     return None, s
 
 
