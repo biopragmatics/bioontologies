@@ -20,6 +20,7 @@ http://purl.obolibrary.org/obo/chebi#has_parent_hydride	debio	0000014
 http://purl.obolibrary.org/obo/chebi#is_conjugate_acid_of	debio	0000011
 http://purl.obolibrary.org/obo/chebi#is_conjugate_base_of	debio	0000010
 http://purl.obolibrary.org/obo/chebi#is_enantiomer_of	debio	0000012
+http://purl.obolibrary.org/obo/chebi#is_substituent_group_from	debio	0000027
 http://purl.obolibrary.org/obo/chebi#is_tautomer_of	debio	0000013
 http://purl.obolibrary.org/obo/chebi/charge	debio	0000017
 http://purl.obolibrary.org/obo/chebi/formula	debio	0000018
@@ -33,6 +34,9 @@ http://purl.obolibrary.org/obo/fbbt#IUPAC_NAME	debio	0000026
 http://purl.obolibrary.org/obo/fbbt#InChI	debio	0000020
 http://purl.obolibrary.org/obo/fbbt#InChIKey	debio	0000021
 http://purl.obolibrary.org/obo/fbbt#SMILES	debio	0000022
+http://purl.obolibrary.org/obo/fbbt#develops_directly_from	ro	0002207
+http://purl.obolibrary.org/obo/fbbt#has_function_in	ro	0002216
+http://purl.obolibrary.org/obo/fbbt#has_synaptic_terminals_of	ro	0002006
 http://purl.obolibrary.org/obo/go#results_in	sio	001156
 http://purl.obolibrary.org/obo/inheres_in	ro	0004096
 http://purl.obolibrary.org/obo/nbo#has_participant	ro	0000057
@@ -71,6 +75,3 @@ isa	rdfs	subClassOf
 starts_at_end_of	ro	0002583
 subPropertyOf	rdfs	subPropertyOf
 type	rdf	type
-http://purl.obolibrary.org/obo/fbbt#develops_directly_from	ro	0002207
-http://purl.obolibrary.org/obo/fbbt#has_synaptic_terminals_of	ro	0002006
-http://purl.obolibrary.org/obo/fbbt#has_function_in	ro	0002216
