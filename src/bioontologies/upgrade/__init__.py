@@ -44,12 +44,16 @@ def write(terms: Terms) -> None:
 def insert(term: str, prefix: str, identifier: str) -> None:
     """Insert a new upgrade term."""
     terms = dict(load())
-    if term in terms:
-        raise KeyError
+    existing = terms.get(term)
+    if existing:
+        if existing == (prefix, identifier):
+            return None
+        else:
+            raise KeyError
     terms[term] = prefix, identifier
     write(terms)
     load.cache_clear()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     write(load())  # lints and sorts
