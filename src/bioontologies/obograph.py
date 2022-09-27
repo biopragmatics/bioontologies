@@ -101,8 +101,9 @@ class Definition(BaseModel):
 
     def standardize(self) -> None:
         """Standardize the xref."""
-        curies = [_clean_uri_or_curie_or_str(xref, keep_invalid=False) for xref in self.xrefs]
-        self.xrefs = [curie for curie in curies if curie]
+        if self.xrefs:
+            curies = [_clean_uri_or_curie_or_str(xref, keep_invalid=False) for xref in self.xrefs]
+            self.xrefs = [curie for curie in curies if curie]
         self.standardized = True
 
 
@@ -342,8 +343,7 @@ class Node(BaseModel, StandardizeMixin):
     @property
     def definition_provenance(self) -> List[str]:
         """Get the provenance CURIEs for the definition."""
-        rv = []
-        if self.meta and self.meta.definition:
+        if self.meta and self.meta.definition and self.meta.definition.xrefs:
             return self.meta.definition.xrefs
         return []
 
@@ -509,6 +509,8 @@ class Graph(BaseModel, StandardizeMixin):
         for node in self.nodes:
             for xref in node.xrefs:
                 xref_prefix, xref_identifier = _parse_uri_or_curie_or_str(xref.val)
+                if xref_prefix is None or xref_identifier is None:
+                    continue
                 if xref_prefix != prefix:
                     continue
                 if " " in xref_identifier:

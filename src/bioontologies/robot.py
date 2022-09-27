@@ -233,7 +233,7 @@ def convert_to_obograph(
                 )
                 graphs_raw[0]["id"] = from_iri
             else:
-                raise ValueError(f"{input_path} graph [{i}] missing id")
+                raise ValueError(f"{input_path} only graph is missing id")
         else:
             missing = [i for i, graph in enumerate(graphs_raw) if "id" not in graph]
             if missing:
