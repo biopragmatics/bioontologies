@@ -3,7 +3,7 @@
 import json
 from functools import lru_cache
 from pathlib import Path
-from typing import Tuple, Union
+from typing import Mapping, Tuple, Union
 
 import requests
 from tqdm import tqdm
@@ -32,7 +32,7 @@ def ground_relation(s: str) -> Union[Tuple[str, str], Tuple[None, None]]:
 
 
 @lru_cache(1)
-def get_lookups():
+def get_lookups() -> Mapping[str, Tuple[str, str]]:
     """Get lookups for relation ontology properties."""
     d = {}
     for record in json.loads(PATH.read_text()):
