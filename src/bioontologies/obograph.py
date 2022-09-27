@@ -3,6 +3,7 @@
 .. seealso:: https://github.com/geneontology/obographs
 """
 
+import itertools as itt
 import logging
 from collections import defaultdict
 from operator import attrgetter
@@ -36,6 +37,7 @@ OBO_URI_PREFIX = "http://purl.obolibrary.org/obo/"
 OBO_URI_PREFIX_LEN = len(OBO_URI_PREFIX)
 IDENTIFIERS_HTTP_PREFIX = "http://identifiers.org/"
 IDENTIFIERS_HTTPS_PREFIX = "https://identifiers.org/"
+PROVENANCE_PREFIXES = {"pubmed", "pmc", "doi", "arxiv", "biorxiv"}
 
 MaybeCURIE = Union[Tuple[str, str], Tuple[None, None]]
 
@@ -84,8 +86,8 @@ class Property(BaseModel, StandardizeMixin):
 
     def standardize(self):
         """Standardize this property."""
-        self.pred_prefix, self.pred_identifier = _parse_uri(self.pred)
-        self.val_prefix, self.val_identifier = _parse_uri(self.val)
+        self.pred_prefix, self.pred_identifier = _parse_uri_or_curie_or_str(self.pred)
+        self.val_prefix, self.val_identifier = _parse_uri_or_curie_or_str(self.val)
         self.standardized = True
 
 
@@ -95,6 +97,13 @@ class Definition(BaseModel):
     val: str
     # Just a list of CURIEs/IRIs
     xrefs: Optional[List[str]]
+    standardized: bool = False
+
+    def standardize(self) -> None:
+        """Standardize the xref."""
+        curies = [_clean_uri_or_curie_or_str(xref, keep_invalid=False) for xref in self.xrefs]
+        self.xrefs = [curie for curie in curies if curie]
+        self.standardized = True
 
 
 class Xref(BaseModel, StandardizeMixin):
@@ -114,11 +123,7 @@ class Xref(BaseModel, StandardizeMixin):
 
     def standardize(self) -> None:
         """Standardize the xref."""
-        # TODO now use omni-parser
-        if self.val.startswith("http") or self.val.startswith("https"):
-            self.prefix, self.identifier = _parse_uri(self.val)
-        else:
-            self.prefix, self.identifier = bioregistry.parse_curie(self.val)
+        self.prefix, self.identifier = _parse_uri_or_curie_or_str(self.val)
         self.standardized = True
 
 
@@ -134,9 +139,11 @@ class Synonym(BaseModel, StandardizeMixin):
 
     def standardize(self):
         """Standardize the synoynm."""
-        self.pred = _clean_uri(self.pred, keep_invalid=True)  # type:ignore
+        self.pred = _clean_uri_or_curie_or_str(self.pred, keep_invalid=True)  # type:ignore
         if self.synonymType:
-            self.synonymType = _clean_uri(self.synonymType, keep_invalid=True)  # type:ignore
+            self.synonymType = _clean_uri_or_curie_or_str(
+                self.synonymType, keep_invalid=True
+            )  # type:ignore
         self.standardized = True
 
 
@@ -168,16 +175,16 @@ class Edge(BaseModel):
     def parse_curies(self) -> Tuple[MaybeCURIE, MaybeCURIE, MaybeCURIE]:
         """Get parsed CURIEs for this relationship."""
         return (
-            bioregistry.parse_curie(self.sub),
-            bioregistry.parse_curie(self.pred),
-            bioregistry.parse_curie(self.obj),
+            _parse_uri_or_curie_or_str(self.sub),
+            _parse_uri_or_curie_or_str(self.pred),
+            _parse_uri_or_curie_or_str(self.obj),
         )
 
     def standardize(self):
         """Standardize the edge."""
-        self.sub = _clean_uri(self.sub, keep_invalid=True)
-        self.pred = _clean_uri(self.pred, keep_invalid=True, debug=True)
-        self.obj = _clean_uri(self.obj, keep_invalid=True)
+        self.sub = _clean_uri_or_curie_or_str(self.sub, keep_invalid=True)
+        self.pred = _clean_uri_or_curie_or_str(self.pred, keep_invalid=True, debug=True)
+        self.obj = _clean_uri_or_curie_or_str(self.obj, keep_invalid=True)
 
 
 def _help_get_properties(self, pred: Union[str, List[str]]) -> List[str]:
@@ -206,7 +213,7 @@ class Node(BaseModel, StandardizeMixin):
 
     def standardize(self) -> None:
         """Ground the node to a standard prefix and luid based on its id (URI)."""
-        self.prefix, self.luid = _parse_uri(self.id)
+        self.prefix, self.luid = _parse_uri_or_curie_or_str(self.id)
 
         if self.meta:
             for prop in self.meta.basicPropertyValues or []:
@@ -214,6 +221,9 @@ class Node(BaseModel, StandardizeMixin):
 
             for synonym in self.meta.synonyms or []:
                 synonym.standardize()
+
+            if self.meta.definition:
+                self.meta.definition.standardize()
 
             if self.meta.xrefs:
                 xrefs: List[Xref] = []
@@ -230,15 +240,14 @@ class Node(BaseModel, StandardizeMixin):
                     seen.add(pair)
                     xrefs.append(xref)
                 self.meta.xrefs = sorted(xrefs, key=attrgetter("prefix"))
-        # tqdm.write("\t".join((self.curie, *(x.curie for x in self.xrefs))))
-        # TODO add xrefs from definition into node if the are "real" CURIEs
+
         self.standardized = True
 
     @property
     def curie(self) -> str:
         """Get the CURIE string representing this node or error if not normalized."""
         if self.prefix is None or self.luid is None:
-            raise ValueError("can not give curie for node")
+            raise ValueError(f"can not give curie for node {self.id}")
         return bioregistry.curie_to_str(self.prefix, self.luid)
 
     @property
@@ -328,7 +337,28 @@ class Node(BaseModel, StandardizeMixin):
 
     def parse_curie(self) -> MaybeCURIE:
         """Parse the identifier into a pair, assuming it's a CURIE."""
-        return bioregistry.parse_curie(self.id)
+        return _parse_uri_or_curie_or_str(self.id)
+
+    @property
+    def definition_provenance(self) -> List[str]:
+        """Get the provenance CURIEs for the definition."""
+        rv = []
+        if self.meta and self.meta.definition:
+            return self.meta.definition.xrefs
+        return []
+
+    def get_provenance(self) -> List[str]:
+        """Get provenance CURIEs from definition and xrefs."""
+        return list(
+            itt.chain(
+                (
+                    curie
+                    for curie in self.definition_provenance
+                    if curie.split(":")[0] in PROVENANCE_PREFIXES
+                ),
+                (xref.curie for xref in self.xrefs if xref.prefix in PROVENANCE_PREFIXES),
+            )
+        )
 
 
 class Graph(BaseModel, StandardizeMixin):
@@ -478,16 +508,20 @@ class Graph(BaseModel, StandardizeMixin):
         xrefs = {}
         for node in self.nodes:
             for xref in node.xrefs:
-                xref_prefix, xref_identifier = bioregistry.parse_curie(xref.val)
+                xref_prefix, xref_identifier = _parse_uri_or_curie_or_str(xref.val)
                 if xref_prefix != prefix:
                     continue
+                if " " in xref_identifier:
+                    tqdm.write(f"node {node.id} with space in xref {xref.val}")
                 xrefs[xref_identifier] = node.id
         return xrefs
 
 
-def _parse_uri(s: str, *, debug: bool = False) -> Union[Tuple[str, str], Tuple[None, None]]:
+def _parse_uri_or_curie_or_str(
+    s: str, *, debug: bool = False
+) -> Union[Tuple[str, str], Tuple[None, None]]:
     """Ground the node to a standard prefix and luid based on its id (URI)."""
-    prefix, identifier = _compress_uri(s, debug=debug)
+    prefix, identifier = _compress_uri_or_curie_or_str(s, debug=debug)
     if prefix is None:
         return None, None
     resource = bioregistry.get_resource(prefix)
@@ -496,8 +530,8 @@ def _parse_uri(s: str, *, debug: bool = False) -> Union[Tuple[str, str], Tuple[N
     return resource.prefix, resource.standardize_identifier(identifier)
 
 
-def _clean_uri(s: str, *, keep_invalid: bool, debug: bool = False) -> Optional[str]:
-    prefix, identifier = _parse_uri(s=s, debug=debug)
+def _clean_uri_or_curie_or_str(s: str, *, keep_invalid: bool, debug: bool = False) -> Optional[str]:
+    prefix, identifier = _parse_uri_or_curie_or_str(s=s, debug=debug)
     if prefix is not None and identifier is not None:
         return bioregistry.curie_to_str(prefix, identifier)
     elif keep_invalid:
@@ -521,7 +555,11 @@ def _parse_obo_rel(s: str, identifier: str) -> Union[Tuple[str, str], Tuple[None
     return None, s
 
 
-def _compress_uri(s: str, *, debug: bool = False) -> Union[Tuple[str, str], Tuple[None, str]]:
+def _compress_uri_or_curie_or_str(
+    s: str, *, debug: bool = False
+) -> Union[Tuple[str, str], Tuple[None, str]]:
+    s = s.replace(" ", "")
+
     cv = upgrade.upgrade(s)
     if cv:
         return cv
