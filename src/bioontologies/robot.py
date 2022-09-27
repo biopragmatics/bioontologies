@@ -19,6 +19,7 @@ from typing import List, Optional, Union
 
 import bioregistry
 import requests
+from pystow.utils import download, name_from_url
 from typing_extensions import Literal
 
 from .obograph import Graph, GraphDocument
@@ -75,7 +76,10 @@ def get_obograph_by_iri(
 
 
 def get_obograph_by_prefix(
-    prefix: str, *, json_path: Union[None, str, Path] = None
+    prefix: str,
+    *,
+    json_path: Union[None, str, Path] = None,
+    cache: bool = False,
 ) -> ParseResults:
     """Get an ontology by its Bioregistry prefix."""
     if prefix != bioregistry.normalize_prefix(prefix):
@@ -100,7 +104,13 @@ def get_obograph_by_prefix(
             continue
 
         try:
-            parse_results = convert_to_obograph_remote(iri, json_path=json_path)
+            if cache:
+                with tempfile.TemporaryDirectory() as d:
+                    path = os.path.join(d, name_from_url(iri))
+                    download(iri, path=path)
+                    parse_results = convert_to_obograph_local(path, json_path=json_path, from_iri=iri)
+            else:
+                parse_results = convert_to_obograph_remote(iri, json_path=json_path)
         except subprocess.CalledProcessError:
             msg = f"could not parse {label} for {prefix} from {iri}"
             messages.append(msg)
