@@ -279,7 +279,14 @@ class Node(BaseModel, StandardizeMixin):
             "oboinowl:hasAlternativeId",
             "oboInOwl:hasAlternativeId",
         ]
-        return [bioregistry.normalize_curie(curie) for curie in self._get_properties(preds)]
+        rv = []
+        for curie in self._get_properties(preds):
+            norm_curie = bioregistry.normalize_curie(curie)
+            if norm_curie:
+                rv.append(norm_curie)
+            else:
+                logger.warning("could not parse CURIE: %s", curie)
+        return rv
 
     @property
     def namespace(self) -> Optional[str]:
