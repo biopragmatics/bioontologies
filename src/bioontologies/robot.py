@@ -90,11 +90,13 @@ def get_obograph_by_prefix(
 
     if json_iri is not None:
         try:
-            return get_obograph_by_iri(json_iri)
+            parse_results = get_obograph_by_iri(json_iri)
         except (IOError, ValueError):
             msg = f"could not parse JSON for {prefix} from {json_iri}"
             messages.append(msg)
             logger.warning(msg)
+        else:
+            return parse_results
 
     owl_iri = bioregistry.get_owl_download(prefix)
     obo_iri = bioregistry.get_obo_download(prefix)
