@@ -5274,5 +5274,229 @@
     "prefix": "ro",
     "source": "ro",
     "synonyms": []
+  },
+  {
+    "identifier": "0000006",
+    "label": "has salt",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000028",
+    "label": "International Nonproprietary Name",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000029",
+    "label": "has citation",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000007",
+    "label": "has left-to-right reaction",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000026",
+    "label": "IUPAC Name",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000004",
+    "label": "Antibody has target",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000027",
+    "label": "is substituent group from",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000005",
+    "label": "locus group",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000024",
+    "label": "has species group",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000002",
+    "label": "has mature miRNA",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000025",
+    "label": "has origin",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000003",
+    "label": "species specific",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000022",
+    "label": "smiles",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000023",
+    "label": "has taxonomy rank",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000001",
+    "label": "gene product is a member of",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "hasDbXref",
+    "label": "database_cross_reference",
+    "prefix": "oboinowl",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000020",
+    "label": "InChI",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000021",
+    "label": "InChI Key",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "hasOBOFormatVersion",
+    "label": "has_obo_format_version",
+    "prefix": "oboinowl",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000115",
+    "label": "definition",
+    "prefix": "iao",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000008",
+    "label": "has right-to-left reaction",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000009",
+    "label": "has bi-directional reaction",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000017",
+    "label": "charge",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000018",
+    "label": "formula",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000015",
+    "label": "has functional parent",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000016",
+    "label": "monoisotopic mass",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000013",
+    "label": "is tautomer of",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000014",
+    "label": "has parent hydride",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000011",
+    "label": "is conjugate acid of",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000012",
+    "label": "is enantiomer of",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000010",
+    "label": "is conjugate base of",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
+  },
+  {
+    "identifier": "0000019",
+    "label": "mass",
+    "prefix": "debio",
+    "source": "debio",
+    "synonyms": []
   }
 ]

@@ -17,6 +17,7 @@ PATH = HERE.joinpath("data.json")
 URLS = [
     # ("bfo", "http://purl.obolibrary.org/obo/bfo.json"),
     ("ro", "http://purl.obolibrary.org/obo/ro.json"),
+    ("debio", "https://raw.githubusercontent.com/biopragmatics/debio/main/releases/current/debio.json"),
 ]
 PREFIX_OBO = "http://purl.obolibrary.org/obo/"
 PREFIX_OIO = "http://www.geneontology.org/formats/oboInOwl#"
