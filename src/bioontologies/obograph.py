@@ -9,7 +9,6 @@ from collections import defaultdict
 from operator import attrgetter
 from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union
 
-import bioregistry
 from bioregistry import curie_to_str, manager
 from curies import Converter
 from pydantic import BaseModel, Field

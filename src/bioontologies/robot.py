@@ -48,6 +48,18 @@ def is_available() -> bool:
     return which("robot") is not None
 
 
+CANONICAL = {
+    "apollosv": "http://purl.obolibrary.org/obo/apollo_sv.owl",
+    "cheminf": "http://semanticchemistry.github.io/semanticchemistry/ontology/cheminf.owl",
+    "dideo": "http://purl.obolibrary.org/obo/dideo/release/2022-06-14/dideo.owl",
+    "micro": "http://purl.obolibrary.org/obo/MicrO.owl",
+    "ogsf": "http://purl.obolibrary.org/obo/ogsf-merged.owl",
+    "mfomd": "http://purl.obolibrary.org/obo/MF.owl",
+    "one": "http://purl.obolibrary.org/obo/ONE",
+    "ons": "https://raw.githubusercontent.com/enpadasi/Ontology-for-Nutritional-Studies/master/ons.owl",
+}
+
+
 @dataclass
 class ParseResults:
     """A dataclass containing an OBO Graph JSON and text output from ROBOT."""
@@ -64,6 +76,21 @@ class ParseResults:
         if standardize:
             rv = rv.standardize()
         return rv
+
+    def guess(self, prefix: str) -> Graph:
+        """Guess the right graph."""
+        if self.graph_document is None:
+            raise ValueError
+        graphs = self.graph_document.graphs
+        if 1 == len(graphs):
+            return graphs[0]
+        id_to_graph = {graph.id: graph for graph in graphs}
+        standard_id = f"http://purl.obolibrary.org/obo/{prefix.lower()}.owl"
+        if standard_id in id_to_graph:
+            return id_to_graph[standard_id]
+        if prefix in CANONICAL and CANONICAL[prefix] in id_to_graph:
+            return id_to_graph[CANONICAL[prefix]]
+        raise ValueError(f"Several graphs in {prefix}: {sorted(id_to_graph)}")
 
 
 def get_obograph_by_iri(
