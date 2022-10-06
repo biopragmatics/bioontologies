@@ -518,6 +518,10 @@ class Graph(BaseModel, StandardizeMixin):
                 xrefs[xref_identifier] = node.id
         return xrefs
 
+    def get_curie_to_name(self) -> Mapping[str, str]:
+        """Get a mapping from CURIEs to names."""
+        return {node.curie: node.lbl for node in self.nodes if node.lbl and node.prefix}
+
 
 def _parse_uri_or_curie_or_str(
     s: str, *, debug: bool = False
