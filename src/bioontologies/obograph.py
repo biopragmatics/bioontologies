@@ -12,8 +12,8 @@ from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union
 import bioregistry
 from bioregistry import manager
 from curies import Converter
-from pydantic import BaseModel
 from tqdm import tqdm
+from pydantic import BaseModel, Field
 from typing_extensions import Literal
 
 from . import upgrade
@@ -111,6 +111,8 @@ class Xref(BaseModel, StandardizeMixin):
     """Represents a cross-reference."""
 
     val: str
+    # TODO ask the obo graph people to update the data model and include xref types
+    pred: str = Field(default="oboinowl:hasDbXref")
     prefix: Optional[str]
     identifier: Optional[str]
     standardized: bool = False
