@@ -10,10 +10,10 @@ from operator import attrgetter
 from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union
 
 import bioregistry
-from bioregistry import manager
+from bioregistry import curie_to_str, manager
 from curies import Converter
-from tqdm import tqdm
 from pydantic import BaseModel, Field
+from tqdm.auto import tqdm
 from typing_extensions import Literal
 
 from . import upgrade
@@ -75,14 +75,14 @@ class Property(BaseModel, StandardizeMixin):
         """Get the predicate's CURIE or error if unparsable."""
         if self.pred_prefix is None or self.pred_identifier is None:
             raise
-        return bioregistry.curie_to_str(self.pred_prefix, self.pred_identifier)
+        return curie_to_str(self.pred_prefix, self.pred_identifier)
 
     @property
     def val_curie(self) -> str:
         """Get the value's CURIE or error if unparsable."""
         if self.val_prefix is None or self.val_identifier is None:
             raise
-        return bioregistry.curie_to_str(self.val_prefix, self.val_identifier)
+        return curie_to_str(self.val_prefix, self.val_identifier)
 
     def standardize(self):
         """Standardize this property."""
@@ -122,7 +122,7 @@ class Xref(BaseModel, StandardizeMixin):
         """Get the xref's CURIE."""
         if self.prefix is None or self.identifier is None:
             raise ValueError(f"can't parse xref: {self.val}")
-        return bioregistry.curie_to_str(self.prefix, self.identifier)
+        return curie_to_str(self.prefix, self.identifier)
 
     def standardize(self) -> None:
         """Standardize the xref."""
@@ -197,7 +197,7 @@ def _help_get_properties(self, pred: Union[str, List[str]]) -> List[str]:
         pred = [pred]
     # print(self.meta.basicPropertyValues, pred)
     return [
-        bioregistry.normalize_curie(prop.val_curie) if prop.val_prefix else prop.val
+        manager.normalize_curie(prop.val_curie) if prop.val_prefix else prop.val
         for prop in self.meta.basicPropertyValues or []
         if any(prop.pred == p for p in pred)
     ]
@@ -251,7 +251,7 @@ class Node(BaseModel, StandardizeMixin):
         """Get the CURIE string representing this node or error if not normalized."""
         if self.prefix is None or self.luid is None:
             raise ValueError(f"can not give curie for node {self.id}")
-        return bioregistry.curie_to_str(self.prefix, self.luid)
+        return curie_to_str(self.prefix, self.luid)
 
     @property
     def deprecated(self) -> bool:
@@ -281,7 +281,7 @@ class Node(BaseModel, StandardizeMixin):
         rv = self._get_property(preds)
         if not rv:
             return None
-        return bioregistry.normalize_curie(rv)
+        return manager.normalize_curie(rv)
 
     @property
     def alternative_ids(self) -> List[str]:
@@ -293,7 +293,7 @@ class Node(BaseModel, StandardizeMixin):
         ]
         rv = []
         for curie in self._get_properties(preds):
-            norm_curie = bioregistry.normalize_curie(curie)
+            norm_curie = manager.normalize_curie(curie)
             if norm_curie:
                 rv.append(norm_curie)
             else:
@@ -532,7 +532,7 @@ def _parse_uri_or_curie_or_str(
     prefix, identifier = _compress_uri_or_curie_or_str(s, debug=debug)
     if prefix is None:
         return None, None
-    resource = bioregistry.get_resource(prefix)
+    resource = manager.get_resource(prefix)
     if resource is None:
         return None, None
     return resource.prefix, resource.standardize_identifier(identifier)
@@ -541,7 +541,7 @@ def _parse_uri_or_curie_or_str(
 def _clean_uri_or_curie_or_str(s: str, *, keep_invalid: bool, debug: bool = False) -> Optional[str]:
     prefix, identifier = _parse_uri_or_curie_or_str(s=s, debug=debug)
     if prefix is not None and identifier is not None:
-        return bioregistry.curie_to_str(prefix, identifier)
+        return curie_to_str(prefix, identifier)
     elif keep_invalid:
         return s
     else:
