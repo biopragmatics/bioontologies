@@ -79,10 +79,12 @@ http://www.obofoundry.org/ro/ro.owl#contained_in	ro	0001018
 http://www.obofoundry.org/ro/ro.owl#derives_from	ro	0001000
 http://www.obofoundry.org/ro/ro.owl#has_agent	ro	0002218
 http://www.obofoundry.org/ro/ro.owl#has_disposition	ro	0000091
+http://www.obofoundry.org/ro/ro.owl#has_part	bfo	0000051
 http://www.obofoundry.org/ro/ro.owl#has_participant	ro	0000057
 http://www.obofoundry.org/ro/ro.owl#has_proper_part	bfo	0000051
 http://www.obofoundry.org/ro/ro.owl#improper_part_of	bfo	0000050
 http://www.obofoundry.org/ro/ro.owl#integral_part_of	bfo	0000050
+http://www.obofoundry.org/ro/ro.owl#location_of	ro	0001015
 http://www.obofoundry.org/ro/ro.owl#part_of	bfo	0000050
 http://www.obofoundry.org/ro/ro.owl#preceded_by	bfo	0000062
 http://www.obofoundry.org/ro/ro.owl#proper_part_of	bfo	0000050
