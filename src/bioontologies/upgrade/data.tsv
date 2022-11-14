@@ -60,6 +60,7 @@ http://purl.obolibrary.org/obo/nbo#has_participant	ro	0000057
 http://purl.obolibrary.org/obo/ncbitaxon#has_rank	debio	0000023
 http://purl.obolibrary.org/obo/ncbitaxon/subsets/taxslim#has_rank	debio	0000023
 http://purl.obolibrary.org/obo/obo#_PATO_0000047	pato	0000047
+http://purl.obolibrary.org/obo/pato#seeAlso	rdf	seeAlso
 http://purl.obolibrary.org/obo/so#has_origin	debio	0000025
 http://purl.obolibrary.org/obo/uberon/core#conduit_for	ro	0002570
 http://purl.obolibrary.org/obo/uberon/core#existence_starts_and_ends_during	ro	0002491
