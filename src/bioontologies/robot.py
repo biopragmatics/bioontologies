@@ -35,6 +35,7 @@ __all__ = [
     # Processors
     "get_obograph_by_prefix",
     "get_obograph_by_iri",
+    "get_obograph_by_path",
 ]
 
 logger = logging.getLogger(__name__)
@@ -92,6 +93,15 @@ class ParseResults:
             return id_to_graph[CANONICAL[prefix]]
         raise ValueError(f"Several graphs in {prefix}: {sorted(id_to_graph)}")
 
+    def guess_version(self, prefix: str) -> Optional[str]:
+        """Guess the version."""
+        try:
+            graph = self.guess(prefix)
+        except ValueError:
+            return None
+        else:
+            return graph.version or graph.version_iri
+
 
 def get_obograph_by_iri(
     iri: str,
@@ -99,6 +109,16 @@ def get_obograph_by_iri(
     """Get an ontology by its OBO Graph JSON iri."""
     res_json = requests.get(iri).json()
     graph_document = GraphDocument(**res_json)
+    return ParseResults(graph_document=graph_document, iri=iri)
+
+
+def get_obograph_by_path(path: Union[str, Path], *, iri: Optional[str] = None) -> ParseResults:
+    """Get an ontology by its OBO Graph JSON file path."""
+    res_json = json.loads(Path(path).resolve().read_text())
+    graph_document = GraphDocument(**res_json)
+    if iri is None:
+        if graph_document.graphs and len(graph_document.graphs) == 1:
+            iri = graph_document.graphs[0].id
     return ParseResults(graph_document=graph_document, iri=iri)
 
 
@@ -205,6 +225,7 @@ def convert_to_obograph(
     input_is_iri: bool = False,
     extra_args: Optional[List[str]] = None,
     from_iri: Optional[str] = None,
+    merge: bool = True,
 ) -> ParseResults:
     """Convert a local OWL file to a JSON file.
 
@@ -223,6 +244,7 @@ def convert_to_obograph(
     :param extra_args:
         Extra positional arguments to pass in the command line
     :param from_iri: Use this parameter to say what IRI the graph came from
+    :param merge: Use ROBOT's merge command to squash all graphs together
 
     :returns: An object with the parsed OBO Graph JSON and text
         output from the ROBOT conversion program
@@ -243,6 +265,7 @@ def convert_to_obograph(
             output_path=path,
             fmt="json",
             extra_args=extra_args,
+            merge=merge,
         )
         messages = ret.strip().splitlines()
         graph_document_raw = json.loads(path.read_text())
@@ -301,21 +324,31 @@ def convert(
     output_path: Union[str, Path],
     input_flag: Optional[Literal["-i", "-I"]] = None,
     *,
+    merge: bool = True,
     fmt: Optional[str] = None,
     extra_args: Optional[List[str]] = None,
 ) -> str:
     """Convert an OBO file to an OWL file with ROBOT."""
     if input_flag is None:
         input_flag = "-I" if _is_remote(input_path) else "-i"
-    args = [
-        "robot",
-        "convert",
-        input_flag,
-        str(input_path),
-        "-o",
-        str(output_path),
-        *(extra_args or []),
-    ]
+    if merge:
+        args = [
+            "robot",
+            "merge",
+            input_flag,
+            str(input_path),
+            "convert",
+        ]
+    else:
+        args = [
+            "robot",
+            "convert",
+            input_flag,
+            str(input_path),
+        ]
+    args.extend(("-o", str(output_path)))
+    if extra_args:
+        args.extend(extra_args)
     if fmt:
         args.extend(("--format", fmt))
     logger.debug("Running shell command: %s", args)

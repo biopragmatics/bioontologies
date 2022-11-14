@@ -9,13 +9,11 @@ from collections import defaultdict
 from operator import attrgetter
 from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union
 
-from bioregistry import curie_to_str, manager
-from curies import Converter
+from bioregistry import curie_to_str, get_default_converter, manager
 from pydantic import BaseModel, Field
 from tqdm.auto import tqdm
 from typing_extensions import Literal
 
-from . import upgrade
 from .relations import ground_relation
 
 __all__ = [
@@ -39,8 +37,6 @@ IDENTIFIERS_HTTPS_PREFIX = "https://identifiers.org/"
 PROVENANCE_PREFIXES = {"pubmed", "pmc", "doi", "arxiv", "biorxiv"}
 
 MaybeCURIE = Union[Tuple[str, str], Tuple[None, None]]
-
-converter = Converter.from_reverse_prefix_map(manager.get_reverse_prefix_map(include_prefixes=True))
 
 
 class StandardizeMixin:
@@ -85,6 +81,7 @@ class Property(BaseModel, StandardizeMixin):
 
     def standardize(self):
         """Standardize this property."""
+        self.val = self.val.replace("\n", " ")
         self.pred_prefix, self.pred_identifier = _parse_uri_or_curie_or_str(self.pred)
         self.val_prefix, self.val_identifier = _parse_uri_or_curie_or_str(self.val)
         self.standardized = True
@@ -272,6 +269,14 @@ class Node(BaseModel, StandardizeMixin):
         if self.meta and self.meta.xrefs:
             return self.meta.xrefs
         return []
+
+    @property
+    def properties(self) -> List[Property]:
+        """Get the properties for this node."""
+        if not self.meta or self.meta.basicPropertyValues is None:
+            return []
+        # TODO filter out ones grabbed by other getters
+        return self.meta.basicPropertyValues
 
     @property
     def replaced_by(self) -> Optional[str]:
@@ -565,13 +570,15 @@ def _parse_obo_rel(s: str, identifier: str) -> Union[Tuple[str, str], Tuple[None
 def _compress_uri_or_curie_or_str(
     s: str, *, debug: bool = False
 ) -> Union[Tuple[str, str], Tuple[None, str]]:
+    from .upgrade import insert, upgrade
+
     s = s.replace(" ", "")
 
-    cv = upgrade.upgrade(s)
+    cv = upgrade(s)
     if cv:
         return cv
 
-    prefix, identifier = converter.parse_uri(s)
+    prefix, identifier = get_default_converter().parse_uri(s)
     if prefix and identifier:
         if prefix == "obo" and "#" in identifier:
             return _parse_obo_rel(s, identifier)
@@ -587,7 +594,7 @@ def _compress_uri_or_curie_or_str(
         if s.startswith(x):
             prefix, identifier = ground_relation(s[len(x) :])
             if prefix and identifier:
-                upgrade.insert(s, prefix, identifier)
+                insert(s, prefix, identifier)
                 return prefix, identifier
             elif s not in WARNED:
                 tqdm.write(f"could not parse legacy RO: {s}")
