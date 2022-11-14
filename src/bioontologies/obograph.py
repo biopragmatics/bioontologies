@@ -14,7 +14,6 @@ from pydantic import BaseModel, Field
 from tqdm.auto import tqdm
 from typing_extensions import Literal
 
-from . import upgrade
 from .relations import ground_relation
 
 __all__ = [
@@ -571,9 +570,11 @@ def _parse_obo_rel(s: str, identifier: str) -> Union[Tuple[str, str], Tuple[None
 def _compress_uri_or_curie_or_str(
     s: str, *, debug: bool = False
 ) -> Union[Tuple[str, str], Tuple[None, str]]:
+    from .upgrade import insert, upgrade
+
     s = s.replace(" ", "")
 
-    cv = upgrade.upgrade(s)
+    cv = upgrade(s)
     if cv:
         return cv
 
@@ -593,7 +594,7 @@ def _compress_uri_or_curie_or_str(
         if s.startswith(x):
             prefix, identifier = ground_relation(s[len(x) :])
             if prefix and identifier:
-                upgrade.insert(s, prefix, identifier)
+                insert(s, prefix, identifier)
                 return prefix, identifier
             elif s not in WARNED:
                 tqdm.write(f"could not parse legacy RO: {s}")
