@@ -9,8 +9,7 @@ from collections import defaultdict
 from operator import attrgetter
 from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union
 
-from bioregistry import curie_to_str, manager
-from curies import Converter
+from bioregistry import curie_to_str, manager, get_default_converter
 from pydantic import BaseModel, Field
 from tqdm.auto import tqdm
 from typing_extensions import Literal
@@ -40,7 +39,6 @@ PROVENANCE_PREFIXES = {"pubmed", "pmc", "doi", "arxiv", "biorxiv"}
 
 MaybeCURIE = Union[Tuple[str, str], Tuple[None, None]]
 
-converter = Converter.from_reverse_prefix_map(manager.get_reverse_prefix_map(include_prefixes=True))
 
 
 class StandardizeMixin:
@@ -571,7 +569,7 @@ def _compress_uri_or_curie_or_str(
     if cv:
         return cv
 
-    prefix, identifier = converter.parse_uri(s)
+    prefix, identifier = get_default_converter().parse_uri(s)
     if prefix and identifier:
         if prefix == "obo" and "#" in identifier:
             return _parse_obo_rel(s, identifier)
