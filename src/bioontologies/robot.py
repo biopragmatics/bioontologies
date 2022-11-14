@@ -92,6 +92,15 @@ class ParseResults:
             return id_to_graph[CANONICAL[prefix]]
         raise ValueError(f"Several graphs in {prefix}: {sorted(id_to_graph)}")
 
+    def guess_version(self, prefix: str) -> Optional[str]:
+        """Guess the version."""
+        try:
+            graph = self.guess(prefix)
+        except ValueError:
+            return None
+        else:
+            return graph.version or graph.version_iri
+
 
 def get_obograph_by_iri(
     iri: str,
