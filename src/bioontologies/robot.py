@@ -214,6 +214,7 @@ def convert_to_obograph(
     input_is_iri: bool = False,
     extra_args: Optional[List[str]] = None,
     from_iri: Optional[str] = None,
+    merge: bool = True,
 ) -> ParseResults:
     """Convert a local OWL file to a JSON file.
 
@@ -232,6 +233,7 @@ def convert_to_obograph(
     :param extra_args:
         Extra positional arguments to pass in the command line
     :param from_iri: Use this parameter to say what IRI the graph came from
+    :param merge: Use ROBOT's merge command to squash all graphs together
 
     :returns: An object with the parsed OBO Graph JSON and text
         output from the ROBOT conversion program
@@ -252,6 +254,7 @@ def convert_to_obograph(
             output_path=path,
             fmt="json",
             extra_args=extra_args,
+            merge=merge,
         )
         messages = ret.strip().splitlines()
         graph_document_raw = json.loads(path.read_text())
@@ -310,21 +313,31 @@ def convert(
     output_path: Union[str, Path],
     input_flag: Optional[Literal["-i", "-I"]] = None,
     *,
+    merge: bool = True,
     fmt: Optional[str] = None,
     extra_args: Optional[List[str]] = None,
 ) -> str:
     """Convert an OBO file to an OWL file with ROBOT."""
     if input_flag is None:
         input_flag = "-I" if _is_remote(input_path) else "-i"
-    args = [
-        "robot",
-        "convert",
-        input_flag,
-        str(input_path),
-        "-o",
-        str(output_path),
-        *(extra_args or []),
-    ]
+    if merge:
+        args = [
+            "robot",
+            "merge",
+            input_flag,
+            str(input_path),
+            "convert",
+        ]
+    else:
+        args = [
+            "robot",
+            "convert",
+            input_flag,
+            str(input_path),
+        ]
+    args.extend(("-o", str(output_path)))
+    if extra_args:
+        args.extend(extra_args)
     if fmt:
         args.extend(("--format", fmt))
     logger.debug("Running shell command: %s", args)
