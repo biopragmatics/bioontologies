@@ -9,7 +9,7 @@ from collections import defaultdict
 from operator import attrgetter
 from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union
 
-from bioregistry import curie_to_str, manager, get_default_converter
+from bioregistry import curie_to_str, get_default_converter, manager
 from pydantic import BaseModel, Field
 from tqdm.auto import tqdm
 from typing_extensions import Literal
@@ -37,7 +37,6 @@ IDENTIFIERS_HTTPS_PREFIX = "https://identifiers.org/"
 PROVENANCE_PREFIXES = {"pubmed", "pmc", "doi", "arxiv", "biorxiv"}
 
 MaybeCURIE = Union[Tuple[str, str], Tuple[None, None]]
-
 
 
 class StandardizeMixin:
@@ -273,6 +272,7 @@ class Node(BaseModel, StandardizeMixin):
 
     @property
     def properties(self) -> List[Property]:
+        """Get the properties for this node."""
         if not self.meta or self.meta.basicPropertyValues is None:
             return []
         # TODO filter out ones grabbed by other getters

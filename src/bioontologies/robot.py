@@ -112,11 +112,7 @@ def get_obograph_by_iri(
     return ParseResults(graph_document=graph_document, iri=iri)
 
 
-def get_obograph_by_path(
-    path: Union[str, Path],
-    *,
-    iri: Optional[str] = None
-) -> ParseResults:
+def get_obograph_by_path(path: Union[str, Path], *, iri: Optional[str] = None) -> ParseResults:
     """Get an ontology by its OBO Graph JSON file path."""
     res_json = json.loads(Path(path).resolve().read_text())
     graph_document = GraphDocument(**res_json)
