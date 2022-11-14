@@ -83,6 +83,7 @@ class Property(BaseModel, StandardizeMixin):
 
     def standardize(self):
         """Standardize this property."""
+        self.val = self.val.replace("\n", " ")
         self.pred_prefix, self.pred_identifier = _parse_uri_or_curie_or_str(self.pred)
         self.val_prefix, self.val_identifier = _parse_uri_or_curie_or_str(self.val)
         self.standardized = True
@@ -270,6 +271,13 @@ class Node(BaseModel, StandardizeMixin):
         if self.meta and self.meta.xrefs:
             return self.meta.xrefs
         return []
+
+    @property
+    def properties(self) -> List[Property]:
+        if not self.meta or self.meta.basicPropertyValues is None:
+            return []
+        # TODO filter out ones grabbed by other getters
+        return self.meta.basicPropertyValues
 
     @property
     def replaced_by(self) -> Optional[str]:
