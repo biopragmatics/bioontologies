@@ -13,6 +13,7 @@ http://example.com/bfo-spec-label	bfo	0000179
 http://purl.obolibrary.org/obo/NCBITaxon#_species_group	debio	0000024
 http://purl.obolibrary.org/obo/OBO_REL#_agent_in	sio	000063
 http://purl.obolibrary.org/obo/OBO_REL#_bearer_of	ro	0000053
+http://www.obofoundry.org/ro/ro.owl#bearer_of	ro	0000053
 http://purl.obolibrary.org/obo/OBO_REL#_derived_into	sio	000245
 http://purl.obolibrary.org/obo/OBO_REL#_has_agent	sio	000139
 http://purl.obolibrary.org/obo/OBO_REL#_has_improper_part	bfo	0000051
@@ -56,6 +57,7 @@ http://purl.obolibrary.org/obo/fbbt#has_synaptic_terminals_of	ro	0002006
 http://purl.obolibrary.org/obo/go#results_in	sio	001156
 http://purl.obolibrary.org/obo/has_role	ro	0000087
 http://purl.obolibrary.org/obo/inheres_in	ro	0004096
+http://www.obofoundry.org/ro/ro.owl#inheres_in	ro	0004096
 http://purl.obolibrary.org/obo/nbo#has_participant	ro	0000057
 http://purl.obolibrary.org/obo/ncbitaxon#has_rank	debio	0000023
 http://purl.obolibrary.org/obo/ncbitaxon/subsets/taxslim#has_rank	debio	0000023
