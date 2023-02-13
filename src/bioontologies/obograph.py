@@ -131,10 +131,10 @@ class Synonym(BaseModel, StandardizeMixin):
 
     pred: str
     val: str
-    # Just a list of CURIEs/IRIs
-    xrefs: List[str]
     synonymType: Optional[str]  # noqa:N815
     standardized: bool = False
+    # Just a list of CURIEs/IRIs
+    xrefs: List[str] = Field(default_factory=list)
 
     def standardize(self):
         """Standardize the synoynm."""
