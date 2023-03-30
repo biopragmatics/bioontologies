@@ -3,15 +3,15 @@
 """Bioontologies' Gilda utilities."""
 
 import logging
-from typing import Any, Iterable
+from typing import TYPE_CHECKING, Any, Iterable
 
-import gilda.api
-import gilda.term
-from gilda.process import normalize
 from tqdm.auto import tqdm
 
-from bioontologies import get_obograph_by_prefix
-from bioontologies.obograph import Graph
+from .obograph import Graph
+from .robot import get_obograph_by_prefix
+
+if TYPE_CHECKING:
+    import gilda.term
 
 __all__ = [
     "get_gilda_terms",
@@ -20,7 +20,7 @@ __all__ = [
 logger = logging.getLogger(__name__)
 
 
-def get_gilda_terms(prefix: str, **kwargs: Any) -> Iterable[gilda.term.Term]:
+def get_gilda_terms(prefix: str, **kwargs: Any) -> Iterable["gilda.term.Term"]:
     """Get gilda terms for the given namespace.
 
     :param prefix:
@@ -34,10 +34,10 @@ def get_gilda_terms(prefix: str, **kwargs: Any) -> Iterable[gilda.term.Term]:
 
     .. code-block::
 
+        import bioontologies
         import gilda
-        from bioontologies.gilda_utils import get_gilda_terms
 
-        terms = get_gilda_terms("go")
+        terms = bioontologies.get_gilda_terms("go")
         grounder = gilda.make_grounder(terms)
         scored_matches = grounder.ground("apoptosis")
 
@@ -46,10 +46,10 @@ def get_gilda_terms(prefix: str, **kwargs: Any) -> Iterable[gilda.term.Term]:
 
     .. code-block::
 
+        import bioontologies
         import gilda
-        from bioontologies.gilda_utils import get_gilda_terms
 
-        terms = get_gilda_terms("vo", check=False)
+        terms = bioontologies.get_gilda_terms("vo", check=False)
         grounder = gilda.make_grounder(terms)
         scored_matches = grounder.ground("comirna")
     """
@@ -61,7 +61,10 @@ def get_gilda_terms(prefix: str, **kwargs: Any) -> Iterable[gilda.term.Term]:
         yield from _gilda_from_graph(prefix, graph)
 
 
-def _gilda_from_graph(prefix: str, graph: Graph) -> Iterable[gilda.term.Term]:
+def _gilda_from_graph(prefix: str, graph: Graph) -> Iterable["gilda.term.Term"]:
+    import gilda.term
+    from gilda.process import normalize
+
     species = {}
     for edge in graph.edges:
         s, p, o = edge.parse_curies()
