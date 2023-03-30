@@ -193,7 +193,7 @@ def convert_to_obograph_local(
     :param from_iri: Use this parameter to say what IRI the graph came from
     :param check:
         By default, the OBO writer strictly enforces
-        `document structure rules <http://owlcollab.github.io/oboformat/doc/obo-syntax.html#4>`.
+        `document structure rules <http://owlcollab.github.io/oboformat/doc/obo-syntax.html#4>`_.
         If an ontology violates these, the convert to OBO operation will fail.
         These checks can be ignored by setting this to false.
     :returns: An object with the parsed OBO Graph JSON and text
