@@ -309,12 +309,31 @@ def convert_to_obograph(
             if missing:
                 raise ValueError(f"{input_path} graphs missing IDs: {missing}")
 
+        correct_raw_json(graph_document_raw)
+
         graph_document = GraphDocument(**graph_document_raw)
         return ParseResults(
             graph_document=graph_document,
             messages=messages,
             iri=input_path if input_is_iri else None,  # type:ignore
         )
+
+
+def correct_raw_json(graph_document_raw) -> None:
+    """Correct issues in raw graph documents, in place."""
+    # clean broken content
+    for graph in graph_document_raw["graphs"]:
+        for node in graph["nodes"]:
+            meta = node.get("meta")
+            if not meta:
+                continue
+            basic_property_values = meta.get("basicPropertyValues")
+            if basic_property_values:
+                meta["basicPropertyValues"] = [
+                    basic_property_value
+                    for basic_property_value in basic_property_values
+                    if basic_property_value.get("pred") and basic_property_value.get("val")
+                ]
 
 
 #: Prefixes that denote remote resources
