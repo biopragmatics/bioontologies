@@ -127,6 +127,7 @@ def get_obograph_by_prefix(
     *,
     json_path: Union[None, str, Path] = None,
     cache: bool = False,
+    check: bool = True,
 ) -> ParseResults:
     """Get an ontology by its Bioregistry prefix."""
     if prefix != bioregistry.normalize_prefix(prefix):
@@ -158,10 +159,10 @@ def get_obograph_by_prefix(
                     path = os.path.join(d, name_from_url(iri))
                     download(iri, path=path)
                     parse_results = convert_to_obograph_local(
-                        path, json_path=json_path, from_iri=iri
+                        path, json_path=json_path, from_iri=iri, check=check
                     )
             else:
-                parse_results = convert_to_obograph_remote(iri, json_path=json_path)
+                parse_results = convert_to_obograph_remote(iri, json_path=json_path, check=check)
         except subprocess.CalledProcessError:
             msg = f"could not parse {label} for {prefix} from {iri}"
             messages.append(msg)

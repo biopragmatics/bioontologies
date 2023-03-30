@@ -3,7 +3,7 @@
 """Bioontologies' Gilda utilities."""
 
 import logging
-from typing import Iterable
+from typing import Any, Iterable
 
 import gilda.api
 import gilda.term
@@ -20,9 +20,40 @@ __all__ = [
 logger = logging.getLogger(__name__)
 
 
-def get_gilda_terms(prefix: str) -> Iterable[gilda.term.Term]:
-    """Get gilda terms for the given namespace."""
-    parse_results = get_obograph_by_prefix(prefix)
+def get_gilda_terms(prefix: str, **kwargs: Any) -> Iterable[gilda.term.Term]:
+    """Get gilda terms for the given namespace.
+
+    :param prefix:
+        The prefix of the ontology to load. Will look up the "best" resource
+        via the :mod:`bioregistry` and convert with ROBOT.
+    :param kwargs:
+        Keyword arguments to pass to :func:`bioontologies.get_obograph_by_prefix`
+    :yields: Term objects for Gilda
+
+    Example usage:
+
+    .. code-block::
+
+        import gilda
+        from bioontologies.gilda_utils import get_gilda_terms
+
+        terms = get_gilda_terms("go")
+        grounder = gilda.make_grounder(terms)
+        scored_matches = grounder.ground("apoptosis")
+
+    Some ontologies don't parse nicely with ROBOT because they have malformed
+    entries. To disregard these, you can use the ``check=False`` argument:
+
+    .. code-block::
+
+        import gilda
+        from bioontologies.gilda_utils import get_gilda_terms
+
+        terms = get_gilda_terms("vo", check=False)
+        grounder = gilda.make_grounder(terms)
+        scored_matches = grounder.ground("comirna")
+    """
+    parse_results = get_obograph_by_prefix(prefix, **kwargs)
     if parse_results.graph_document is None:
         return
     for graph in parse_results.graph_document.graphs:
