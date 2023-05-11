@@ -109,6 +109,15 @@ class ParseResults:
         else:
             return graph.version or graph.version_iri
 
+    def write(self, path: Union[str, Path]) -> None:
+        """Write the graph document to a file in JSON."""
+        path = Path(path)
+        path.write_text(
+            self.graph_document.json(
+                indent=2, sort_keys=True, exclude_unset=True, exclude_none=True
+            )
+        )
+
 
 def get_obograph_by_iri(
     iri: str,
