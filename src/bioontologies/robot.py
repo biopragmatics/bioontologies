@@ -18,6 +18,7 @@ from subprocess import check_output
 from typing import List, Optional, Union
 
 import bioregistry
+import pystow
 import requests
 from pystow.utils import download, name_from_url
 from typing_extensions import Literal
@@ -39,6 +40,12 @@ __all__ = [
 ]
 
 logger = logging.getLogger(__name__)
+
+LATEST = "1.9.3"
+ROBOT_URL = f"https://github.com/ontodev/robot/releases/download/v{LATEST}/robot.jar"
+ROBOT_MODULE = pystow.module("robot")
+ROBOT_PATH = ROBOT_MODULE.ensure(url=ROBOT_URL)
+ROBOT_COMMAND = ["java", "-jar", str(ROBOT_PATH)]
 
 
 def is_available() -> bool:
@@ -392,7 +399,7 @@ def convert(
         input_flag = "-I" if _is_remote(input_path) else "-i"
     if merge:
         args = [
-            "robot",
+            *ROBOT_COMMAND,
             "merge",
             input_flag,
             str(input_path),
@@ -400,7 +407,7 @@ def convert(
         ]
     else:
         args = [
-            "robot",
+            *ROBOT_COMMAND,
             "convert",
             input_flag,
             str(input_path),
