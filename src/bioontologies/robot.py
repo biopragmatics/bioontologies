@@ -23,7 +23,7 @@ import requests
 from pystow.utils import download, name_from_url
 from typing_extensions import Literal
 
-from .obograph import Graph, GraphDocument
+from .obograph import Graph, GraphDocument, Meta
 
 __all__ = [
     "is_available",
@@ -41,7 +41,7 @@ __all__ = [
 
 logger = logging.getLogger(__name__)
 
-LATEST = "1.9.3"
+LATEST = "1.9.4"
 ROBOT_URL = f"https://github.com/ontodev/robot/releases/download/v{LATEST}/robot.jar"
 ROBOT_MODULE = pystow.module("robot")
 ROBOT_PATH = ROBOT_MODULE.ensure(url=ROBOT_URL)
@@ -111,6 +111,8 @@ class ParseResults:
 
     def write(self, path: Union[str, Path]) -> None:
         """Write the graph document to a file in JSON."""
+        if not self.graph_document:
+            raise ValueError
         path = Path(path)
         path.write_text(
             self.graph_document.json(
@@ -124,19 +126,23 @@ def get_obograph_by_iri(
 ) -> ParseResults:
     """Get an ontology by its OBO Graph JSON iri."""
     res_json = requests.get(iri).json()
-    graph_document = GraphDocument(**res_json)
+    correct_raw_json(res_json)
+    graph_document = GraphDocument.parse_obj(res_json)
     return ParseResults(graph_document=graph_document, iri=iri)
 
 
 def get_obograph_by_path(path: Union[str, Path], *, iri: Optional[str] = None) -> ParseResults:
     """Get an ontology by its OBO Graph JSON file path."""
     res_json = json.loads(Path(path).resolve().read_text())
-    graph_document = GraphDocument(**res_json)
+    correct_raw_json(res_json)
+    graph_document = GraphDocument.parse_obj(res_json)
     if iri is None:
         if graph_document.graphs and len(graph_document.graphs) == 1:
             iri = graph_document.graphs[0].id
     return ParseResults(graph_document=graph_document, iri=iri)
 
+
+GETTER_MESSAGES = []
 
 def get_obograph_by_prefix(
     prefix: str,
@@ -155,9 +161,10 @@ def get_obograph_by_prefix(
     if json_iri is not None:
         try:
             parse_results = get_obograph_by_iri(json_iri)
-        except (IOError, ValueError):
-            msg = f"could not parse JSON for {prefix} from {json_iri}"
+        except (IOError, ValueError, TypeError) as e:
+            msg = f"[{prefix}] could not parse JSON from {json_iri}: {e}"
             messages.append(msg)
+            GETTER_MESSAGES.append(msg)
             logger.warning(msg)
         else:
             return parse_results
@@ -180,8 +187,9 @@ def get_obograph_by_prefix(
             else:
                 parse_results = convert_to_obograph_remote(iri, json_path=json_path, check=check)
         except subprocess.CalledProcessError:
-            msg = f"could not parse {label} for {prefix} from {iri}"
+            msg = f"[{prefix}] could not parse {label} from {iri}"
             messages.append(msg)
+            GETTER_MESSAGES.append(msg)
             logger.warning(msg)
             continue
         else:
@@ -326,8 +334,7 @@ def convert_to_obograph(
                 raise ValueError(f"{input_path} graphs missing IDs: {missing}")
 
         correct_raw_json(graph_document_raw)
-
-        graph_document = GraphDocument(**graph_document_raw)
+        graph_document = GraphDocument.parse_obj(graph_document_raw)
         return ParseResults(
             graph_document=graph_document,
             messages=messages,
@@ -337,19 +344,45 @@ def convert_to_obograph(
 
 def correct_raw_json(graph_document_raw) -> None:
     """Correct issues in raw graph documents, in place."""
-    # clean broken content
     for graph in graph_document_raw["graphs"]:
+        _clean_raw_meta(graph)
         for node in graph["nodes"]:
-            meta = node.get("meta")
-            if not meta:
-                continue
-            basic_property_values = meta.get("basicPropertyValues")
-            if basic_property_values:
-                meta["basicPropertyValues"] = [
-                    basic_property_value
-                    for basic_property_value in basic_property_values
-                    if basic_property_value.get("pred") and basic_property_value.get("val")
-                ]
+            _clean_raw_meta(node)
+    return graph_document_raw
+
+
+def _clean_raw_meta(element):
+    meta = element.get("meta")
+    if not meta:
+        return
+    basic_property_values = meta.get("basicPropertyValues")
+    if basic_property_values:
+        meta["basicPropertyValues"] = [
+            basic_property_value
+            for basic_property_value in basic_property_values
+            if basic_property_value.get("pred") and basic_property_value.get("val")
+        ]
+
+    definition = meta.get("definition")
+    if definition is not None and not definition.get("val"):
+        del meta["definition"]
+
+    xrefs = meta.get("xrefs")
+    if xrefs:
+        meta['xrefs'] = [
+            xref
+            for xref in xrefs
+            if xref.get("val")
+        ]
+
+    # What's the point of a synonym with an empty value? Nothing!
+    synonyms = meta.get("synonyms")
+    if synonyms:
+        meta["synonyms"] = [
+            synonym
+            for synonym in synonyms
+            if synonym.get("val")
+        ]
 
 
 #: Prefixes that denote remote resources
@@ -434,3 +467,9 @@ def convert(
         cwd=os.path.dirname(__file__),
     )
     return ret.decode()
+
+
+def write_getter_warnings(path: Union[str, Path]) -> None:
+    """Write warned unparsable."""
+    path = Path(path).resolve()
+    path.write_text("\n".join(GETTER_MESSAGES))

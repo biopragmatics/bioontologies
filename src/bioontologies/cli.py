@@ -100,10 +100,10 @@ def index(prefix: str, graph_id: Optional[str], directory: Optional[Path], save_
             jd = dict(
                 uri=node.id,
                 curie=node.curie,
-                label=node.lbl,
+                label=node.name,
                 definition=node.definition,
-                synonyms=[synonym.val for synonym in node.synonyms],
-                xrefs=[xref.curie for xref in node.xrefs],
+                synonyms=[synonym.value for synonym in node.synonyms],
+                xrefs=[xref.value.curie for xref in node.xrefs],
                 deprecated=node.deprecated,
                 replaced_by=node.replaced_by,
                 alternative_ids=node.alternative_ids,
@@ -111,12 +111,12 @@ def index(prefix: str, graph_id: Optional[str], directory: Optional[Path], save_
                 created_by=node.created_by,
                 creation_date=node.creation_date,
             )
-            jv[node.luid] = {k: v for k, v in jd.items() if v}
+            jv[node.identifier] = {k: v for k, v in jd.items() if v}
             print(  # noqa:T201
                 node.curie,
-                node.lbl or "",
-                " | ".join(synonym.val for synonym in node.synonyms),
-                " | ".join(xref.curie for xref in node.xrefs),
+                node.name or "",
+                " | ".join(synonym.value for synonym in node.synonyms),
+                " | ".join(xref.value.curie for xref in node.xrefs),
                 "true" if node.deprecated else "",
                 node.replaced_by or "",
                 " | ".join(node.alternative_ids),

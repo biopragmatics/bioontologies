@@ -3,7 +3,9 @@
 import csv
 from functools import lru_cache
 from pathlib import Path
-from typing import Mapping, Optional, Tuple
+from typing import Mapping, Optional
+
+from curies import ReferenceTuple
 
 __all__ = [
     "upgrade",
@@ -17,10 +19,10 @@ __all__ = [
 HERE = Path(__file__).parent.resolve()
 PATH = HERE.joinpath("data.tsv")
 
-Terms = Mapping[str, Tuple[str, str]]
+Terms = Mapping[str, ReferenceTuple]
 
 
-def upgrade(s: str) -> Optional[Tuple[str, str]]:
+def upgrade(s: str) -> Optional[ReferenceTuple]:
     """Upgrade a string, which is potentially an IRI to a curated CURIE pair."""
     return load().get(s)
 
@@ -30,7 +32,7 @@ def load() -> Terms:
     """Load the upgrade terms."""
     with PATH.open() as file:
         reader = csv.reader(file, delimiter="\t")
-        return {term: (prefix, identifier) for term, prefix, identifier in reader}
+        return {term: ReferenceTuple(prefix, identifier) for term, prefix, identifier in reader}
 
 
 def write(terms: Terms) -> None:
@@ -45,12 +47,13 @@ def insert(term: str, prefix: str, identifier: str) -> None:
     """Insert a new upgrade term."""
     terms = dict(load())
     existing = terms.get(term)
+    reference_tuple = ReferenceTuple(prefix, identifier)
     if existing:
-        if existing == (prefix, identifier):
+        if existing == reference_tuple:
             return None
         else:
             raise KeyError
-    terms[term] = prefix, identifier
+    terms[term] = reference_tuple
     write(terms)
     load.cache_clear()
 

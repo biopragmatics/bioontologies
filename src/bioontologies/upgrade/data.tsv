@@ -71,6 +71,7 @@ http://purl.obolibrary.org/obo/go#results_in	sio	001156
 http://purl.obolibrary.org/obo/has_role	ro	0000087
 http://purl.obolibrary.org/obo/inheres_in	ro	0004096
 http://purl.obolibrary.org/obo/mi#isDefinedBy 	rdfs	isDefinedBy
+http://purl.obolibrary.org/obo/mpath#is_a	rdfs	subClassOf
 http://purl.obolibrary.org/obo/nbo#has_participant	ro	0000057
 http://purl.obolibrary.org/obo/ncbitaxon#acronym	omo	0003000
 http://purl.obolibrary.org/obo/ncbitaxon#genbank_acronym	omo	0003000
@@ -91,6 +92,7 @@ http://purl.obolibrary.org/obo/rbo#isDefinedBy	rdfs	isDefinedBy
 http://purl.obolibrary.org/obo/rbo#seeAlso 	rdf	seeAlso
 http://purl.obolibrary.org/obo/so#has_origin	debio	0000025
 http://purl.obolibrary.org/obo/to#seeAlso 	rdf	seeAlso
+http://purl.obolibrary.org/obo/uberon#PLURAL	omo	0003004
 http://purl.obolibrary.org/obo/uberon/core#ABBREVIATION	omo	0003000
 http://purl.obolibrary.org/obo/uberon/core#BRAIN_NAME_ABV	omo	0003005
 http://purl.obolibrary.org/obo/uberon/core#DUBIOUS	omo	0003002
@@ -128,6 +130,7 @@ http://www.obofoundry.org/ro/ro.owl#location_of	ro	0001015
 http://www.obofoundry.org/ro/ro.owl#part_of	bfo	0000050
 http://www.obofoundry.org/ro/ro.owl#preceded_by	bfo	0000062
 http://www.obofoundry.org/ro/ro.owl#proper_part_of	bfo	0000050
+http://www.obofoundry.org/ro/ro.owl#relationship	owl	ObjectProperty
 http://www.obofoundry.org/ro/ro.owl#transformation_of	ro	0002494
 immediately_preceded_by	ro	0002087
 immediately_precedes	ro	0002090

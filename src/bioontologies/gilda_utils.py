@@ -71,27 +71,29 @@ def _gilda_from_graph(prefix: str, graph: Graph) -> Iterable["gilda.term.Term"]:
         if s[0] == prefix and p == ("ro", "0002162") and o[0] == "ncbitaxon":
             species[s[1]] = o[1]
     for node in tqdm(graph.nodes, leave=False):
-        name = node.lbl
-        if not name:
+        if not node.name or node.reference is None:
             continue
-        organism = species.get(node.luid)
+        if node.reference.prefix != prefix:
+            # Don't add references from other namespaces
+            continue
+        organism = species.get(node.reference.identifier)
         yield gilda.term.Term(
-            norm_text=normalize(name),
-            text=name,
+            norm_text=normalize(node.name),
+            text=node.name,
             db=prefix,
-            id=node.luid,
-            entry_name=name,
+            id=node.reference.identifier,
+            entry_name=node.name,
             status="name",
             source=prefix,
             organism=organism,
         )
         for synonym in node.synonyms:
             yield gilda.term.Term(
-                norm_text=normalize(synonym.val),
-                text=synonym.val,
+                norm_text=normalize(synonym.value),
+                text=synonym.value,
                 db=prefix,
-                id=node.luid,
-                entry_name=name,
+                id=node.reference.identifier,
+                entry_name=node.name,
                 status="synonym",
                 source=prefix,
                 organism=organism,
