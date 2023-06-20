@@ -23,7 +23,9 @@ import requests
 from pystow.utils import download, name_from_url
 from typing_extensions import Literal
 
-from .obograph import Graph, GraphDocument, Meta
+from bioontologies.constants import CANONICAL
+
+from .obograph import Graph, GraphDocument
 
 __all__ = [
     "is_available",
@@ -56,18 +58,6 @@ def is_available() -> bool:
     return which("robot") is not None
 
 
-CANONICAL = {
-    "apollosv": "http://purl.obolibrary.org/obo/apollo_sv.owl",
-    "cheminf": "http://semanticchemistry.github.io/semanticchemistry/ontology/cheminf.owl",
-    "dideo": "http://purl.obolibrary.org/obo/dideo/release/2022-06-14/dideo.owl",
-    "micro": "http://purl.obolibrary.org/obo/MicrO.owl",
-    "ogsf": "http://purl.obolibrary.org/obo/ogsf-merged.owl",
-    "mfomd": "http://purl.obolibrary.org/obo/MF.owl",
-    "one": "http://purl.obolibrary.org/obo/ONE",
-    "ons": "https://raw.githubusercontent.com/enpadasi/Ontology-for-Nutritional-Studies/master/ons.owl",
-}
-
-
 @dataclass
 class ParseResults:
     """A dataclass containing an OBO Graph JSON and text output from ROBOT."""
@@ -92,10 +82,11 @@ class ParseResults:
         graphs = self.graph_document.graphs
         if 1 == len(graphs):
             return graphs[0]
-        id_to_graph = {graph.id: graph for graph in graphs}
-        standard_id = f"http://purl.obolibrary.org/obo/{prefix.lower()}.owl"
-        if standard_id in id_to_graph:
-            return id_to_graph[standard_id]
+        id_to_graph = {graph.id: graph for graph in graphs if graph.id}
+        for suffix in ["owl", "obo", "json"]:
+            standard_id = f"http://purl.obolibrary.org/obo/{prefix.lower()}.{suffix}"
+            if standard_id in id_to_graph:
+                return id_to_graph[standard_id]
         if prefix in CANONICAL and CANONICAL[prefix] in id_to_graph:
             return id_to_graph[CANONICAL[prefix]]
         raise ValueError(f"Several graphs in {prefix}: {sorted(id_to_graph)}")
@@ -143,6 +134,7 @@ def get_obograph_by_path(path: Union[str, Path], *, iri: Optional[str] = None) -
 
 
 GETTER_MESSAGES = []
+
 
 def get_obograph_by_prefix(
     prefix: str,
@@ -369,20 +361,12 @@ def _clean_raw_meta(element):
 
     xrefs = meta.get("xrefs")
     if xrefs:
-        meta['xrefs'] = [
-            xref
-            for xref in xrefs
-            if xref.get("val")
-        ]
+        meta["xrefs"] = [xref for xref in xrefs if xref.get("val")]
 
     # What's the point of a synonym with an empty value? Nothing!
     synonyms = meta.get("synonyms")
     if synonyms:
-        meta["synonyms"] = [
-            synonym
-            for synonym in synonyms
-            if synonym.get("val")
-        ]
+        meta["synonyms"] = [synonym for synonym in synonyms if synonym.get("val")]
 
 
 #: Prefixes that denote remote resources

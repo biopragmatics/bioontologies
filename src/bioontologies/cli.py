@@ -15,7 +15,6 @@ later, but that will cause problems--the code will get executed twice:
 
 import json
 import logging
-from operator import attrgetter
 from pathlib import Path
 from typing import Optional
 
@@ -72,62 +71,11 @@ def index(prefix: str, graph_id: Optional[str], directory: Optional[Path], save_
     ).standardize(prefix=prefix)
 
     nodes_tsv_path = directory.joinpath("nodes.tsv")
-    nodes_json_path = directory.joinpath("nodes.json")
     summary_path = directory.joinpath("summary.json")
 
-    jv = {}
-    header = (
-        "curie",
-        "label",
-        "synonyms",
-        "xrefs",
-        "deprecated",
-        "replaced_by",
-        "alternative_ids",
-        "namespace",
-        "created_by",
-        "creation_date",
-    )
-    with nodes_tsv_path.open("w") as file:
-        print(  # noqa:T201
-            *header,
-            sep="\t",
-            file=file,
-        )
-        for node in sorted(graph.nodes, key=attrgetter("id")):
-            if node.prefix != prefix:
-                continue
-            jd = dict(
-                uri=node.id,
-                curie=node.curie,
-                label=node.name,
-                definition=node.definition,
-                synonyms=[synonym.value for synonym in node.synonyms],
-                xrefs=[xref.value.curie for xref in node.xrefs],
-                deprecated=node.deprecated,
-                replaced_by=node.replaced_by,
-                alternative_ids=node.alternative_ids,
-                namespace=node.namespace,
-                created_by=node.created_by,
-                creation_date=node.creation_date,
-            )
-            jv[node.identifier] = {k: v for k, v in jd.items() if v}
-            print(  # noqa:T201
-                node.curie,
-                node.name or "",
-                " | ".join(synonym.value for synonym in node.synonyms),
-                " | ".join(xref.value.curie for xref in node.xrefs),
-                "true" if node.deprecated else "",
-                node.replaced_by or "",
-                " | ".join(node.alternative_ids),
-                node.namespace or "",
-                node.created_by or "",
-                node.creation_date or "",
-                sep="\t",
-                file=file,
-            )
+    df = graph.get_nodes_df(sep=" | ")
+    df.to_csv(nodes_tsv_path, sep="\t", index=False)
 
-    nodes_json_path.write_text(json.dumps(jv, indent=2, ensure_ascii=False, sort_keys=True))
     summary_path.write_text(
         json.dumps(
             {

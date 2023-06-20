@@ -5,20 +5,22 @@
 
 import itertools as itt
 import logging
-from collections import defaultdict, Counter
+import typing
+from collections import Counter, defaultdict
 from functools import lru_cache
-from operator import attrgetter
 from pathlib import Path
-from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union
+from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union, cast
 
 import bioregistry
 import curies
-from bioregistry import curie_to_str, get_default_converter, manager
+import pandas as pd
+from bioregistry import curie_to_str, manager
 from curies import Reference, ReferenceTuple
 from pydantic import BaseModel, Field
 from tqdm.auto import tqdm
-from typing_extensions import Literal
+from typing_extensions import Literal, Self
 
+from .constants import IRI_TO_PREFIX
 from .relations import ground_relation
 
 __all__ = [
@@ -31,6 +33,8 @@ __all__ = [
     "Node",
     "Graph",
     "GraphDocument",
+    "OBO_SYNONYM_TO_OIO",
+    "OIO_TO_REFERENCE",
 ]
 
 logger = logging.getLogger(__name__)
@@ -39,7 +43,7 @@ OBO_URI_PREFIX = "http://purl.obolibrary.org/obo/"
 OBO_URI_PREFIX_LEN = len(OBO_URI_PREFIX)
 IDENTIFIERS_HTTP_PREFIX = "http://identifiers.org/"
 IDENTIFIERS_HTTPS_PREFIX = "https://identifiers.org/"
-PROVENANCE_PREFIXES = {"pubmed", "pmc", "doi", "arxiv", "biorxiv"}
+PROVENANCE_PREFIXES = {"pubmed", "pmc", "doi", "arxiv", "biorxiv", "medrxiv", "agricola"}
 
 MaybeCURIE = Union[Tuple[str, str], Tuple[None, None]]
 
@@ -47,7 +51,7 @@ MaybeCURIE = Union[Tuple[str, str], Tuple[None, None]]
 class StandardizeMixin:
     """A mixin for classes representing standardizable data."""
 
-    def standardize(self):
+    def standardize(self) -> Self:
         """Standardize the data in this class."""
         raise NotImplementedError
 
@@ -68,7 +72,7 @@ class Property(BaseModel, StandardizeMixin):
     predicate: Optional[Reference]
     value: Optional[Reference]
 
-    def standardize(self):
+    def standardize(self) -> Self:
         """Standardize this property."""
         self.value_raw = self.value_raw.replace("\n", " ")
         self.predicate = _get_reference(self.predicate_raw)
@@ -80,14 +84,14 @@ class Property(BaseModel, StandardizeMixin):
 class Definition(BaseModel):
     """Represents a definition for a node."""
 
-    value: str = Field(alias="val")
+    value: Optional[str] = Field(alias="val")
     xrefs_raw: Optional[List[str]] = Field(alias="xrefs")  # Just a list of CURIEs/IRIs
 
     # Extras beyond the OBO Graph spec
     references: Optional[List[Reference]]
     standardized: bool = Field(False, exclude=True)
 
-    def standardize(self) -> None:
+    def standardize(self) -> Self:
         """Standardize the xref."""
         if self.xrefs_raw:
             self.references = _get_references(self.xrefs_raw)
@@ -108,7 +112,7 @@ class Xref(BaseModel, StandardizeMixin):
     value: Optional[Reference] = Field(description="The reference for the value")
     standardized: bool = Field(False, exclude=True)
 
-    def standardize(self) -> None:
+    def standardize(self) -> Self:
         """Standardize the xref."""
         self.value = _get_reference(self.value_raw)
         self.predicate = _get_reference(self.predicate_raw)
@@ -116,8 +120,21 @@ class Xref(BaseModel, StandardizeMixin):
         return self
 
 
-PREDICATES = {
-    "hasExactSynonym": Reference(prefix="oio", identifier="hasExactSynonym"),
+#: Mapping from shorthand for predicates to qualified references
+OIO_TO_REFERENCE: Mapping[str, Reference] = {
+    "hasExactSynonym": Reference(prefix="oboInOwl", identifier="hasExactSynonym"),
+    "hasBroadSynonym": Reference(prefix="oboInOwl", identifier="hasBroadSynonym"),
+    "hasNarrowSynonym": Reference(prefix="oboInOwl", identifier="hasNarrowSynonym"),
+    "hasRelatedSynonym": Reference(prefix="oboInOwl", identifier="hasRelatedSynonym"),
+}
+
+#: A mapping from OBO flat file format internal synonym types to OBO in OWL vocabulary
+#: identifiers. See https://owlcollab.github.io/oboformat/doc/GO.format.obo-1_4.html
+OBO_SYNONYM_TO_OIO = {
+    "EXACT": "hasExactSynonym",
+    "BROAD": "hasBroadSynonym",
+    "NARROW": "hasNarrowSynonym",
+    "RELATED": "hasRelatedSynonym",
 }
 
 
@@ -125,19 +142,25 @@ class Synonym(BaseModel, StandardizeMixin):
     """Represents a synonym inside an object meta."""
 
     value: Optional[str] = Field(alias="val")
-    predicate_raw: str = Field(alias="pred")
-    synonym_type_raw: Optional[str] = Field(alias="synonymType")  # noqa:N815
+    predicate_raw: str = Field(alias="pred", default="hasExactSynonym")
+    synonym_type_raw: str = Field(
+        alias="synonymType", default="oboInOwl:SynonymType", example="OMO:0003000"
+    )  # noqa:N815
     xrefs_raw: List[str] = Field(
-        default_factory=list, alias="xrefs", description="A list of CURIEs/IRIs"
+        default_factory=list,
+        alias="xrefs",
+        description="A list of CURIEs/IRIs for provenance for the synonym",
     )
 
     # Added
-    predicate: Optional[Reference]
-    synonym_type: Optional[Reference]
+    predicate: Optional[Reference] = Field(
+        example=Reference(prefix="", identifier="hasExactSynonym")
+    )
+    synonym_type: Optional[Reference] = Field(example=Reference(prefix="OMO", identifier="0003000"))
     references: Optional[List[Reference]]
     standardized: bool = Field(False, exclude=True)
 
-    def standardize(self):
+    def standardize(self) -> Self:
         """Standardize the synoynm."""
         self.predicate = _get_reference(self.predicate_raw)
         self.synonym_type = self.synonym_type_raw and _get_reference(self.synonym_type_raw)
@@ -162,7 +185,7 @@ class Meta(BaseModel, StandardizeMixin):
     #
     standardized: bool = Field(False, exclude=True)
 
-    def standardize(self):
+    def standardize(self) -> Self:
         """Standardize the metadata."""
         for prop in self.properties or []:
             prop.standardize()
@@ -175,7 +198,7 @@ class Meta(BaseModel, StandardizeMixin):
             seen: Set[Tuple[str, str]] = set()
             for xref in self.xrefs:
                 xref.standardize()
-                if xref.value is None:
+                if xref.predicate is None or xref.value is None:
                     continue
                 # if xref.value.prefix == self.prefix and xref.value.identifier == self.luid:
                 # this is a reference to itself, weird!
@@ -184,7 +207,11 @@ class Meta(BaseModel, StandardizeMixin):
                     continue
                 seen.add(xref.value.pair)
                 xrefs.append(xref)
-            self.xrefs = sorted(xrefs, key=lambda x: (x.predicate.curie, x.value.curie))
+            # we ignore type checking since the loop for construting the xrefs lis
+            # checks that the predicate and value are both non-none
+            self.xrefs = sorted(
+                xrefs, key=lambda x: (x.predicate.curie, x.value.curie)  # type:ignore
+            )
         return self
 
 
@@ -208,13 +235,13 @@ class Edge(BaseModel):
             _parse_uri_or_curie_or_str(self.obj),
         )
 
-    def standardize(self):
+    def standardize(self) -> Self:
         """Standardize the edge."""
         if self.meta:
             self.meta.standardize()
-        self.sub = _clean_uri_or_curie_or_str(self.sub, keep_invalid=True)
-        self.pred = _clean_uri_or_curie_or_str(self.pred, keep_invalid=True, debug=True)
-        self.obj = _clean_uri_or_curie_or_str(self.obj, keep_invalid=True)
+        self.sub = cast(str, _clean_uri_or_curie_or_str(self.sub, keep_invalid=True))
+        self.pred = cast(str, _clean_uri_or_curie_or_str(self.pred, keep_invalid=True, debug=True))
+        self.obj = cast(str, _clean_uri_or_curie_or_str(self.obj, keep_invalid=True))
         return self
 
 
@@ -244,13 +271,15 @@ class Node(BaseModel, StandardizeMixin):
 
     @property
     def prefix(self) -> Optional[str]:
+        """Get the prefix for the node if it has been standardized."""
         return self.reference and self.reference.prefix
 
     @property
     def identifier(self) -> Optional[str]:
+        """Get the identifier for the node if it has been standardized."""
         return self.reference and self.reference.identifier
 
-    def standardize(self) -> None:
+    def standardize(self) -> Self:
         """Ground the node to a standard prefix and luid based on its id (URI)."""
         prefix, identifier = _parse_uri_or_curie_or_str(self.id)
         if prefix and identifier:
@@ -285,10 +314,25 @@ class Node(BaseModel, StandardizeMixin):
     def xrefs(self) -> List[Xref]:
         """Get the xrefs for the node."""
         rv = []
-        skip_skos = {"definition", "altLabel", "example", "prefLabel", "note", "scopeNote", "changeNote", "editorialNote", "hasTopConcept", "notation", "historyNote", "inScheme"}
+        skip_skos = {
+            "definition",
+            "altLabel",
+            "example",
+            "prefLabel",
+            "note",
+            "scopeNote",
+            "changeNote",
+            "editorialNote",
+            "hasTopConcept",
+            "notation",
+            "historyNote",
+            "inScheme",
+        }
         if self.meta:
-            if self.meta.xrefs:
-                rv.extend(self.meta.xrefs)
+            for xref in self.meta.xrefs or []:
+                if not xref.predicate or not xref.value or xref.value.prefix in PROVENANCE_PREFIXES:
+                    continue
+                rv.append(xref)
             for prop in self.meta.properties or []:
                 if prop.predicate is None:
                     continue
@@ -411,10 +455,10 @@ class Node(BaseModel, StandardizeMixin):
 class Graph(BaseModel, StandardizeMixin):
     """A graph corresponds to an ontology."""
 
-    id: str
+    id: Optional[str]
     meta: Optional[Meta]
-    nodes: List[Node]
-    edges: List[Edge]
+    nodes: List[Node] = Field(default_factory=list)
+    edges: List[Edge] = Field(default_factory=list)
     equivalentNodesSets: Any  # noqa:N815
     logicalDefinitionAxioms: Any  # noqa:N815
     domainRangeAxioms: Any  # noqa:N815
@@ -487,9 +531,7 @@ class Graph(BaseModel, StandardizeMixin):
         use_tqdm: bool = True,
         tqdm_kwargs: Optional[Mapping[str, Any]] = None,
         prefix: Optional[str] = None,
-        standardize_nodes: bool = True,
-        standardize_edges: bool = True,
-    ) -> "Graph":
+    ) -> Self:
         """Standardize the OBO graph.
 
         :param keep_invalid: Should CURIEs/IRIs that aren't handled
@@ -530,7 +572,30 @@ class Graph(BaseModel, StandardizeMixin):
         for edge in tqdm(self.edges, **_edge_tqdm_kwargs):
             edge.standardize()
 
+        if self.prefix is None:
+            self._standardize_prefix()
+
         return self
+
+    def _standardize_prefix(self):
+        if not self.id:
+            return
+        if self.id in IRI_TO_PREFIX:
+            self.prefix = IRI_TO_PREFIX[self.id]
+        elif self.id.startswith("http://purl.obolibrary.org/obo/"):
+            for suffix in [".owl", ".obo", ".json"]:
+                if not self.id.endswith(suffix):
+                    continue
+                prefix = (
+                    self.id.removeprefix("http://purl.obolibrary.org/obo/")
+                    .removesuffix(suffix)
+                    .removesuffix("_import")
+                )
+                if prefix != bioregistry.normalize_prefix(prefix):
+                    tqdm.write(f"could not guess prefix from {self.id}")
+                    return
+                self.prefix = prefix
+                return
 
     def get_alternative_ids(self) -> Mapping[str, List[str]]:
         """Get a mapping of primary identifiers to secondary identifiers."""
@@ -555,18 +620,109 @@ class Graph(BaseModel, StandardizeMixin):
     def get_xrefs(self) -> List[Tuple[Reference, Reference, Reference]]:
         """Get all database cross-references from the ontology."""
         rv = []
-        skip_prefixes = {"pubmed", "pmc", "doi"}
         for node in self.nodes:
             if node.reference is None:
                 continue
             for xref in node.xrefs:
-                if xref.predicate is None or xref.value is None or xref.value.prefix in skip_prefixes:
-                    continue
-                if " " in xref.value.identifier:
+                if xref.value is None or " " in xref.value.identifier:
                     tqdm.write(f"node {node.id} with space in xref {xref.value_raw}")
                     continue
                 rv.append((node.reference, xref.predicate, xref.value))
         return rv
+
+    def get_edges_df(self) -> pd.DataFrame:
+        """Get all triples as a dataframe."""
+        self.raise_on_unstandardized()
+        if self.prefix is None:
+            raise ValueError(f"Could not parse prefix in {self.id}")
+        return pd.DataFrame(
+            sorted(edge.as_tuple() for edge in self.edges if edge.sub.startswith(self.prefix)),
+            columns=[":START_ID", ":TYPE", ":END_ID"],
+        ).drop_duplicates()
+
+    def get_sssom_df(self) -> pd.DataFrame:
+        """Get a SSSOM dataframe of mappings."""
+        self.raise_on_unstandardized()
+        if self.prefix is None:
+            raise ValueError(f"Could not parse prefix in {self.id}")
+        columns = [
+            "source_id",
+            "source_label",
+            "predicate_id",
+            "object_id",
+        ]
+        # TODO add justification?
+        rows = [
+            (
+                node.curie,
+                node.name,
+                xref.predicate.curie,
+                xref.value.curie,
+            )
+            for node in self.nodes
+            if node.prefix == self.prefix
+            for xref in node.xrefs
+            if xref.predicate and xref.value
+        ]
+        return pd.DataFrame(rows, columns=columns)
+
+    def get_nodes_df(self, sep: str = ";") -> pd.DataFrame:
+        """Get a nodes dataframe appropriate for serialization."""
+        self.raise_on_unstandardized()
+        if self.prefix is None:
+            raise ValueError(f"Could not parse prefix in {self.id}")
+        columns = [
+            "curie:ID",
+            "name:string",
+            "synonyms:string[]",
+            "synonym_predicates:string[]",
+            "synonym_types:string[]",
+            "definition:string",
+            "deprecated:boolean",
+            "type:string",
+            "provenance:string[]",
+            "alts:string[]",
+            "replaced_by:string",
+            "xrefs:string[]",
+            "xref_types:string[]",
+            "version:string",
+        ]
+        version = self.version
+        rows = []
+        for node in self.nodes:
+            if node.prefix != self.prefix:
+                continue
+            synonym_predicates, synonym_types, synonym_values = [], [], []
+            for synonym in node.synonyms:
+                if synonym.predicate and synonym.synonym_type and synonym.value:
+                    synonym_predicates.append(synonym.predicate.curie)
+                    synonym_types.append(synonym.synonym_type.curie)
+                    synonym_values.append(synonym.value)
+            xref_types, xref_values = [], []
+            for xref in node.xrefs:
+                if xref.predicate and xref.value:
+                    xref_types.append(xref.predicate.curie)
+                    xref_values.append(xref.value.curie)
+            # prop_types, prop_values = [], []
+            rows.append(
+                (
+                    node.curie,
+                    node.name,
+                    sep.join(synonym_values),
+                    sep.join(synonym_predicates),
+                    sep.join(synonym_types),
+                    node.definition,
+                    node.deprecated,
+                    node.type,
+                    sep.join(reference.curie for reference in node.get_provenance()),
+                    sep.join(node.alternative_ids),
+                    node.replaced_by,
+                    sep.join(xref_values),
+                    sep.join(xref_types),
+                    version,
+                )
+            )
+        return pd.DataFrame(rows, columns=columns)
 
     def get_incoming_xrefs(self, prefix: str) -> Mapping[str, str]:
         """Get incoming xrefs.
@@ -626,7 +782,7 @@ def _clean_uri_or_curie_or_str(s: str, *, keep_invalid: bool, debug: bool = Fals
         return None
 
 
-WARNED = Counter()
+WARNED: typing.Counter[str] = Counter()
 YEARS = {f"{n}-" for n in range(1000, 2030)}
 
 
@@ -707,3 +863,9 @@ class GraphDocument(BaseModel):
     """Represents a list of OBO graphs."""
 
     graphs: List[Graph]
+
+    def standardize(self) -> Self:
+        """Standardize all graphs in the document."""
+        for graph in self.graphs:
+            graph.standardize()
+        return self

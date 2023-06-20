@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 
 __all__ = [
     "get_gilda_terms",
+    "gilda_from_graph",
 ]
 
 logger = logging.getLogger(__name__)
@@ -58,10 +59,11 @@ def get_gilda_terms(prefix: str, **kwargs: Any) -> Iterable["gilda.term.Term"]:
         return
     for graph in parse_results.graph_document.graphs:
         graph.standardize(prefix=prefix)
-        yield from _gilda_from_graph(prefix, graph)
+        yield from gilda_from_graph(prefix, graph)
 
 
-def _gilda_from_graph(prefix: str, graph: Graph) -> Iterable["gilda.term.Term"]:
+def gilda_from_graph(prefix: str, graph: Graph) -> Iterable["gilda.term.Term"]:
+    """Get Gilda terms from a given graph."""
     import gilda.term
     from gilda.process import normalize
 
