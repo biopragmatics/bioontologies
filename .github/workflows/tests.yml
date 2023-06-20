@@ -54,7 +54,7 @@ jobs:
   tests:
     name: Tests
     runs-on: ubuntu-latest
-    container: obolibrary/odkfull:v1.2.30
+    container: obolibrary/odkfull:v1.4.1
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
