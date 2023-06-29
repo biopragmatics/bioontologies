@@ -34,6 +34,8 @@ http://purl.obolibrary.org/obo/TEMP#bearer_of	ro	0000053
 http://purl.obolibrary.org/obo/TEMP#happens_during	ro	0002092
 http://purl.obolibrary.org/obo/TEMP#has_role	ro	0000087
 http://purl.obolibrary.org/obo/TEMP#is_a	rdfs	subClassOf
+http://purl.obolibrary.org/obo/TEMP#only_in_taxon	ro	0002160
+http://purl.obolibrary.org/obo/TEMP#output_of	ro	0002353
 http://purl.obolibrary.org/obo/TEMP#part_of	bfo	0000050
 http://purl.obolibrary.org/obo/TEMP#participates_in	ro	0000056
 http://purl.obolibrary.org/obo/TEMP#preceded_by	bfo	0000062
@@ -84,6 +86,7 @@ http://purl.obolibrary.org/obo/inheres_in	ro	0004096
 http://purl.obolibrary.org/obo/mi#isDefinedBy 	rdfs	isDefinedBy
 http://purl.obolibrary.org/obo/mpath#is_a	rdfs	subClassOf
 http://purl.obolibrary.org/obo/nbo#has_participant	ro	0000057
+http://purl.obolibrary.org/obo/nbo#is_about	iao	0000136
 http://purl.obolibrary.org/obo/ncbitaxon#acronym	omo	0003000
 http://purl.obolibrary.org/obo/ncbitaxon#genbank_acronym	omo	0003000
 http://purl.obolibrary.org/obo/ncbitaxon#genbank_common_name	omo	0003003
@@ -101,7 +104,11 @@ http://purl.obolibrary.org/obo/rbo#closeMatch	skos	closeMatch
 http://purl.obolibrary.org/obo/rbo#exactMatch	skos	exactMatch
 http://purl.obolibrary.org/obo/rbo#isDefinedBy	rdfs	isDefinedBy
 http://purl.obolibrary.org/obo/rbo#seeAlso 	rdf	seeAlso
+http://purl.obolibrary.org/obo/so#derives_from	ro	0001000
 http://purl.obolibrary.org/obo/so#has_origin	debio	0000025
+http://purl.obolibrary.org/obo/so#member_of	ro	0002350
+http://purl.obolibrary.org/obo/so#overlaps	ro	0002131
+http://purl.obolibrary.org/obo/so#part_of	bfo	0000050
 http://purl.obolibrary.org/obo/to#seeAlso 	rdf	seeAlso
 http://purl.obolibrary.org/obo/uberon#PLURAL	omo	0003004
 http://purl.obolibrary.org/obo/uberon/core#ABBREVIATION	omo	0003000
@@ -120,6 +127,7 @@ http://purl.obolibrary.org/obo:pato#decreased_in_magnitude_relative_to	ro	001500
 http://purl.obolibrary.org/obo:pato#has_cross_section	ro	0015011
 http://purl.obolibrary.org/obo:pato#increased_in_magnitude_relative_to	ro	0015007
 http://purl.obolibrary.org/obo:pato#reciprocal_of	ro	0015012
+http://www.ebi.ac.uk/swo/has_license	dc	license
 http://www.obofoundry.org/ro/#OBO_REL:has_participant	ro	0000057
 http://www.obofoundry.org/ro/#OBO_REL:located_in	ro	0001025
 http://www.obofoundry.org/ro/#OBO_REL:part_of	bfo	0000050
