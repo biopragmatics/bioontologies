@@ -23,8 +23,6 @@ import requests
 from pystow.utils import download, name_from_url
 from typing_extensions import Literal
 
-from bioontologies.constants import CANONICAL
-
 from .obograph import Graph, GraphDocument
 
 __all__ = [
@@ -79,17 +77,7 @@ class ParseResults:
         """Guess the right graph."""
         if self.graph_document is None:
             raise ValueError("no graph document")
-        graphs = self.graph_document.graphs
-        if 1 == len(graphs):
-            return graphs[0]
-        id_to_graph = {graph.id: graph for graph in graphs if graph.id}
-        for suffix in ["owl", "obo", "json"]:
-            standard_id = f"http://purl.obolibrary.org/obo/{prefix.lower()}.{suffix}"
-            if standard_id in id_to_graph:
-                return id_to_graph[standard_id]
-        if prefix in CANONICAL and CANONICAL[prefix] in id_to_graph:
-            return id_to_graph[CANONICAL[prefix]]
-        raise ValueError(f"Several graphs in {prefix}: {sorted(id_to_graph)}")
+        return self.graph_document.guess(prefix)
 
     def guess_version(self, prefix: str) -> Optional[str]:
         """Guess the version."""

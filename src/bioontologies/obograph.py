@@ -869,3 +869,16 @@ class GraphDocument(BaseModel):
         for graph in self.graphs:
             graph.standardize()
         return self
+
+    def guess(self, prefix: str) -> Graph:
+        """Guess the primary graph."""
+        if 1 == len(self.graphs):
+            return self.graphs[0]
+        id_to_graph = {graph.id: graph for graph in self.graphs if graph.id}
+        for suffix in ["owl", "obo", "json"]:
+            standard_id = f"http://purl.obolibrary.org/obo/{prefix.lower()}.{suffix}"
+            if standard_id in id_to_graph:
+                return id_to_graph[standard_id]
+        if prefix in CANONICAL and CANONICAL[prefix] in id_to_graph:
+            return id_to_graph[CANONICAL[prefix]]
+        raise ValueError(f"Several graphs in {prefix}: {sorted(id_to_graph)}")
