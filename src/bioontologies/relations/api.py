@@ -95,6 +95,7 @@ def label_norm(s: str) -> str:
 
 @lru_cache(1)
 def get_curie_to_norm_name() -> Mapping[str, str]:
+    """Get a dictionary mapping CURIEs to their normalized names."""
     curie_to_norm_name = {}
     for record in json.loads(PATH.read_text()):
         prefix, identifier, label = record["prefix"], record["identifier"], record["label"]
