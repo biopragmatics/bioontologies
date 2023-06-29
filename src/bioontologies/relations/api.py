@@ -3,27 +3,57 @@
 import json
 from functools import lru_cache
 from pathlib import Path
-from typing import Mapping, Tuple, Union
+from typing import Mapping, Optional, Tuple, Union
 
 import requests
 from tqdm import tqdm
 
 __all__ = [
     "ground_relation",
+    "get_normalized_label",
 ]
 
 HERE = Path(__file__).parent.resolve()
 PATH = HERE.joinpath("data.json")
 URLS = [
-    # ("bfo", "http://purl.obolibrary.org/obo/bfo.json"),
     ("ro", "http://purl.obolibrary.org/obo/ro.json"),
     (
         "debio",
         "https://raw.githubusercontent.com/biopragmatics/debio/main/releases/current/debio.json",
     ),
+    ("bfo", None),
+    ("oboinowl", None),
+    ("owl", None),
+    ("rdf", None),
+    ("rdfs", None),
+    ("bspo", None),
+    ("iao", None),
+    ("omo", None),
 ]
 PREFIX_OBO = "http://purl.obolibrary.org/obo/"
 PREFIX_OIO = "http://www.geneontology.org/formats/oboInOwl#"
+
+LABELS = {
+    "http://www.w3.org/2000/01/rdf-schema#isDefinedBy": "is_defined_by",
+    "rdf:type": "type",
+    "owl:inverseOf": "inverse_of",
+    "skos:exactMatch": "exact_match",
+    "rdfs:subClassOf": "is_a",
+    "rdfs:subPropertyOf": "subproperty",
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": "type",
+    # FIXME deal with these relations
+    "http://purl.obolibrary.org/obo/uberon/core#proximally_connected_to": "proximally_connected_to",
+    "http://purl.obolibrary.org/obo/uberon/core#extends_fibers_into": "proximally_connected_to",
+    "http://purl.obolibrary.org/obo/uberon/core#channel_for": "proximally_connected_to",
+    "http://purl.obolibrary.org/obo/uberon/core#distally_connected_to": "proximally_connected_to",
+    "http://purl.obolibrary.org/obo/uberon/core#channels_into": "channels_into",
+    "http://purl.obolibrary.org/obo/uberon/core#channels_from": "channels_from",
+    "http://purl.obolibrary.org/obo/uberon/core#subdivision_of": "subdivision_of",
+    "http://purl.obolibrary.org/obo/uberon/core#protects": "protects",
+    "http://purl.obolibrary.org/obo/uberon/core#posteriorly_connected_to": "posteriorly_connected_to",
+    "http://purl.obolibrary.org/obo/uberon/core#evolved_from": "evolved_from",
+    "http://purl.obolibrary.org/obo/uberon/core#anteriorly_connected_to": "anteriorly_connected_to",
+}
 
 
 def _norm(s: str) -> str:
@@ -33,6 +63,17 @@ def _norm(s: str) -> str:
 def ground_relation(s: str) -> Union[Tuple[str, str], Tuple[None, None]]:
     """Ground a string to a RO property."""
     return get_lookups().get(_norm(s), (None, None))
+
+
+def get_normalized_label(curie_or_uri: str) -> Optional[str]:
+    """Get a normalized label."""
+    rv = LABELS.get(curie_or_uri)
+    if rv:
+        return rv
+    rv = get_curie_to_norm_name().get(curie_or_uri)
+    if rv:
+        return rv
+    return None
 
 
 @lru_cache(1)
@@ -47,44 +88,62 @@ def get_lookups() -> Mapping[str, Tuple[str, str]]:
     return d
 
 
-HEADER = ["prefix", "identifier", "label", "synonyms", "source"]
+def label_norm(s: str) -> str:
+    """Normalize a label string."""
+    return s.lower().replace(" ", "_")
+
+
+@lru_cache(1)
+def get_curie_to_norm_name() -> Mapping[str, str]:
+    curie_to_norm_name = {}
+    for record in json.loads(PATH.read_text()):
+        prefix, identifier, label = record["prefix"], record["identifier"], record["label"]
+        curie_to_norm_name[f"{prefix}:{identifier}"] = label_norm(label)
+    return curie_to_norm_name
+
+
+HEADER = ["prefix", "identifier", "label", "synonyms"]
 
 
 def main():
     """Download and process the relation ontology data."""
+    from bioontologies import get_obograph_by_prefix
+    from bioontologies.obograph import GraphDocument
+    from bioontologies.robot import correct_raw_json
+
     rows = []
     for source, url in URLS:
-        res = requests.get(url)
-        res.raise_for_status()
-        nodes = res.json()["graphs"][0]["nodes"]
-        for node in tqdm(nodes, desc=source, unit="node", unit_scale=True):
-            if node.get("type") != "PROPERTY":
+        if url is not None:
+            res = requests.get(url)
+            res.raise_for_status()
+            res_json = res.json()
+            correct_raw_json(res_json)
+            graph_document = GraphDocument.parse_obj(res_json)
+            graph = graph_document.guess(source)
+        else:
+            try:
+                results = get_obograph_by_prefix(source)
+                graph = results.guess(source)
+            except ValueError as e:
+                tqdm.write(f"[{source}] error: {e}")
                 continue
-            label = node.get("lbl")
-            if not label:
+        for node in tqdm(graph.nodes, desc=source, unit="node"):
+            if node.type != "PROPERTY" or not node.name:
                 continue
-            iri = node["id"]
-            if iri.startswith(PREFIX_OIO):
-                prefix, identifier = "oboinowl", iri[len(PREFIX_OIO) :]
-            else:
-                try:
-                    prefix, identifier = iri[len(PREFIX_OBO) :].split("_", 1)
-                except ValueError:
-                    tqdm.write(f"error in {iri} - {label}")
-                    continue
-            if prefix in {"valid"}:
+            node.standardize()
+            if not node.prefix:
+                tqdm.write(f"[{source}] could not parse {node.id}")
                 continue
             rows.append(
                 (
-                    prefix.lower(),
-                    identifier,
-                    label,
-                    tuple(sorted(x["val"] for x in node.get("meta", {}).get("synonyms", []))),
-                    source,
+                    node.prefix,
+                    node.identifier,
+                    node.name,
+                    tuple(sorted(synonym.value for synonym in node.synonyms)),
                 )
             )
-
-    row_dicts = [dict(zip(HEADER, row)) for row in rows]
+    rows = sorted(set(rows))
+    row_dicts = [{k: v for k, v in zip(HEADER, row) if v} for row in rows]
     PATH.write_text(json.dumps(row_dicts, indent=2, sort_keys=True))
 
 

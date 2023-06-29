@@ -69,9 +69,17 @@ def gilda_from_graph(prefix: str, graph: Graph) -> Iterable["gilda.term.Term"]:
 
     species = {}
     for edge in graph.edges:
-        s, p, o = edge.parse_curies()
-        if s[0] == prefix and p == ("ro", "0002162") and o[0] == "ncbitaxon":
-            species[s[1]] = o[1]
+        if not edge.standardized:
+            edge.standardize()
+        if (
+            edge.subject
+            and edge.subject.prefix == prefix
+            and edge.predicate
+            and edge.predicate.pair == ("ro", "0002162")
+            and edge.object
+            and edge.object.prefix == "ncbitaxon"
+        ):
+            species[edge.subject.identifier] = edge.object.identifier
     for node in tqdm(graph.nodes, leave=False):
         if not node.name or node.reference is None:
             continue

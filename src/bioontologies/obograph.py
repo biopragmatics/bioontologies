@@ -9,19 +9,19 @@ import typing
 from collections import Counter, defaultdict
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union, cast
+from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union
 
 import bioregistry
 import curies
 import pandas as pd
-from bioregistry import curie_to_str, manager
+from bioregistry import manager
 from curies import Reference, ReferenceTuple
 from pydantic import BaseModel, Field
 from tqdm.auto import tqdm
 from typing_extensions import Literal, Self
 
-from .constants import IRI_TO_PREFIX
-from .relations import ground_relation
+from .constants import CANONICAL, IRI_TO_PREFIX
+from .relations import get_normalized_label, ground_relation, label_norm
 
 __all__ = [
     "Property",
@@ -44,6 +44,8 @@ OBO_URI_PREFIX_LEN = len(OBO_URI_PREFIX)
 IDENTIFIERS_HTTP_PREFIX = "http://identifiers.org/"
 IDENTIFIERS_HTTPS_PREFIX = "https://identifiers.org/"
 PROVENANCE_PREFIXES = {"pubmed", "pmc", "doi", "arxiv", "biorxiv", "medrxiv", "agricola"}
+
+MISSING_PREDICATE_LABELS = set()
 
 MaybeCURIE = Union[Tuple[str, str], Tuple[None, None]]
 
@@ -95,8 +97,21 @@ class Definition(BaseModel):
         """Standardize the xref."""
         if self.xrefs_raw:
             self.references = _get_references(self.xrefs_raw)
+        if self.value:
+            self.value = self.value.strip().replace("  ", " ").replace("\n", " ")
         self.standardized = True
         return self
+
+    def from_parsed(self, value: str, references: Optional[List[Reference]] = None) -> "Definition":
+        """Construct a definition object from pre-standardized content."""
+        if not references:
+            references = []
+        return Definition(
+            value=value,
+            xrefs_raw=[r.curie for r in references],
+            references=references,
+            standardize=True,
+        )
 
 
 class Xref(BaseModel, StandardizeMixin):
@@ -118,6 +133,17 @@ class Xref(BaseModel, StandardizeMixin):
         self.predicate = _get_reference(self.predicate_raw)
         self.standardized = True
         return self
+
+    @classmethod
+    def from_parsed(cls, predicate: Reference, value: Reference) -> "Xref":
+        """Construct an xref object from pre-standardized content."""
+        return Xref(
+            val=value.curie,
+            value=value,
+            predicate_raw=predicate.curie,
+            predicate=predicate,
+            standardized=True,
+        )
 
 
 #: Mapping from shorthand for predicates to qualified references
@@ -164,10 +190,36 @@ class Synonym(BaseModel, StandardizeMixin):
         """Standardize the synoynm."""
         self.predicate = _get_reference(self.predicate_raw)
         self.synonym_type = self.synonym_type_raw and _get_reference(self.synonym_type_raw)
+        if self.value:
+            self.value = self.value.strip().replace("\n", " ").replace("  ", " ")
         if self.xrefs_raw:
             self.references = _get_references(self.xrefs_raw)
         self.standardized = True
         return self
+
+    @classmethod
+    def from_parsed(
+        cls,
+        name: str,
+        predicate: Reference,
+        synonym_type: Optional[Reference] = None,
+        references: Optional[List[Reference]] = None,
+    ) -> "Synonym":
+        """Construct a synonym object from pre-standardized content."""
+        if not references:
+            references = []
+        if synonym_type is None:
+            synonym_type = Reference(prefix="oboInOwl", identifier="SynonymType")
+        return Synonym(
+            val=name,
+            predicate_raw=predicate.curie,
+            predicate=predicate,
+            synonym_type_raw=synonym_type.curie,
+            synonym_type=synonym_type,
+            standardized=True,
+            xrefs_raw=[x.curie for x in references],
+            references=references,
+        )
 
 
 class Meta(BaseModel, StandardizeMixin):
@@ -218,31 +270,49 @@ class Meta(BaseModel, StandardizeMixin):
 class Edge(BaseModel):
     """Represents an edge in an OBO Graph."""
 
-    sub: str = Field(..., alias="sub")
-    pred: str = Field(..., alias="pred")
-    obj: str = Field(..., alias="obj")
+    sub: str = Field(..., alias="sub", example="http://purl.obolibrary.org/obo/CHEBI_99998")
+    pred: str = Field(..., alias="pred", example="is_a")
+    obj: str = Field(..., alias="obj", example="http://purl.obolibrary.org/obo/CHEBI_24995")
     meta: Optional[Meta]
+
+    standardized: bool = Field(False, exclude=True)
+    subject: Optional[Reference] = Field(example=Reference(prefix="chebi", identifier="99998"))
+    predicate: Optional[Reference] = Field(
+        example=Reference(prefix="rdfs", identifier="subClassOf")
+    )
+    object: Optional[Reference] = Field(example=Reference(prefix="chebi", identifier="24995"))
 
     def as_tuple(self) -> Tuple[str, str, str]:
         """Get the edge as a tuple."""
-        return self.sub, self.pred, self.obj
-
-    def parse_curies(self) -> Tuple[MaybeCURIE, MaybeCURIE, MaybeCURIE]:
-        """Get parsed CURIEs for this relationship."""
-        return (
-            _parse_uri_or_curie_or_str(self.sub),
-            _parse_uri_or_curie_or_str(self.pred),
-            _parse_uri_or_curie_or_str(self.obj),
-        )
+        if self.subject is None or self.predicate is None or self.object is None:
+            raise ValueError
+        return self.subject.curie, self.predicate.curie, self.object.curie
 
     def standardize(self) -> Self:
         """Standardize the edge."""
         if self.meta:
             self.meta.standardize()
-        self.sub = cast(str, _clean_uri_or_curie_or_str(self.sub, keep_invalid=True))
-        self.pred = cast(str, _clean_uri_or_curie_or_str(self.pred, keep_invalid=True, debug=True))
-        self.obj = cast(str, _clean_uri_or_curie_or_str(self.obj, keep_invalid=True))
+        self.subject = _get_reference(self.sub)
+        self.predicate = _get_reference(self.pred)
+        self.object = _get_reference(self.obj)
+        self.standardized = True
         return self
+
+    @classmethod
+    def from_parsed(
+        cls, s: Reference, p: Reference, o: Reference, meta: Optional[Meta] = None
+    ) -> "Edge":
+        """Construct a edge object from pre-standardized content."""
+        return Edge(
+            sub=s.curie,
+            pred=p.curie,
+            obj=o.curie,
+            standardized=True,
+            subject=s,
+            predicate=p,
+            object=o,
+            meta=meta,
+        )
 
 
 def _help_get_properties(self, predicate_iris: Union[str, List[str]]) -> List[str]:
@@ -284,6 +354,8 @@ class Node(BaseModel, StandardizeMixin):
         prefix, identifier = _parse_uri_or_curie_or_str(self.id)
         if prefix and identifier:
             self.reference = Reference(prefix=prefix, identifier=identifier)
+        if self.name:
+            self.name = self.name.strip().replace("\n", " ").replace("  ", " ")
         if self.meta:
             self.meta.standardize()
         self.standardized = True
@@ -630,15 +702,55 @@ class Graph(BaseModel, StandardizeMixin):
                 rv.append((node.reference, xref.predicate, xref.value))
         return rv
 
+    def _get_edge_predicate_label(self, edge: Edge, ctn) -> str:
+        if edge.predicate:
+            label = get_normalized_label(edge.predicate.curie)
+            if label:
+                return label
+
+            label = ctn.get(edge.predicate.curie)
+            if label:
+                return label_norm(label)
+
+            label = get_normalized_label(edge.pred)
+            if label:
+                return label
+
+            if edge.predicate.curie not in MISSING_PREDICATE_LABELS:
+                MISSING_PREDICATE_LABELS.add(edge.predicate.curie)
+                tqdm.write(f"No label for CURIE {edge.predicate.curie}")
+            return edge.predicate.curie
+
+        label = get_normalized_label(edge.pred)
+        if label:
+            return label
+
+        if edge.pred not in MISSING_PREDICATE_LABELS:
+            MISSING_PREDICATE_LABELS.add(edge.pred)
+            tqdm.write(f"No CURIE/label for {edge.pred}")
+        return edge.pred
+
     def get_edges_df(self) -> pd.DataFrame:
         """Get all triples as a dataframe."""
         self.raise_on_unstandardized()
         if self.prefix is None:
             raise ValueError(f"Could not parse prefix in {self.id}")
-        return pd.DataFrame(
-            sorted(edge.as_tuple() for edge in self.edges if edge.sub.startswith(self.prefix)),
-            columns=[":START_ID", ":TYPE", ":END_ID"],
-        ).drop_duplicates()
+        columns = [":START_ID", ":TYPE", ":END_ID", "curie"]
+        ctn = self.get_curie_to_name()
+        rows = sorted(
+            (
+                edge.subject.curie,
+                self._get_edge_predicate_label(edge, ctn=ctn),
+                edge.object.curie,
+                edge.predicate.curie,
+            )
+            for edge in self.edges
+            if edge.subject
+            and edge.predicate
+            and edge.object
+            and edge.subject.prefix == self.prefix
+        )
+        return pd.DataFrame(rows, columns=columns).drop_duplicates()
 
     def get_sssom_df(self) -> pd.DataFrame:
         """Get a SSSOM dataframe of mappings."""
@@ -664,7 +776,7 @@ class Graph(BaseModel, StandardizeMixin):
             for xref in node.xrefs
             if xref.predicate and xref.value
         ]
-        return pd.DataFrame(rows, columns=columns)
+        return pd.DataFrame(sorted(rows), columns=columns)
 
     def get_nodes_df(self, sep: str = ";") -> pd.DataFrame:
         """Get a nodes dataframe appropriate for serialization."""
@@ -722,7 +834,7 @@ class Graph(BaseModel, StandardizeMixin):
                     version,
                 )
             )
-        return pd.DataFrame(rows, columns=columns)
+        return pd.DataFrame(sorted(rows), columns=columns)
 
     def get_incoming_xrefs(self, prefix: str) -> Mapping[str, str]:
         """Get incoming xrefs.
@@ -770,16 +882,6 @@ def _get_references(strings: List[str]) -> List[Reference]:
     references = [_get_reference(s) for s in strings]
     rv = [reference for reference in references if reference is not None]
     return rv
-
-
-def _clean_uri_or_curie_or_str(s: str, *, keep_invalid: bool, debug: bool = False) -> Optional[str]:
-    prefix, identifier = _parse_uri_or_curie_or_str(s=s, debug=debug)
-    if prefix is not None and identifier is not None:
-        return curie_to_str(prefix, identifier)
-    elif keep_invalid:
-        return s
-    else:
-        return None
 
 
 WARNED: typing.Counter[str] = Counter()
