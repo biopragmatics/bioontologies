@@ -102,11 +102,12 @@ class Definition(BaseModel):
         self.standardized = True
         return self
 
-    def from_parsed(self, value: str, references: Optional[List[Reference]] = None) -> "Definition":
+    @classmethod
+    def from_parsed(cls, value: str, references: Optional[List[Reference]] = None) -> "Definition":
         """Construct a definition object from pre-standardized content."""
         if not references:
             references = []
-        return Definition(
+        return cls(
             value=value,
             xrefs_raw=[r.curie for r in references],
             references=references,
