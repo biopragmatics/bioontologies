@@ -66,13 +66,13 @@ class StandardizeMixin:
 class Property(BaseModel, StandardizeMixin):
     """Represent a property inside a metadata element."""
 
-    predicate_raw: str = Field(alias="pred")
-    value_raw: str = Field(alias="val")
+    predicate_raw: str = Field(..., alias="pred")
+    value_raw: str = Field(..., alias="val")
 
     # Extras beyond the OBO Graph spec
     standardized: bool = Field(False, exclude=True)
-    predicate: Optional[Reference]
-    value: Optional[Reference]
+    predicate: Optional[Reference] = None
+    value: Optional[Reference] = None
 
     def standardize(self) -> Self:
         """Standardize this property."""
@@ -86,11 +86,13 @@ class Property(BaseModel, StandardizeMixin):
 class Definition(BaseModel):
     """Represents a definition for a node."""
 
-    value: Optional[str] = Field(alias="val")
-    xrefs_raw: Optional[List[str]] = Field(alias="xrefs")  # Just a list of CURIEs/IRIs
+    value: Optional[str] = Field(default=None, alias="val")
+    xrefs_raw: Optional[List[str]] = Field(
+        default=None, alias="xrefs"
+    )  # Just a list of CURIEs/IRIs
 
     # Extras beyond the OBO Graph spec
-    references: Optional[List[Reference]]
+    references: Optional[List[Reference]] = None
     standardized: bool = Field(False, exclude=True)
 
     def standardize(self) -> Self:
@@ -118,15 +120,17 @@ class Definition(BaseModel):
 class Xref(BaseModel, StandardizeMixin):
     """Represents a cross-reference."""
 
-    value_raw: str = Field(alias="val")
+    value_raw: str = Field(..., alias="val")
     predicate_raw: str = Field(
         default="oboinowl:hasDbXref"
     )  # note this is not part of the OBO Graph spec
 
     # Extras beyond the OBO Graph spec
-    predicate: Optional[Reference] = Field(description="The reference for the predicate")
-    value: Optional[Reference] = Field(description="The reference for the value")
-    standardized: bool = Field(False, exclude=True)
+    predicate: Optional[Reference] = Field(
+        default=None, description="The reference for the predicate"
+    )
+    value: Optional[Reference] = Field(default=None, description="The reference for the value")
+    standardized: bool = Field(default=False, exclude=True)
 
     def standardize(self) -> Self:
         """Standardize the xref."""
@@ -168,8 +172,8 @@ OBO_SYNONYM_TO_OIO = {
 class Synonym(BaseModel, StandardizeMixin):
     """Represents a synonym inside an object meta."""
 
-    value: Optional[str] = Field(alias="val")
-    predicate_raw: str = Field(alias="pred", default="hasExactSynonym")
+    value: Optional[str] = Field(default=None, alias="val")
+    predicate_raw: str = Field(default="hasExactSynonym", alias="pred")
     synonym_type_raw: str = Field(
         alias="synonymType", default="oboInOwl:SynonymType", example="OMO:0003000"
     )  # noqa:N815
@@ -181,10 +185,12 @@ class Synonym(BaseModel, StandardizeMixin):
 
     # Added
     predicate: Optional[Reference] = Field(
-        example=Reference(prefix="", identifier="hasExactSynonym")
+        default=None, example=Reference(prefix="", identifier="hasExactSynonym")
     )
-    synonym_type: Optional[Reference] = Field(example=Reference(prefix="OMO", identifier="0003000"))
-    references: Optional[List[Reference]]
+    synonym_type: Optional[Reference] = Field(
+        default=None, example=Reference(prefix="OMO", identifier="0003000")
+    )
+    references: Optional[List[Reference]] = None
     standardized: bool = Field(False, exclude=True)
 
     def standardize(self) -> Self:
@@ -226,13 +232,13 @@ class Synonym(BaseModel, StandardizeMixin):
 class Meta(BaseModel, StandardizeMixin):
     """Represents the metadata about a node or ontology."""
 
-    definition: Optional[Definition]
-    subsets: Optional[List[str]]
-    xrefs: Optional[List[Xref]]
-    synonyms: Optional[List[Synonym]]
-    comments: Optional[List]
-    version: Optional[str]
-    properties: Optional[List[Property]] = Field(alias="basicPropertyValues")
+    definition: Optional[Definition] = None
+    subsets: Optional[List[str]] = None
+    xrefs: Optional[List[Xref]] = None
+    synonyms: Optional[List[Synonym]] = None
+    comments: Optional[List] = None
+    version: Optional[str] = None
+    properties: Optional[List[Property]] = Field(None, alias="basicPropertyValues")
     deprecated: bool = False
 
     #
@@ -274,14 +280,18 @@ class Edge(BaseModel):
     sub: str = Field(..., alias="sub", example="http://purl.obolibrary.org/obo/CHEBI_99998")
     pred: str = Field(..., alias="pred", example="is_a")
     obj: str = Field(..., alias="obj", example="http://purl.obolibrary.org/obo/CHEBI_24995")
-    meta: Optional[Meta]
+    meta: Optional[Meta] = None
 
     standardized: bool = Field(False, exclude=True)
-    subject: Optional[Reference] = Field(example=Reference(prefix="chebi", identifier="99998"))
-    predicate: Optional[Reference] = Field(
-        example=Reference(prefix="rdfs", identifier="subClassOf")
+    subject: Optional[Reference] = Field(
+        default=None, example=Reference(prefix="chebi", identifier="99998")
     )
-    object: Optional[Reference] = Field(example=Reference(prefix="chebi", identifier="24995"))
+    predicate: Optional[Reference] = Field(
+        default=None, example=Reference(prefix="rdfs", identifier="subClassOf")
+    )
+    object: Optional[Reference] = Field(
+        default=None, example=Reference(prefix="chebi", identifier="24995")
+    )
 
     def as_tuple(self) -> Tuple[str, str, str]:
         """Get the edge as a tuple."""
@@ -303,7 +313,7 @@ class Edge(BaseModel):
     def from_parsed(
         cls, s: Reference, p: Reference, o: Reference, meta: Optional[Meta] = None
     ) -> "Edge":
-        """Construct a edge object from pre-standardized content."""
+        """Construct an edge object from pre-standardized content."""
         return Edge(
             sub=s.curie,
             pred=p.curie,
@@ -332,12 +342,12 @@ class Node(BaseModel, StandardizeMixin):
     """Represents a node in an OBO Graph."""
 
     id: str = Field(..., description="The IRI for the node")
-    name: Optional[str] = Field(alias="lbl", description="The name of the node")
-    meta: Optional[Meta]
-    type: Optional[Literal["CLASS", "PROPERTY", "INDIVIDUAL"]]
+    name: Optional[str] = Field(None, alias="lbl", description="The name of the node")
+    meta: Optional[Meta] = None
+    type: Literal["CLASS", "PROPERTY", "INDIVIDUAL"] = Field(..., description="Type of node")
 
     # Extras beyond OBO Graph spec
-    reference: Optional[Reference]
+    reference: Optional[Reference] = None
     standardized: bool = Field(False, exclude=True)
 
     @property
@@ -528,8 +538,8 @@ class Node(BaseModel, StandardizeMixin):
 class Graph(BaseModel, StandardizeMixin):
     """A graph corresponds to an ontology."""
 
-    id: Optional[str]
-    meta: Optional[Meta]
+    id: Optional[str] = None
+    meta: Optional[Meta] = None
     nodes: List[Node] = Field(default_factory=list)
     edges: List[Edge] = Field(default_factory=list)
     equivalentNodesSets: Any  # noqa:N815
