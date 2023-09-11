@@ -50,10 +50,35 @@ ROBOT_COMMAND = ["java", "-jar", str(ROBOT_PATH)]
 
 def is_available() -> bool:
     """Check if ROBOT is available."""
-    # suggested in https://stackoverflow.com/questions/11210104/check-if-a-program-exists-from-a-python-script
     from shutil import which
 
-    return which("robot") is not None
+    if which("java") is None:
+        # suggested in https://stackoverflow.com/questions/11210104/check-if-a-program-exists-from-a-python-script
+        logger.error("java is not on the PATH")
+        return False
+
+    try:
+        check_output(["java", "--help"])  # noqa:S607
+    except Exception:
+        logger.error(
+            "java --help failed - this means the java runtime environment (JRE) "
+            "might not be configured properly"
+        )
+        return False
+
+    if not ROBOT_PATH.is_file():
+        logger.error("ROBOT was not successfully downloaded to %s", ROBOT_PATH)
+        # ROBOT was unsuccessfully downloaded
+        return False
+
+    try:
+        # Check
+        check_output([*ROBOT_COMMAND, "--help"])
+    except Exception:
+        logger.error("ROBOT was downloaded to %s but could not be run with --help", ROBOT_PATH)
+        return False
+
+    return True
 
 
 @dataclass
