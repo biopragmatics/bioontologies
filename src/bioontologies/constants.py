@@ -14,6 +14,7 @@ CANONICAL = {
     "mfomd": "http://purl.obolibrary.org/obo/MF.owl",
     "one": "http://purl.obolibrary.org/obo/ONE",
     "ons": "https://raw.githubusercontent.com/enpadasi/Ontology-for-Nutritional-Studies/master/ons.owl",
+    "ontie": "https://ontology.iedb.org/ontology/ontie.owl",
 }
 
 IRI_TO_PREFIX = {v: k for k, v in CANONICAL.items()}
