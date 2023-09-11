@@ -191,7 +191,7 @@ def get_obograph_by_prefix(
                     )
             else:
                 parse_results = convert_to_obograph_remote(iri, json_path=json_path, check=check)
-        except subprocess.CalledProcessError:
+        except (subprocess.CalledProcessError, KeyError):
             msg = f"[{prefix}] could not parse {label} from {iri}"
             messages.append(msg)
             GETTER_MESSAGES.append(msg)
@@ -353,6 +353,7 @@ def correct_raw_json(graph_document_raw) -> None:
         _clean_raw_meta(graph)
         for node in graph["nodes"]:
             _clean_raw_meta(node)
+        graph["nodes"] = [node for node in graph["nodes"] if "type" in node]
     return graph_document_raw
 
 
