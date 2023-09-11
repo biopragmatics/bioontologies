@@ -58,7 +58,7 @@ def is_available() -> bool:
         return False
 
     try:
-        check_output(["java", "--help"])
+        check_output(["java", "--help"])  # noqa:S607
     except Exception:
         logger.error(
             "java --help failed - this means the java runtime environment (JRE) "
