@@ -61,6 +61,7 @@ http://purl.obolibrary.org/obo/chebi/mass	debio	0000019
 http://purl.obolibrary.org/obo/chebi/monoisotopicmass	debio	0000016
 http://purl.obolibrary.org/obo/chebi/smiles	debio	0000022
 http://purl.obolibrary.org/obo/chmo#isDefinedBy	rdfs	isDefinedBy
+http://purl.obolibrary.org/obo/cl#LATIN	omo	0003011
 http://purl.obolibrary.org/obo/cl#PLURAL	omo	0003004
 http://purl.obolibrary.org/obo/cl#abbreviation	omo	0003000
 http://purl.obolibrary.org/obo/emapa#ends_at	ro	0002493
@@ -82,6 +83,9 @@ http://purl.obolibrary.org/obo/fovt#isDefinedBy	rdfs	isDefinedBy
 http://purl.obolibrary.org/obo/fypo#seeAlso	rdf	seeAlso
 http://purl.obolibrary.org/obo/go#results_in	sio	001156
 http://purl.obolibrary.org/obo/has_role	ro	0000087
+http://purl.obolibrary.org/obo/hp#layperson	omo	0003003
+http://purl.obolibrary.org/obo/hp#obsolete_synonym	omo	0003008
+http://purl.obolibrary.org/obo/hp#uk_spelling	omo	0003005
 http://purl.obolibrary.org/obo/inheres_in	ro	0004096
 http://purl.obolibrary.org/obo/mi#isDefinedBy 	rdfs	isDefinedBy
 http://purl.obolibrary.org/obo/mpath#is_a	rdfs	subClassOf
@@ -110,10 +114,11 @@ http://purl.obolibrary.org/obo/so#member_of	ro	0002350
 http://purl.obolibrary.org/obo/so#overlaps	ro	0002131
 http://purl.obolibrary.org/obo/so#part_of	bfo	0000050
 http://purl.obolibrary.org/obo/to#seeAlso 	rdf	seeAlso
+http://purl.obolibrary.org/obo/uberon#LATIN	omo	0003011
 http://purl.obolibrary.org/obo/uberon#PLURAL	omo	0003004
 http://purl.obolibrary.org/obo/uberon/core#ABBREVIATION	omo	0003000
-http://purl.obolibrary.org/obo/uberon/core#BRAIN_NAME_ABV	omo	0003005
 http://purl.obolibrary.org/obo/uberon/core#DUBIOUS	omo	0003002
+http://purl.obolibrary.org/obo/uberon/core#LATIN	omo	0003011
 http://purl.obolibrary.org/obo/uberon/core#PLURAL	omo	0003004
 http://purl.obolibrary.org/obo/uberon/core#conduit_for	ro	0002570
 http://purl.obolibrary.org/obo/uberon/core#existence_starts_and_ends_during	ro	0002491
