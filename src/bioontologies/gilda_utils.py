@@ -80,7 +80,7 @@ def gilda_from_graph(prefix: str, graph: Graph) -> Iterable["gilda.term.Term"]:
             and edge.object.prefix == "ncbitaxon"
         ):
             species[edge.subject.identifier] = edge.object.identifier
-    for node in tqdm(graph.nodes, leave=False):
+    for node in tqdm(graph.nodes, leave=False, unit_scale=True, desc=f"{prefix} to Gilda"):
         if not node.name or node.reference is None:
             continue
         if node.reference.prefix != prefix:
