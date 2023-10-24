@@ -868,6 +868,20 @@ class Graph(BaseModel, StandardizeMixin):
             node.curie: node.name for node in self.nodes if node.name and node.reference is not None
         }
 
+    def get_networkx(self):
+        """Get a networkx multi-directional graph."""
+        import networkx as nx
+
+        graph = nx.MultiDiGraph()
+        for edge in self.edges:
+            if edge.subject and edge.predicate and edge.object:
+                graph.add_edge(edge.subject.curie, edge.object.curie, key=edge.predicate.curie)
+        names = self.get_curie_to_name()
+        for node in graph:
+            if node in names:
+                graph.nodes[node]["name"] = names[node]
+        return graph
+
 
 def _parse_uri_or_curie_or_str(
     s: str, *, debug: bool = False
