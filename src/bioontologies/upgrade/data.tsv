@@ -45,6 +45,7 @@ http://purl.obolibrary.org/obo/activates	ro	0002213
 http://purl.obolibrary.org/obo/bearer_of	ro	0000053
 http://purl.obolibrary.org/obo/bspo#parallel_to	pato	0002272
 http://purl.obolibrary.org/obo/caloha-reqs-vetted#PLURAL	omo	0003004
+http://purl.obolibrary.org/obo/chebi#INN	omo	0003010
 http://purl.obolibrary.org/obo/chebi#IUPAC_NAME	debio	0000026
 http://purl.obolibrary.org/obo/chebi#has_functional_parent	debio	0000015
 http://purl.obolibrary.org/obo/chebi#has_parent_hydride	debio	0000014
@@ -87,7 +88,15 @@ http://purl.obolibrary.org/obo/hp#layperson	omo	0003003
 http://purl.obolibrary.org/obo/hp#obsolete_synonym	omo	0003008
 http://purl.obolibrary.org/obo/hp#uk_spelling	omo	0003005
 http://purl.obolibrary.org/obo/inheres_in	ro	0004096
+http://purl.obolibrary.org/obo/mi#RESID-misnomer	omo	0003007
 http://purl.obolibrary.org/obo/mi#isDefinedBy 	rdfs	isDefinedBy
+http://purl.obolibrary.org/obo/mondo#AMBIGUOUS	omo	0003001
+http://purl.obolibrary.org/obo/mondo#DUBIOUS	omo	0003002
+http://purl.obolibrary.org/obo/mondo#broadMatch	skos	broadMatch
+http://purl.obolibrary.org/obo/mondo#closeMatch	skos	closeMatch
+http://purl.obolibrary.org/obo/mondo#exactMatch	skos	exactMatch
+http://purl.obolibrary.org/obo/mondo#narrowMatch	skos	narrowMatch
+http://purl.obolibrary.org/obo/mondo#relatedMatch	skos	relatedMatch
 http://purl.obolibrary.org/obo/mpath#is_a	rdfs	subClassOf
 http://purl.obolibrary.org/obo/nbo#has_participant	ro	0000057
 http://purl.obolibrary.org/obo/nbo#is_about	iao	0000136
