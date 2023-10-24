@@ -155,6 +155,7 @@ def get_obograph_by_prefix(
     json_path: Union[None, str, Path] = None,
     cache: bool = False,
     check: bool = True,
+    reason: bool = True,
 ) -> ParseResults:
     """Get an ontology by its Bioregistry prefix."""
     if prefix != bioregistry.normalize_prefix(prefix):
@@ -190,7 +191,9 @@ def get_obograph_by_prefix(
                         path, json_path=json_path, from_iri=iri, check=check
                     )
             else:
-                parse_results = convert_to_obograph_remote(iri, json_path=json_path, check=check)
+                parse_results = convert_to_obograph_remote(
+                    iri, json_path=json_path, check=check, reason=reason
+                )
         except (subprocess.CalledProcessError, KeyError):
             msg = f"[{prefix}] could not parse {label} from {iri}"
             messages.append(msg)
@@ -238,6 +241,7 @@ def convert_to_obograph_remote(
     *,
     json_path: Union[None, str, Path] = None,
     check: bool = True,
+    reason: bool = True,
 ) -> ParseResults:
     """Convert a remote OWL/OBO file to an OBO Graph JSON object.
 
@@ -251,11 +255,18 @@ def convert_to_obograph_remote(
         `document structure rules <http://owlcollab.github.io/oboformat/doc/obo-syntax.html#4>`.
         If an ontology violates these, the convert to OBO operation will fail.
         These checks can be ignored by setting this to false.
+    :param reason:
+        Turn on ontology reasoning
     :returns: An object with the parsed OBO Graph JSON and text
         output from the ROBOT conversion program
     """
     return convert_to_obograph(
-        input_path=iri, input_flag="-I", json_path=json_path, input_is_iri=True, check=check
+        input_path=iri,
+        input_flag="-I",
+        json_path=json_path,
+        input_is_iri=True,
+        check=check,
+        reason=reason,
     )
 
 
@@ -269,6 +280,7 @@ def convert_to_obograph(
     from_iri: Optional[str] = None,
     merge: bool = True,
     check: bool = True,
+    reason: bool = True,
 ) -> ParseResults:
     """Convert a local OWL file to a JSON file.
 
@@ -293,6 +305,8 @@ def convert_to_obograph(
         `document structure rules <http://owlcollab.github.io/oboformat/doc/obo-syntax.html#4>`.
         If an ontology violates these, the convert to OBO operation will fail.
         These checks can be ignored by setting this to false.
+    :param reason:
+        Turn on ontology reasoning
 
     :returns: An object with the parsed OBO Graph JSON and text
         output from the ROBOT conversion program
@@ -315,6 +329,7 @@ def convert_to_obograph(
             extra_args=extra_args,
             merge=merge,
             check=check,
+            reason=reason,
         )
         messages = ret.strip().splitlines()
         graph_document_raw = json.loads(path.read_text())
@@ -413,6 +428,7 @@ def convert(
     merge: bool = True,
     fmt: Optional[str] = None,
     check: bool = True,
+    reason: bool = False,
     extra_args: Optional[List[str]] = None,
 ) -> str:
     """Convert an OBO file to an OWL file with ROBOT.
@@ -431,27 +447,47 @@ def convert(
         `document structure rules <http://owlcollab.github.io/oboformat/doc/obo-syntax.html#4>`.
         If an ontology violates these, the convert to OBO operation will fail.
         These checks can be ignored by setting this to false.
+    :param reason:
+        Turn on ontology reasoning
     :param extra_args:
         Extra positional arguments to pass in the command line
     :return: Output from standard out from running ROBOT
     """
     if input_flag is None:
         input_flag = "-I" if _is_remote(input_path) else "-i"
-    if merge:
-        args = [
-            *ROBOT_COMMAND,
-            "merge",
-            input_flag,
-            str(input_path),
-            "convert",
-        ]
+
+    args = list(ROBOT_COMMAND)
+
+    if merge and not reason:
+        args.extend(["merge", input_flag, str(input_path), "convert"])
+    elif merge and reason:
+        args.extend(
+            [
+                "merge",
+                input_flag,
+                str(input_path),
+                "reason",
+                "convert",
+            ]
+        )
+    elif not merge and reason:
+        args.extend(
+            [
+                "reason",
+                input_flag,
+                str(input_path),
+                "convert",
+            ]
+        )
     else:
-        args = [
-            *ROBOT_COMMAND,
-            "convert",
-            input_flag,
-            str(input_path),
-        ]
+        args.extend(
+            [
+                "convert",
+                input_flag,
+                str(input_path),
+            ]
+        )
+
     args.extend(("-o", str(output_path)))
     if extra_args:
         args.extend(extra_args)
