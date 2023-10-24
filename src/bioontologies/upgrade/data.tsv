@@ -68,6 +68,7 @@ http://purl.obolibrary.org/obo/cl#abbreviation	omo	0003000
 http://purl.obolibrary.org/obo/emapa#ends_at	ro	0002493
 http://purl.obolibrary.org/obo/emapa#is_a	rdfs	subClassOf
 http://purl.obolibrary.org/obo/emapa#starts_at	ro	0002489
+http://purl.obolibrary.org/obo/envo#PLURAL	omo	0003004
 http://purl.obolibrary.org/obo/envo#common_name	omo	0003003
 http://purl.obolibrary.org/obo/fbbt#FORMULA	debio	0000018
 http://purl.obolibrary.org/obo/fbbt#IUPAC_NAME	debio	0000026
