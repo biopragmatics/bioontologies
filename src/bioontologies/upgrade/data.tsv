@@ -71,6 +71,7 @@ http://purl.obolibrary.org/obo/emapa#starts_at	ro	0002489
 http://purl.obolibrary.org/obo/envo#PLURAL	omo	0003004
 http://purl.obolibrary.org/obo/envo#common_name	omo	0003003
 http://purl.obolibrary.org/obo/fbbt#FORMULA	debio	0000018
+http://purl.obolibrary.org/obo/fbbt#INN	omo	0003010
 http://purl.obolibrary.org/obo/fbbt#IUPAC_NAME	debio	0000026
 http://purl.obolibrary.org/obo/fbbt#InChI	debio	0000020
 http://purl.obolibrary.org/obo/fbbt#InChIKey	debio	0000021
