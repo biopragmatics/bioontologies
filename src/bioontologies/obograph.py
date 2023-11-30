@@ -932,7 +932,7 @@ def _parse_obo_rel(s: str, identifier: str) -> Optional[ReferenceTuple]:
 
 @lru_cache(1)
 def _get_converter():
-    return curies.Converter(records=bioregistry.manager.get_curies_records(include_prefixes=True))
+    return bioregistry.manager.get_converter(include_prefixes=True)
 
 
 def omni_parse(s: str, *, debug: bool = False) -> Optional[ReferenceTuple]:
