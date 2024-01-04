@@ -729,7 +729,9 @@ class Graph(BaseModel, StandardizeMixin):
 
             if edge.predicate.curie not in MISSING_PREDICATE_LABELS:
                 MISSING_PREDICATE_LABELS.add(edge.predicate.curie)
-                tqdm.write(f"No label for CURIE {edge.predicate.curie}")
+                tqdm.write(
+                    f"bioontologies.obograph could not find a label for CURIE {edge.predicate.curie}"
+                )
             return edge.predicate.curie
 
         label = get_normalized_label(edge.pred)

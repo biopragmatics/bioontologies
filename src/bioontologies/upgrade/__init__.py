@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Mapping, Optional
 
 from curies import ReferenceTuple
+from tqdm import tqdm
 
 __all__ = [
     "upgrade",
@@ -49,10 +50,11 @@ def insert(term: str, prefix: str, identifier: str) -> None:
     existing = terms.get(term)
     reference_tuple = ReferenceTuple(prefix, identifier)
     if existing:
-        if existing == reference_tuple:
-            return None
-        else:
-            raise KeyError
+        if existing != reference_tuple:
+            tqdm.write(
+                f"Conflict for inserting {term} between existing {existing} and reference {reference_tuple}. Skipping."
+            )
+        return None
     terms[term] = reference_tuple
     write(terms)
     load.cache_clear()

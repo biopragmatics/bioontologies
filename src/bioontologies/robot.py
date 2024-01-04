@@ -159,7 +159,7 @@ def get_obograph_by_prefix(
 ) -> ParseResults:
     """Get an ontology by its Bioregistry prefix."""
     if prefix != bioregistry.normalize_prefix(prefix):
-        raise ValueError("this function requires bioregistry canonical prefixes")
+        raise ValueError(f"this function requires bioregistry canonical prefixes: {prefix}")
 
     messages = []
     json_iri = bioregistry.get_json_download(prefix)
