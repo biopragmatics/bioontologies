@@ -23,12 +23,11 @@ URLS = [
     ),
     ("bfo", None),
     ("oboinowl", None),
-    ("owl", None),
-    ("rdf", None),
-    ("rdfs", None),
     ("bspo", None),
     ("iao", None),
     ("omo", None),
+    ("vo", None),
+    ("obi", None),
 ]
 PREFIX_OBO = "http://purl.obolibrary.org/obo/"
 PREFIX_OIO = "http://www.geneontology.org/formats/oboInOwl#"
@@ -143,6 +142,11 @@ def main():
                     tuple(sorted(synonym.value for synonym in node.synonyms)),
                 )
             )
+
+    for p in ["rdf", "rdfs", "owl"]:
+        j = json.loads(HERE.joinpath(f"data_{p}.json").read_text())
+        rows.extend(tuple(row.get(h, tuple()) for h in HEADER) for row in j)
+
     rows = sorted(set(rows))
     row_dicts = [{k: v for k, v in zip(HEADER, row) if v} for row in rows]
     PATH.write_text(json.dumps(row_dicts, indent=2, sort_keys=True))

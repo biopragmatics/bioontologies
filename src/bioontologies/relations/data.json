@@ -399,6 +399,81 @@
     ]
   },
   {
+    "identifier": "contributor",
+    "label": "Contributor",
+    "prefix": "dc"
+  },
+  {
+    "identifier": "coverage",
+    "label": "Coverage",
+    "prefix": "dc"
+  },
+  {
+    "identifier": "creator",
+    "label": "Creator",
+    "prefix": "dc"
+  },
+  {
+    "identifier": "date",
+    "label": "Date",
+    "prefix": "dc"
+  },
+  {
+    "identifier": "description",
+    "label": "Description",
+    "prefix": "dc"
+  },
+  {
+    "identifier": "format",
+    "label": "Format",
+    "prefix": "dc"
+  },
+  {
+    "identifier": "identifier",
+    "label": "Resource Identifier",
+    "prefix": "dc"
+  },
+  {
+    "identifier": "language",
+    "label": "Language",
+    "prefix": "dc"
+  },
+  {
+    "identifier": "publisher",
+    "label": "Publisher",
+    "prefix": "dc"
+  },
+  {
+    "identifier": "relation",
+    "label": "Relation",
+    "prefix": "dc"
+  },
+  {
+    "identifier": "rights",
+    "label": "Rights Management",
+    "prefix": "dc"
+  },
+  {
+    "identifier": "source",
+    "label": "Source",
+    "prefix": "dc"
+  },
+  {
+    "identifier": "subject",
+    "label": "Subject and Keywords",
+    "prefix": "dc"
+  },
+  {
+    "identifier": "title",
+    "label": "Title",
+    "prefix": "dc"
+  },
+  {
+    "identifier": "type",
+    "label": "Resource Type",
+    "prefix": "dc"
+  },
+  {
     "identifier": "0000001",
     "label": "gene product is a member of",
     "prefix": "debio"
@@ -444,36 +519,6 @@
     "prefix": "debio"
   },
   {
-    "identifier": "0000010",
-    "label": "is conjugate base of",
-    "prefix": "debio"
-  },
-  {
-    "identifier": "0000011",
-    "label": "is conjugate acid of",
-    "prefix": "debio"
-  },
-  {
-    "identifier": "0000012",
-    "label": "is enantiomer of",
-    "prefix": "debio"
-  },
-  {
-    "identifier": "0000013",
-    "label": "is tautomer of",
-    "prefix": "debio"
-  },
-  {
-    "identifier": "0000014",
-    "label": "has parent hydride",
-    "prefix": "debio"
-  },
-  {
-    "identifier": "0000015",
-    "label": "has functional parent",
-    "prefix": "debio"
-  },
-  {
     "identifier": "0000016",
     "label": "monoisotopic mass",
     "prefix": "debio"
@@ -511,6 +556,11 @@
   {
     "identifier": "0000023",
     "label": "has taxonomy rank",
+    "prefix": "debio"
+  },
+  {
+    "identifier": "0000023",
+    "label": "has_rank",
     "prefix": "debio"
   },
   {
@@ -569,6 +619,61 @@
     "prefix": "debio"
   },
   {
+    "identifier": "0000035",
+    "label": "has intervention",
+    "prefix": "debio"
+  },
+  {
+    "identifier": "0000036",
+    "label": "has condition",
+    "prefix": "debio"
+  },
+  {
+    "identifier": "0000037",
+    "label": "has platform",
+    "prefix": "debio"
+  },
+  {
+    "identifier": "0000038",
+    "label": "mentioned in",
+    "prefix": "debio"
+  },
+  {
+    "identifier": "0000039",
+    "label": "annotated with",
+    "prefix": "debio"
+  },
+  {
+    "identifier": "0000040",
+    "label": "related trial",
+    "prefix": "debio"
+  },
+  {
+    "identifier": "0000041",
+    "label": "prevents infection",
+    "prefix": "debio"
+  },
+  {
+    "identifier": "0000042",
+    "label": "constant has value",
+    "prefix": "debio"
+  },
+  {
+    "identifier": "0000043",
+    "label": "constant has formula",
+    "prefix": "debio"
+  },
+  {
+    "identifier": "0000044",
+    "label": "pathogen defines vaccine class",
+    "prefix": "debio"
+  },
+  {
+    "identifier": "0000045",
+    "label": "vector vaccine uses pathogen as vector",
+    "prefix": "debio"
+  },
+  {
     "identifier": "01003004",
     "label": "derives from part of",
     "prefix": "envo"
@@ -589,6 +694,11 @@
     "prefix": "iao"
   },
   {
+    "identifier": "0000111",
+    "label": "editor preferred term~editor preferred label",
+    "prefix": "iao"
+  },
+  {
     "identifier": "0000112",
     "label": "example of usage",
     "prefix": "iao"
@@ -606,6 +716,11 @@
   {
     "identifier": "0000115",
     "label": "definition",
+    "prefix": "iao"
+  },
+  {
+    "identifier": "0000115",
+    "label": "textual definition",
     "prefix": "iao"
   },
   {
@@ -859,8 +974,28 @@
     "prefix": "iao"
   },
   {
+    "identifier": "0000107",
+    "label": "provides_service_consumer_with",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000124",
+    "label": "is_supported_by_data",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000292",
+    "label": "has_feature_value",
+    "prefix": "obi"
+  },
+  {
     "identifier": "0000293",
     "label": "has_specified_input",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000294",
+    "label": "obsolete_is_concretization_of",
     "prefix": "obi"
   },
   {
@@ -869,14 +1004,279 @@
     "prefix": "obi"
   },
   {
+    "identifier": "0000297",
+    "label": "obsolete_is_concretized_as",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000298",
+    "label": "obsolete_has_quality",
+    "prefix": "obi"
+  },
+  {
     "identifier": "0000299",
     "label": "has_specified_output",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000300",
+    "label": "obsolete_is_realized_by",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000301",
+    "label": "obsoleted_has_specified_output_information",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000304",
+    "label": "is_manufactured_by",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000306",
+    "label": "obsolete_has_function",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000307",
+    "label": "obsoleted_is_reagent_in",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000308",
+    "label": "obsolete_realizes",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000309",
+    "label": "obsoleted_utilizes_reagent",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000311",
+    "label": "obsoleted_is_device_for",
     "prefix": "obi"
   },
   {
     "identifier": "0000312",
     "label": "is_specified_output_of",
     "prefix": "obi"
+  },
+  {
+    "identifier": "0000313",
+    "label": "obsoleted_utilizes_device",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000314",
+    "label": "is_proxy_for",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000315",
+    "label": "obsoleted_has_specified_input_information",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000316",
+    "label": "obsolete_has_role",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000365",
+    "label": "obsolete_results_from",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000417",
+    "label": "achieves_planned_objective",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000459",
+    "label": "obsoleted_is_specified_information_output_of",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000643",
+    "label": "has grain",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000644",
+    "label": "obsoleted_is_specified_information_intput_of",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000645",
+    "label": "is grain of",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000646",
+    "label": "provisions",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000647",
+    "label": "has_supplier",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000833",
+    "label": "objective_achieved_by",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000846",
+    "label": "is member of organization",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0000999",
+    "label": "has category label",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0001637",
+    "label": "has disposition to bind",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0001688",
+    "label": "has organization member",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0001847",
+    "label": "ISA alternative term",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0001886",
+    "label": "NIAID GSCID-BRC alternative term",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0001927",
+    "label": "specifies value of",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0001937",
+    "label": "has specified numeric value",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0001938",
+    "label": "has value specification",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0001950",
+    "label": "has performer",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0002135",
+    "label": "has specified value",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0002815",
+    "label": "has representation",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "0003385",
+    "label": "has assay target context",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "1110060",
+    "label": "process is result of",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "1110112",
+    "label": "obsolete_is_described_by",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "1110119",
+    "label": "bound_to",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "9991118",
+    "label": "IEDB alternative term",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "9991119",
+    "label": "FGED alternative term",
+    "prefix": "obi"
+  },
+  {
+    "identifier": "UBPROP_0000001",
+    "label": "external_definition",
+    "prefix": "obo"
+  },
+  {
+    "identifier": "UBPROP_0000002",
+    "label": "axiom_lost_from_external_ontology",
+    "prefix": "obo"
+  },
+  {
+    "identifier": "UBPROP_0000003",
+    "label": "homology_notes",
+    "prefix": "obo"
+  },
+  {
+    "identifier": "UBPROP_0000007",
+    "label": "has_relational_adjective",
+    "prefix": "obo"
+  },
+  {
+    "identifier": "UBPROP_0000008",
+    "label": "taxon_notes",
+    "prefix": "obo"
+  },
+  {
+    "identifier": "UBPROP_0000011",
+    "label": "development_notes",
+    "prefix": "obo"
+  },
+  {
+    "identifier": "UBPROP_0000012",
+    "label": "external_ontology_notes",
+    "prefix": "obo"
+  },
+  {
+    "identifier": "UBPROP_0000202",
+    "label": "fma_set_term",
+    "prefix": "obo"
+  },
+  {
+    "identifier": "valid_for_go_annotation_extension",
+    "label": "valid_for_go_annotation_extension",
+    "prefix": "obo"
+  },
+  {
+    "identifier": "valid_for_go_gp2term",
+    "label": "valid_for_go_gp2term",
+    "prefix": "obo"
+  },
+  {
+    "identifier": "valid_for_go_ontology",
+    "label": "valid_for_go_ontology",
+    "prefix": "obo"
+  },
+  {
+    "identifier": "valid_for_gocam",
+    "label": "valid_for_gocam",
+    "prefix": "obo"
   },
   {
     "identifier": "NamespaceIdRule",
@@ -1039,6 +1439,46 @@
     "prefix": "oboinowl"
   },
   {
+    "identifier": "0000000006",
+    "label": "NCBI GeneID",
+    "prefix": "ogg"
+  },
+  {
+    "identifier": "0000000007",
+    "label": "NCBI LocusTag",
+    "prefix": "ogg"
+  },
+  {
+    "identifier": "0000000009",
+    "label": "modification date",
+    "prefix": "ogg"
+  },
+  {
+    "identifier": "0000000015",
+    "label": "organism NCBITaxon ID",
+    "prefix": "ogg"
+  },
+  {
+    "identifier": "0000000017",
+    "label": "chromosome ID of gene",
+    "prefix": "ogg"
+  },
+  {
+    "identifier": "0000000018",
+    "label": "type of gene",
+    "prefix": "ogg"
+  },
+  {
+    "identifier": "0000000019",
+    "label": "nomenclature status",
+    "prefix": "ogg"
+  },
+  {
+    "identifier": "0000000030",
+    "label": "has PubMed association",
+    "prefix": "ogg"
+  },
+  {
     "identifier": "0001001",
     "label": "logical characteristic of object property",
     "prefix": "omo"
@@ -1086,6 +1526,34 @@
   {
     "identifier": "0003007",
     "label": "misnomer",
+    "prefix": "omo"
+  },
+  {
+    "identifier": "0003008",
+    "label": "previous name",
+    "prefix": "omo"
+  },
+  {
+    "identifier": "0003009",
+    "label": "legal name",
+    "prefix": "omo"
+  },
+  {
+    "identifier": "0003010",
+    "label": "International Nonproprietary Name",
+    "prefix": "omo",
+    "synonyms": [
+      "INN"
+    ]
+  },
+  {
+    "identifier": "0003011",
+    "label": "latin term",
+    "prefix": "omo"
+  },
+  {
+    "identifier": "0003012",
+    "label": "acronym",
     "prefix": "omo"
   },
   {
@@ -1144,13 +1612,33 @@
     "prefix": "owl"
   },
   {
+    "identifier": "label",
+    "label": "label",
+    "prefix": "rdfs"
+  },
+  {
     "identifier": "seeAlso",
     "label": "see also",
     "prefix": "rdfs"
   },
   {
+    "identifier": "0000015",
+    "label": "has functional parent",
+    "prefix": "ro"
+  },
+  {
     "identifier": "0000052",
     "label": "characteristic of",
+    "prefix": "ro"
+  },
+  {
+    "identifier": "0000052",
+    "label": "inheres in",
+    "prefix": "ro"
+  },
+  {
+    "identifier": "0000053",
+    "label": "bearer of",
     "prefix": "ro"
   },
   {
@@ -1250,12 +1738,12 @@
   },
   {
     "identifier": "0001018",
-    "label": "contained in",
+    "label": "obsolete contained in",
     "prefix": "ro"
   },
   {
     "identifier": "0001019",
-    "label": "contains",
+    "label": "obsolete contains",
     "prefix": "ro"
   },
   {
@@ -1819,6 +2307,11 @@
   {
     "identifier": "0002221",
     "label": "surrounds",
+    "prefix": "ro"
+  },
+  {
+    "identifier": "0002222",
+    "label": "temporal relation",
     "prefix": "ro"
   },
   {
@@ -3954,6 +4447,11 @@
     "prefix": "ro"
   },
   {
+    "identifier": "0008509",
+    "label": "has roost",
+    "prefix": "ro"
+  },
+  {
     "identifier": "0009001",
     "label": "has substance added",
     "prefix": "ro"
@@ -4290,6 +4788,16 @@
     ]
   },
   {
+    "identifier": "0017003",
+    "label": "positively correlated with",
+    "prefix": "ro"
+  },
+  {
+    "identifier": "0017004",
+    "label": "negatively correlated with",
+    "prefix": "ro"
+  },
+  {
     "identifier": "0018001",
     "label": "is myristoyltransferase activity",
     "prefix": "ro"
@@ -4317,6 +4825,91 @@
   {
     "identifier": "0018029",
     "label": "is antagonist of",
+    "prefix": "ro"
+  },
+  {
+    "identifier": "0018030",
+    "label": "chemical relationship",
+    "prefix": "ro"
+  },
+  {
+    "identifier": "0018031",
+    "label": "is direct conjugate base of",
+    "prefix": "ro"
+  },
+  {
+    "identifier": "0018032",
+    "label": "is direct conjugate acid of",
+    "prefix": "ro"
+  },
+  {
+    "identifier": "0018033",
+    "label": "is conjugate base of",
+    "prefix": "ro"
+  },
+  {
+    "identifier": "0018033",
+    "label": "is deprotonated form of",
+    "prefix": "ro"
+  },
+  {
+    "identifier": "0018034",
+    "label": "is conjugate acid of",
+    "prefix": "ro"
+  },
+  {
+    "identifier": "0018034",
+    "label": "is protonated form of",
+    "prefix": "ro"
+  },
+  {
+    "identifier": "0018035",
+    "label": "is matched small molecular pair with",
+    "prefix": "ro",
+    "synonyms": [
+      "is MMP with",
+      "is matched molecular pair with"
+    ]
+  },
+  {
+    "identifier": "0018036",
+    "label": "is tautomer of",
+    "prefix": "ro"
+  },
+  {
+    "identifier": "0018036",
+    "label": "is tautomer of",
+    "prefix": "ro",
+    "synonyms": [
+      "is desmotrope of"
+    ]
+  },
+  {
+    "identifier": "0018037",
+    "label": "is substitutent group from",
+    "prefix": "ro"
+  },
+  {
+    "identifier": "0018038",
+    "label": "has functional parent",
+    "prefix": "ro"
+  },
+  {
+    "identifier": "0018039",
+    "label": "is enantiomer of",
+    "prefix": "ro"
+  },
+  {
+    "identifier": "0018039",
+    "label": "is enantiomer of",
+    "prefix": "ro",
+    "synonyms": [
+      "is optical isomer of"
+    ]
+  },
+  {
+    "identifier": "0018040",
+    "label": "has parent hydride",
     "prefix": "ro"
   },
   {
@@ -4932,5 +5525,300 @@
     "synonyms": [
       "regulogous to"
     ]
+  },
+  {
+    "identifier": "0000016",
+    "label": "has vaccine conjugate protein",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000138",
+    "label": "has bacterial vaccine vector",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000270",
+    "label": "has vaccine contraindication",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000281",
+    "label": "has viral vaccine vector",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000369",
+    "label": "has DNA vaccine plasmid",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000445",
+    "label": "infection_of",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000462",
+    "label": "induced by vaccination of",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000476",
+    "label": "has DNA vaccine antigen gene",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000520",
+    "label": "has vaccine component",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000524",
+    "label": "has vaccine antigen",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000525",
+    "label": "has subunit vaccine antigen",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000527",
+    "label": "has vaccine protective antigen",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000529",
+    "label": "has vaccine adjuvant",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000530",
+    "label": "has vaccine vector",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000531",
+    "label": "has vaccine allergen",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000537",
+    "label": "vaccine organism secretes",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000538",
+    "label": "has vaccine preservative",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000547",
+    "label": "vaccinated in route",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000553",
+    "label": "has vaccinee",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000608",
+    "label": "DNA vaccine expresses protein antigen",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000638",
+    "label": "obsolete vaccinates",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000711",
+    "label": "obsolete has_vaccine_allergen",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000799",
+    "label": "vaccine organism has mutation",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000818",
+    "label": "has vaccine virmugen",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000894",
+    "label": "has subunit vaccine protective antigen",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0000908",
+    "label": "is_distributed_by",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0001011",
+    "label": "immunizes against disease",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0001039",
+    "label": "has gene mutation",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0001243",
+    "label": "immunizes organism",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0001818",
+    "label": "VIOLIN vaccine ID",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0003099",
+    "label": "trade name",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0003127",
+    "label": "has prime vaccine",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0003128",
+    "label": "has boost vaccine",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0003146",
+    "label": "has vaccine active ingredient",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0003147",
+    "label": "has vaccine ingredient",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0003151",
+    "label": "vaccine dose annotation",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0003158",
+    "label": "vaccine proper name",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0003159",
+    "label": "vaccine manufacturer",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0003160",
+    "label": "FDA vaccine indications",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0003161",
+    "label": "vaccine package insert PDF URL",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0003162",
+    "label": "vaccine STN",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0003198",
+    "label": "RxNORM ID",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0003355",
+    "label": "immunizes against microbe",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0003557",
+    "label": "has Protegen id",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0003558",
+    "label": "has Protegen annotation",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0003560",
+    "label": "RxNORM Preferred Name",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0004909",
+    "label": "immunizes against disease process",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0005242",
+    "label": "up-expressed as immune signature of",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0005312",
+    "label": "induces immune profile",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0005328",
+    "label": "VAC adjuvant ID",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0005377",
+    "label": "has molecular receptor",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0005431",
+    "label": "vaccine antigen annotation",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0005432",
+    "label": "vaccine preparation annotation",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0005433",
+    "label": "vaccine response annotation",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0005438",
+    "label": "CVX code",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0005481",
+    "label": "capable of blocking transmission (of life cycle)",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0005500",
+    "label": "status of vaccine development",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0005561",
+    "label": "blocks transmission of pathogen via vaccine",
+    "prefix": "vo"
+  },
+  {
+    "identifier": "0005562",
+    "label": "vaccine immunity response transferrable to organism",
+    "prefix": "vo"
   }
 ]
