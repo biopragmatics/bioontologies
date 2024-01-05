@@ -109,7 +109,7 @@ class Definition(BaseModel):
         if not references:
             references = []
         return cls(
-            value=value,
+            val=value,
             xrefs_raw=[r.curie for r in references],
             references=references,
             standardize=True,
