@@ -542,10 +542,10 @@ class Graph(BaseModel, StandardizeMixin):
     meta: Optional[Meta] = None
     nodes: List[Node] = Field(default_factory=list)
     edges: List[Edge] = Field(default_factory=list)
-    equivalentNodesSets: Any  # noqa:N815
-    logicalDefinitionAxioms: Any  # noqa:N815
-    domainRangeAxioms: Any  # noqa:N815
-    propertyChainAxioms: Any  # noqa:N815
+    equivalentNodesSets: List[Any] = Field(default_factory=list)  # noqa:N815
+    logicalDefinitionAxioms: List[Any] = Field(default_factory=list)  # noqa:N815
+    domainRangeAxioms: List[Any] = Field(default_factory=list)  # noqa:N815
+    propertyChainAxioms: List[Any] = Field(default_factory=list)  # noqa:N815
 
     # Extras beyond the OBO Graph spec
     prefix: Optional[str] = None
