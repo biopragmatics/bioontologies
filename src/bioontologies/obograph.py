@@ -12,7 +12,6 @@ from pathlib import Path
 from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union
 
 import bioregistry
-import curies
 import pandas as pd
 from bioregistry import manager
 from curies import Reference, ReferenceTuple
@@ -713,7 +712,7 @@ class Graph(BaseModel, StandardizeMixin):
                 rv.append((node.reference, xref.predicate, xref.value))
         return rv
 
-    def _get_edge_predicate_label(self, edge: Edge, ctn) -> str:
+    def _get_edge_predicate_label(self, edge: Edge, ctn, require_label: bool = False) -> str:
         if edge.predicate:
             label = get_normalized_label(edge.predicate.curie)
             if label:
@@ -729,9 +728,10 @@ class Graph(BaseModel, StandardizeMixin):
 
             if edge.predicate.curie not in MISSING_PREDICATE_LABELS:
                 MISSING_PREDICATE_LABELS.add(edge.predicate.curie)
-                tqdm.write(
-                    f"bioontologies.obograph could not find a label for CURIE {edge.predicate.curie}"
-                )
+                msg = f"bioontologies.obograph could not find a label for {self.prefix} CURIE {edge.predicate.curie}"
+                if require_label:
+                    raise ValueError(msg)
+                tqdm.write(msg)
             return edge.predicate.curie
 
         label = get_normalized_label(edge.pred)
@@ -743,7 +743,7 @@ class Graph(BaseModel, StandardizeMixin):
             tqdm.write(f"No CURIE/label for {edge.pred}")
         return edge.pred
 
-    def get_edges_df(self) -> pd.DataFrame:
+    def get_edges_df(self, *, require_labels: bool = False) -> pd.DataFrame:
         """Get all triples as a dataframe."""
         self.raise_on_unstandardized()
         if self.prefix is None:
@@ -753,7 +753,7 @@ class Graph(BaseModel, StandardizeMixin):
         rows = sorted(
             (
                 edge.subject.curie,
-                self._get_edge_predicate_label(edge, ctn=ctn),
+                self._get_edge_predicate_label(edge, ctn=ctn, require_label=require_labels),
                 edge.object.curie,
                 edge.predicate.curie,
             )
@@ -762,6 +762,19 @@ class Graph(BaseModel, StandardizeMixin):
             and edge.predicate
             and edge.object
             and edge.subject.prefix == self.prefix
+        )
+
+        # Add provenance relations
+        rows.extend(
+            (
+                node.curie,
+                "definition_source",
+                "iao:0000119",
+                definition_p.curie,
+            )
+            for node in self.nodes
+            if node.reference
+            for definition_p in node.definition_provenance
         )
         return pd.DataFrame(rows, columns=columns).drop_duplicates()
 
