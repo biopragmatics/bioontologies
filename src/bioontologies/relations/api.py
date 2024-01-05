@@ -136,7 +136,7 @@ def main():
                 continue
             node.standardize()
             if not node.prefix:
-                tqdm.write(f"[{source}] could not parse {node.id}")
+                tqdm.write(f"[{source}] could not parse node: {node.id}")
                 continue
             rows.append(
                 (
