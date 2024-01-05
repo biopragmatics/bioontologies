@@ -40,6 +40,7 @@ LABELS = {
     "rdfs:subClassOf": "is_a",
     "rdfs:subPropertyOf": "subproperty",
     "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": "type",
+    "obo:has_prefix": "has_unit_prefix",  # weird thing from UO
     # FIXME deal with these relations
     "http://purl.obolibrary.org/obo/uberon/core#proximally_connected_to": "proximally_connected_to",
     "http://purl.obolibrary.org/obo/uberon/core#extends_fibers_into": "proximally_connected_to",
@@ -52,6 +53,9 @@ LABELS = {
     "http://purl.obolibrary.org/obo/uberon/core#posteriorly_connected_to": "posteriorly_connected_to",
     "http://purl.obolibrary.org/obo/uberon/core#evolved_from": "evolved_from",
     "http://purl.obolibrary.org/obo/uberon/core#anteriorly_connected_to": "anteriorly_connected_to",
+    #
+    "obi:0000304": "is_manufactured_by",
+    "vo:0003355": "immunizes_against_microbe",
 }
 
 
