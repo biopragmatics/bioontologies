@@ -850,7 +850,7 @@ class Graph(BaseModel, StandardizeMixin):
                     sep.join(synonym_predicates),
                     sep.join(synonym_types),
                     node.definition,
-                    node.deprecated,
+                    "true" if node.deprecated else "false",
                     node.type,
                     sep.join(reference.curie for reference in node.get_provenance()),
                     sep.join(node.alternative_ids),
