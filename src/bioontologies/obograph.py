@@ -611,6 +611,8 @@ class Graph(BaseModel, StandardizeMixin):
         self,
         keep_invalid: bool = False,
         use_tqdm: bool = True,
+        nodes: bool = True,
+        edges: bool = True,
         tqdm_kwargs: Optional[Mapping[str, Any]] = None,
         prefix: Optional[str] = None,
     ) -> Self:
@@ -624,6 +626,8 @@ class Graph(BaseModel, StandardizeMixin):
             Arguments to pass to tqdm if used
         :param prefix:
             The prefix this graph came from (used for logging purposes)
+        :param nodes: Should nodes be standardized?
+        :param edges: Should edges be standardized?
         :returns: This OBO graph, modified in place as follows:
 
             1. Convert IRIs to CURIEs (in many places) using :mod:`bioregistry`
@@ -634,25 +638,27 @@ class Graph(BaseModel, StandardizeMixin):
         if self.meta:
             self.meta.standardize()
 
-        _node_tqdm_kwargs = dict(
-            desc="standardizing nodes" if not prefix else f"[{prefix}] standardizing nodes",
-            unit_scale=True,
-            disable=not use_tqdm,
-        )
-        if tqdm_kwargs:
-            _node_tqdm_kwargs.update(tqdm_kwargs)
-        for node in tqdm(self.nodes, **_node_tqdm_kwargs):
-            node.standardize()
+        if nodes:
+            _node_tqdm_kwargs = dict(
+                desc="standardizing nodes" if not prefix else f"[{prefix}] standardizing nodes",
+                unit_scale=True,
+                disable=not use_tqdm,
+            )
+            if tqdm_kwargs:
+                _node_tqdm_kwargs.update(tqdm_kwargs)
+            for node in tqdm(self.nodes, **_node_tqdm_kwargs):
+                node.standardize()
 
-        _edge_tqdm_kwargs = dict(
-            desc="standardizing edges" if not prefix else f"[{prefix}] standardizing edges",
-            unit_scale=True,
-            disable=not use_tqdm,
-        )
-        if tqdm_kwargs:
-            _edge_tqdm_kwargs.update(tqdm_kwargs)
-        for edge in tqdm(self.edges, **_edge_tqdm_kwargs):
-            edge.standardize()
+        if edges:
+            _edge_tqdm_kwargs = dict(
+                desc="standardizing edges" if not prefix else f"[{prefix}] standardizing edges",
+                unit_scale=True,
+                disable=not use_tqdm,
+            )
+            if tqdm_kwargs:
+                _edge_tqdm_kwargs.update(tqdm_kwargs)
+            for edge in tqdm(self.edges, **_edge_tqdm_kwargs):
+                edge.standardize()
 
         if self.prefix is None:
             self._standardize_prefix()
