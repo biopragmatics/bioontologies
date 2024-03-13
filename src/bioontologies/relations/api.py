@@ -56,6 +56,7 @@ LABELS = {
     #
     "obi:0000304": "is_manufactured_by",
     "vo:0003355": "immunizes_against_microbe",
+    "bao:0002846": "has_assay_protocol",
 }
 
 
