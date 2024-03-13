@@ -3,7 +3,7 @@
 """Bioontologies' Gilda utilities."""
 
 import logging
-from typing import TYPE_CHECKING, Any, Iterable
+from typing import TYPE_CHECKING, Any, Iterable, Optional
 
 from tqdm.auto import tqdm
 
@@ -58,15 +58,34 @@ def get_gilda_terms(prefix: str, **kwargs: Any) -> Iterable["gilda.term.Term"]:
     if parse_results.graph_document is None:
         return
     for graph in parse_results.graph_document.graphs:
-        graph.standardize(prefix=prefix)
+        graph.standardize(prefix=prefix, nodes=True, edges=False)
         yield from gilda_from_graph(prefix, graph)
+
+
+def _fast_term(
+    text, prefix, identifier, name, status, source, organism
+) -> Optional["gilda.term.Term"]:
+    import gilda.term
+    from gilda.process import normalize
+
+    try:
+        term = gilda.term.Term(
+            norm_text=normalize(text),
+            text=text,
+            db=prefix,
+            id=identifier,
+            entry_name=name,
+            status=status,
+            source=source,
+            organism=organism,
+        )
+    except ValueError:
+        return None
+    return term
 
 
 def gilda_from_graph(prefix: str, graph: Graph) -> Iterable["gilda.term.Term"]:
     """Get Gilda terms from a given graph."""
-    import gilda.term
-    from gilda.process import normalize
-
     species = {}
     for edge in graph.edges:
         if not edge.standardized:
@@ -87,24 +106,26 @@ def gilda_from_graph(prefix: str, graph: Graph) -> Iterable["gilda.term.Term"]:
             # Don't add references from other namespaces
             continue
         organism = species.get(node.reference.identifier)
-        yield gilda.term.Term(
-            norm_text=normalize(node.name),
+        term = _fast_term(
             text=node.name,
-            db=prefix,
-            id=node.reference.identifier,
-            entry_name=node.name,
+            prefix=prefix,
+            identifier=node.reference.identifier,
+            name=node.name,
             status="name",
             source=prefix,
             organism=organism,
         )
+        if term is not None:
+            yield term
         for synonym in node.synonyms:
-            yield gilda.term.Term(
-                norm_text=normalize(synonym.value),
+            term = _fast_term(
                 text=synonym.value,
-                db=prefix,
-                id=node.reference.identifier,
-                entry_name=node.name,
+                prefix=prefix,
+                identifier=node.reference.identifier,
+                name=node.name,
                 status="synonym",
                 source=prefix,
                 organism=organism,
             )
+            if term is not None:
+                yield term
