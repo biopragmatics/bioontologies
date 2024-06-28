@@ -41,9 +41,9 @@ __all__ = [
 
 logger = logging.getLogger(__name__)
 
-LATEST = "1.9.4"
-ROBOT_URL = f"https://github.com/ontodev/robot/releases/download/v{LATEST}/robot.jar"
-ROBOT_MODULE = pystow.module("robot")
+VERSION = "1.9.6"
+ROBOT_URL = f"https://github.com/ontodev/robot/releases/download/v{VERSION}/robot.jar"
+ROBOT_MODULE = pystow.module("robot", VERSION)
 ROBOT_PATH = ROBOT_MODULE.ensure(url=ROBOT_URL)
 ROBOT_COMMAND = ["java", "-jar", str(ROBOT_PATH)]
 
