@@ -38,13 +38,17 @@ def main():
 @main.command()
 @click.argument("prefix")
 @click.option("--directory", type=Path)
-@click.option("--graph-id")
-@click.option("--save-obograph", is_flag=True)
+@click.option("--graph-id", help="The IRI of the graph to parse. Set this if it can't be guessed")
+@click.option(
+    "--save-obograph",
+    is_flag=True,
+    help="Save intermediate OBO Graph JSON file if conversion from OWL is required",
+)
 def index(prefix: str, graph_id: Optional[str], directory: Optional[Path], save_obograph: bool):
     """Generate a node index file."""
     from .robot import get_obograph_by_prefix
 
-    prefix = bioregistry.normalize_prefix(prefix, strict=True)
+    prefix = bioregistry.normalize_prefix(prefix)
 
     if directory is None:
         directory = pystow.join("bioontologies", "index", prefix)
