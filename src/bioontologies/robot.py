@@ -279,6 +279,7 @@ def convert_to_obograph(
     merge: bool = True,
     check: bool = True,
     reason: bool = True,
+    debug: bool = False,
 ) -> ParseResults:
     """Convert a local OWL file to a JSON file.
 
@@ -305,6 +306,8 @@ def convert_to_obograph(
         These checks can be ignored by setting this to false.
     :param reason:
         Turn on ontology reasoning
+    :param debug:
+        Turn on debugging (-vvv)
 
     :returns: An object with the parsed OBO Graph JSON and text
         output from the ROBOT conversion program
@@ -328,6 +331,7 @@ def convert_to_obograph(
             merge=merge,
             check=check,
             reason=reason,
+            debug=debug,
         )
         messages = ret.strip().splitlines()
         graph_document_raw = json.loads(path.read_text())
@@ -429,6 +433,7 @@ def convert(
     check: bool = True,
     reason: bool = False,
     extra_args: list[str] | None = None,
+    debug: bool = False,
 ) -> str:
     """Convert an OBO file to an OWL file with ROBOT.
 
@@ -450,6 +455,8 @@ def convert(
         Turn on ontology reasoning
     :param extra_args:
         Extra positional arguments to pass in the command line
+    :param debug:
+        Turn on -vvv
     :return: Output from standard out from running ROBOT
     """
     if input_flag is None:
@@ -494,6 +501,8 @@ def convert(
         args.append("--check=false")
     if fmt:
         args.extend(("--format", fmt))
+    if debug:
+        args.append("-vvv")
     logger.debug("Running shell command: %s", args)
     ret = check_output(  # noqa:S603
         args,
