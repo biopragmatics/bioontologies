@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
-
 """Bioontologies' Gilda utilities."""
 
 import logging
-from typing import TYPE_CHECKING, Any, Iterable, Optional
+from collections.abc import Iterable
+from typing import TYPE_CHECKING, Any, Optional
 
 from tqdm.auto import tqdm
 

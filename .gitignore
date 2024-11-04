@@ -362,6 +362,8 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+docs/build
+docs/source/api
 
 # PyBuilder
 .pybuilder/
@@ -897,4 +899,3 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/macos,linux,windows,python,jupyternotebooks,jetbrains,pycharm,vim,emacs,visualstudiocode,visualstudio
 
 scratch/
-docs/source/api/

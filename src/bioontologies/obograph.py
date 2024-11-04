@@ -3,13 +3,16 @@
 .. seealso:: https://github.com/geneontology/obographs
 """
 
+from __future__ import annotations
+
 import itertools as itt
 import logging
 import typing
 from collections import Counter, defaultdict
+from collections.abc import Iterable, Mapping
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Iterable, List, Mapping, Optional, Set, Tuple, Union
+from typing import Any, Literal
 
 import bioregistry
 import pandas as pd
@@ -17,7 +20,7 @@ from bioregistry import manager
 from curies import Reference, ReferenceTuple
 from pydantic import BaseModel, Field
 from tqdm.auto import tqdm
-from typing_extensions import Literal, Self
+from typing_extensions import Self
 
 from .constants import CANONICAL, IRI_TO_PREFIX
 from .relations import get_normalized_label, ground_relation, label_norm
@@ -46,7 +49,7 @@ PROVENANCE_PREFIXES = {"pubmed", "pmc", "doi", "arxiv", "biorxiv", "medrxiv", "a
 
 MISSING_PREDICATE_LABELS = set()
 
-MaybeCURIE = Union[Tuple[str, str], Tuple[None, None]]
+MaybeCURIE = tuple[str, str] | tuple[None, None]
 
 
 class StandardizeMixin:
@@ -70,8 +73,8 @@ class Property(BaseModel, StandardizeMixin):
 
     # Extras beyond the OBO Graph spec
     standardized: bool = Field(False, exclude=True)
-    predicate: Optional[Reference] = None
-    value: Optional[Reference] = None
+    predicate: Reference | None = None
+    value: Reference | None = None
 
     def standardize(self) -> Self:
         """Standardize this property."""
@@ -85,13 +88,11 @@ class Property(BaseModel, StandardizeMixin):
 class Definition(BaseModel):
     """Represents a definition for a node."""
 
-    value: Optional[str] = Field(default=None, alias="val")
-    xrefs_raw: Optional[List[str]] = Field(
-        default=None, alias="xrefs"
-    )  # Just a list of CURIEs/IRIs
+    value: str | None = Field(default=None, alias="val")
+    xrefs_raw: list[str] | None = Field(default=None, alias="xrefs")  # Just a list of CURIEs/IRIs
 
     # Extras beyond the OBO Graph spec
-    references: Optional[List[Reference]] = None
+    references: list[Reference] | None = None
     standardized: bool = Field(False, exclude=True)
 
     def standardize(self) -> Self:
@@ -104,7 +105,7 @@ class Definition(BaseModel):
         return self
 
     @classmethod
-    def from_parsed(cls, value: str, references: Optional[List[Reference]] = None) -> "Definition":
+    def from_parsed(cls, value: str, references: list[Reference] | None = None) -> Definition:
         """Construct a definition object from pre-standardized content."""
         if not references:
             references = []
@@ -125,10 +126,8 @@ class Xref(BaseModel, StandardizeMixin):
     )  # note this is not part of the OBO Graph spec
 
     # Extras beyond the OBO Graph spec
-    predicate: Optional[Reference] = Field(
-        default=None, description="The reference for the predicate"
-    )
-    value: Optional[Reference] = Field(default=None, description="The reference for the value")
+    predicate: Reference | None = Field(default=None, description="The reference for the predicate")
+    value: Reference | None = Field(default=None, description="The reference for the value")
     standardized: bool = Field(default=False, exclude=True)
 
     def standardize(self) -> Self:
@@ -139,7 +138,7 @@ class Xref(BaseModel, StandardizeMixin):
         return self
 
     @classmethod
-    def from_parsed(cls, predicate: Reference, value: Reference) -> "Xref":
+    def from_parsed(cls, predicate: Reference, value: Reference) -> Xref:
         """Construct an xref object from pre-standardized content."""
         return Xref(
             val=value.curie,
@@ -171,25 +170,25 @@ OBO_SYNONYM_TO_OIO = {
 class Synonym(BaseModel, StandardizeMixin):
     """Represents a synonym inside an object meta."""
 
-    value: Optional[str] = Field(default=None, alias="val")
+    value: str | None = Field(default=None, alias="val")
     predicate_raw: str = Field(default="hasExactSynonym", alias="pred")
     synonym_type_raw: str = Field(
-        alias="synonymType", default="oboInOwl:SynonymType", example="OMO:0003000"
-    )  # noqa:N815
-    xrefs_raw: List[str] = Field(
+        alias="synonymType", default="oboInOwl:SynonymType", examples=["OMO:0003000"]
+    )
+    xrefs_raw: list[str] = Field(
         default_factory=list,
         alias="xrefs",
         description="A list of CURIEs/IRIs for provenance for the synonym",
     )
 
     # Added
-    predicate: Optional[Reference] = Field(
-        default=None, example=Reference(prefix="", identifier="hasExactSynonym")
+    predicate: Reference | None = Field(
+        default=None, examples=[Reference(prefix="", identifier="hasExactSynonym")]
     )
-    synonym_type: Optional[Reference] = Field(
-        default=None, example=Reference(prefix="OMO", identifier="0003000")
+    synonym_type: Reference | None = Field(
+        default=None, examples=[Reference(prefix="OMO", identifier="0003000")]
     )
-    references: Optional[List[Reference]] = None
+    references: list[Reference] | None = None
     standardized: bool = Field(False, exclude=True)
 
     def standardize(self) -> Self:
@@ -208,9 +207,9 @@ class Synonym(BaseModel, StandardizeMixin):
         cls,
         name: str,
         predicate: Reference,
-        synonym_type: Optional[Reference] = None,
-        references: Optional[List[Reference]] = None,
-    ) -> "Synonym":
+        synonym_type: Reference | None = None,
+        references: list[Reference] | None = None,
+    ) -> Synonym:
         """Construct a synonym object from pre-standardized content."""
         if not references:
             references = []
@@ -231,13 +230,13 @@ class Synonym(BaseModel, StandardizeMixin):
 class Meta(BaseModel, StandardizeMixin):
     """Represents the metadata about a node or ontology."""
 
-    definition: Optional[Definition] = None
-    subsets: Optional[List[str]] = None
-    xrefs: Optional[List[Xref]] = None
-    synonyms: Optional[List[Synonym]] = None
-    comments: Optional[List] = None
-    version: Optional[str] = None
-    properties: Optional[List[Property]] = Field(None, alias="basicPropertyValues")
+    definition: Definition | None = None
+    subsets: list[str] | None = None
+    xrefs: list[Xref] | None = None
+    synonyms: list[Synonym] | None = None
+    comments: list | None = None
+    version: str | None = None
+    properties: list[Property] | None = Field(None, alias="basicPropertyValues")
     deprecated: bool = False
 
     #
@@ -252,15 +251,12 @@ class Meta(BaseModel, StandardizeMixin):
         if self.definition:
             self.definition.standardize()
         if self.xrefs:
-            xrefs: List[Xref] = []
-            seen: Set[Tuple[str, str]] = set()
+            xrefs: list[Xref] = []
+            seen: set[tuple[str, str]] = set()
             for xref in self.xrefs:
                 xref.standardize()
                 if xref.predicate is None or xref.value is None:
                     continue
-                # if xref.value.prefix == self.prefix and xref.value.identifier == self.luid:
-                # this is a reference to itself, weird!
-                #    continue
                 if xref.value.pair in seen:
                     continue
                 seen.add(xref.value.pair)
@@ -268,7 +264,8 @@ class Meta(BaseModel, StandardizeMixin):
             # we ignore type checking since the loop for construting the xrefs lis
             # checks that the predicate and value are both non-none
             self.xrefs = sorted(
-                xrefs, key=lambda x: (x.predicate.curie, x.value.curie)  # type:ignore
+                xrefs,
+                key=lambda x: (x.predicate.curie, x.value.curie),  # type:ignore
             )
         return self
 
@@ -276,23 +273,23 @@ class Meta(BaseModel, StandardizeMixin):
 class Edge(BaseModel):
     """Represents an edge in an OBO Graph."""
 
-    sub: str = Field(..., alias="sub", example="http://purl.obolibrary.org/obo/CHEBI_99998")
-    pred: str = Field(..., alias="pred", example="is_a")
-    obj: str = Field(..., alias="obj", example="http://purl.obolibrary.org/obo/CHEBI_24995")
-    meta: Optional[Meta] = None
+    sub: str = Field(..., alias="sub", examples=["http://purl.obolibrary.org/obo/CHEBI_99998"])
+    pred: str = Field(..., alias="pred", examples=["is_a"])
+    obj: str = Field(..., alias="obj", examples=["http://purl.obolibrary.org/obo/CHEBI_24995"])
+    meta: Meta | None = None
 
     standardized: bool = Field(False, exclude=True)
-    subject: Optional[Reference] = Field(
-        default=None, example=Reference(prefix="chebi", identifier="99998")
+    subject: Reference | None = Field(
+        default=None, examples=[Reference(prefix="chebi", identifier="99998")]
     )
-    predicate: Optional[Reference] = Field(
-        default=None, example=Reference(prefix="rdfs", identifier="subClassOf")
+    predicate: Reference | None = Field(
+        default=None, examples=[Reference(prefix="rdfs", identifier="subClassOf")]
     )
-    object: Optional[Reference] = Field(
-        default=None, example=Reference(prefix="chebi", identifier="24995")
+    object: Reference | None = Field(
+        default=None, examples=[Reference(prefix="chebi", identifier="24995")]
     )
 
-    def as_tuple(self) -> Tuple[str, str, str]:
+    def as_tuple(self) -> tuple[str, str, str]:
         """Get the edge as a tuple."""
         if self.subject is None or self.predicate is None or self.object is None:
             raise ValueError
@@ -310,8 +307,8 @@ class Edge(BaseModel):
 
     @classmethod
     def from_parsed(
-        cls, s: Reference, p: Reference, o: Reference, meta: Optional[Meta] = None
-    ) -> "Edge":
+        cls, s: Reference, p: Reference, o: Reference, meta: Meta | None = None
+    ) -> Edge:
         """Construct an edge object from pre-standardized content."""
         return Edge(
             sub=s.curie,
@@ -325,7 +322,7 @@ class Edge(BaseModel):
         )
 
 
-def _help_get_properties(self, predicate_iris: Union[str, List[str]]) -> List[str]:
+def _help_get_properties(self, predicate_iris: str | list[str]) -> list[str]:
     if not self.meta:
         return []
     if isinstance(predicate_iris, str):
@@ -341,21 +338,21 @@ class Node(BaseModel, StandardizeMixin):
     """Represents a node in an OBO Graph."""
 
     id: str = Field(..., description="The IRI for the node")
-    name: Optional[str] = Field(None, alias="lbl", description="The name of the node")
-    meta: Optional[Meta] = None
+    name: str | None = Field(None, alias="lbl", description="The name of the node")
+    meta: Meta | None = None
     type: Literal["CLASS", "PROPERTY", "INDIVIDUAL"] = Field(..., description="Type of node")
 
     # Extras beyond OBO Graph spec
-    reference: Optional[Reference] = None
+    reference: Reference | None = None
     standardized: bool = Field(False, exclude=True)
 
     @property
-    def prefix(self) -> Optional[str]:
+    def prefix(self) -> str | None:
         """Get the prefix for the node if it has been standardized."""
         return self.reference and self.reference.prefix
 
     @property
-    def identifier(self) -> Optional[str]:
+    def identifier(self) -> str | None:
         """Get the identifier for the node if it has been standardized."""
         return self.reference and self.reference.identifier
 
@@ -386,14 +383,14 @@ class Node(BaseModel, StandardizeMixin):
         return self.meta.deprecated
 
     @property
-    def synonyms(self) -> List[Synonym]:
+    def synonyms(self) -> list[Synonym]:
         """Get the synonyms for the node."""
         if self.meta and self.meta.synonyms:
             return self.meta.synonyms
         return []
 
     @property
-    def xrefs(self) -> List[Xref]:
+    def xrefs(self) -> list[Xref]:
         """Get the xrefs for the node."""
         rv = []
         skip_skos = {
@@ -434,7 +431,7 @@ class Node(BaseModel, StandardizeMixin):
         return rv
 
     @property
-    def properties(self) -> List[Property]:
+    def properties(self) -> list[Property]:
         """Get the properties for this node."""
         if not self.meta or self.meta.properties is None:
             return []
@@ -442,7 +439,7 @@ class Node(BaseModel, StandardizeMixin):
         return self.meta.properties
 
     @property
-    def replaced_by(self) -> Optional[str]:
+    def replaced_by(self) -> str | None:
         """Get the identifier that this node was replaced by."""
         preds = ["http://purl.obolibrary.org/obo/IAO_0100001", "IAO:0100001", "iao:0100001"]
         rv = self._get_property(preds)
@@ -451,7 +448,7 @@ class Node(BaseModel, StandardizeMixin):
         return manager.normalize_curie(rv)
 
     @property
-    def alternative_ids(self) -> List[str]:
+    def alternative_ids(self) -> list[str]:
         """Get the alernative identifiers for this node."""
         preds = [
             "http://www.geneontology.org/formats/oboInOwl#hasAlternativeId",
@@ -468,7 +465,7 @@ class Node(BaseModel, StandardizeMixin):
         return rv
 
     @property
-    def namespace(self) -> Optional[str]:
+    def namespace(self) -> str | None:
         """Get the OBO namespace."""
         preds = [
             "http://www.geneontology.org/formats/oboInOwl#hasOBONamespace",
@@ -477,13 +474,13 @@ class Node(BaseModel, StandardizeMixin):
         return self._get_property(preds)
 
     @property
-    def created_by(self) -> Optional[str]:
+    def created_by(self) -> str | None:
         """Get the creator of the node."""
         preds = ["http://www.geneontology.org/formats/oboInOwl#created_by", "oboinowl:created_by"]
         return self._get_property(preds)
 
     @property
-    def creation_date(self) -> Optional[str]:
+    def creation_date(self) -> str | None:
         """Get the creation date of the node."""
         preds = [
             "http://www.geneontology.org/formats/oboInOwl#creation_date",
@@ -492,17 +489,17 @@ class Node(BaseModel, StandardizeMixin):
         return self._get_property(preds)
 
     @property
-    def definition(self) -> Optional[str]:
+    def definition(self) -> str | None:
         """Get the definition of the node."""
         if self.meta and self.meta.definition:
             return self.meta.definition.value
         return None
 
-    def _get_property(self, pred: Union[str, List[str]]) -> Optional[str]:
+    def _get_property(self, pred: str | list[str]) -> str | None:
         p = self._get_properties(pred)
         return p[0] if p else None
 
-    def _get_properties(self, pred: Union[str, List[str]]) -> List[str]:
+    def _get_properties(self, pred: str | list[str]) -> list[str]:
         return _help_get_properties(self, pred)
 
     def parse_curie(self) -> MaybeCURIE:
@@ -510,13 +507,13 @@ class Node(BaseModel, StandardizeMixin):
         return _parse_uri_or_curie_or_str(self.id)
 
     @property
-    def definition_provenance(self) -> List[Reference]:
+    def definition_provenance(self) -> list[Reference]:
         """Get the provenance CURIEs for the definition."""
         if self.meta and self.meta.definition and self.meta.definition.references:
             return self.meta.definition.references
         return []
 
-    def get_provenance(self) -> List[Reference]:
+    def get_provenance(self) -> list[Reference]:
         """Get provenance CURIEs from definition and xrefs."""
         return list(
             itt.chain(
@@ -537,21 +534,21 @@ class Node(BaseModel, StandardizeMixin):
 class Graph(BaseModel, StandardizeMixin):
     """A graph corresponds to an ontology."""
 
-    id: Optional[str] = None
-    meta: Optional[Meta] = None
-    nodes: List[Node] = Field(default_factory=list)
-    edges: List[Edge] = Field(default_factory=list)
-    equivalentNodesSets: List[Any] = Field(default_factory=list)  # noqa:N815
-    logicalDefinitionAxioms: List[Any] = Field(default_factory=list)  # noqa:N815
-    domainRangeAxioms: List[Any] = Field(default_factory=list)  # noqa:N815
-    propertyChainAxioms: List[Any] = Field(default_factory=list)  # noqa:N815
+    id: str | None = None
+    meta: Meta | None = None
+    nodes: list[Node] = Field(default_factory=list)
+    edges: list[Edge] = Field(default_factory=list)
+    equivalentNodesSets: list[Any] = Field(default_factory=list)  # noqa:N815
+    logicalDefinitionAxioms: list[Any] = Field(default_factory=list)  # noqa:N815
+    domainRangeAxioms: list[Any] = Field(default_factory=list)  # noqa:N815
+    propertyChainAxioms: list[Any] = Field(default_factory=list)  # noqa:N815
 
     # Extras beyond the OBO Graph spec
-    prefix: Optional[str] = None
+    prefix: str | None = None
     standardized: bool = Field(False, exclude=True)
 
     @property
-    def roots(self) -> List[str]:
+    def roots(self) -> list[str]:
         """Get the ontology root terms."""
         return self._get_properties(
             [
@@ -561,27 +558,29 @@ class Graph(BaseModel, StandardizeMixin):
         )
 
     @property
-    def license(self) -> Optional[str]:
+    def license(self) -> str | None:
         """Get the license of the ontology."""
         return self._get_property("http://purl.org/dc/terms/license")
 
     @property
-    def title(self) -> Optional[str]:
+    def title(self) -> str | None:
         """Get the title of the ontology."""
         return self._get_property("http://purl.org/dc/elements/1.1/title")
 
     @property
-    def description(self) -> Optional[str]:
+    def description(self) -> str | None:
         """Get the license of the ontology."""
         return self._get_property("http://purl.org/dc/elements/1.1/description")
 
     @property
-    def version_iri(self) -> Optional[str]:
+    def version_iri(self) -> str | None:
         """Get the version of the ontology."""
-        return self.meta and self.meta.version
+        if self.meta is None:
+            return None
+        return self.meta.version
 
     @property
-    def version(self) -> Optional[str]:
+    def version(self) -> str | None:
         """Get the version of the ontology."""
         rv = self._get_property("http://www.w3.org/2002/07/owl#versionInfo")
         if rv:
@@ -596,15 +595,15 @@ class Graph(BaseModel, StandardizeMixin):
         return None
 
     @property
-    def default_namespace(self) -> Optional[str]:
+    def default_namespace(self) -> str | None:
         """Get the version of the ontology."""
         return self._get_property("http://www.geneontology.org/formats/oboInOwl#default-namespace")
 
-    def _get_property(self, pred: Union[str, List[str]]) -> Optional[str]:
+    def _get_property(self, pred: str | list[str]) -> str | None:
         p = self._get_properties(pred)
         return p[0] if p else None
 
-    def _get_properties(self, pred: Union[str, List[str]]) -> List[str]:
+    def _get_properties(self, pred: str | list[str]) -> list[str]:
         return _help_get_properties(self, pred)
 
     def standardize(
@@ -613,8 +612,8 @@ class Graph(BaseModel, StandardizeMixin):
         use_tqdm: bool = True,
         nodes: bool = True,
         edges: bool = True,
-        tqdm_kwargs: Optional[Mapping[str, Any]] = None,
-        prefix: Optional[str] = None,
+        tqdm_kwargs: Mapping[str, Any] | None = None,
+        prefix: str | None = None,
     ) -> Self:
         """Standardize the OBO graph.
 
@@ -639,22 +638,22 @@ class Graph(BaseModel, StandardizeMixin):
             self.meta.standardize()
 
         if nodes:
-            _node_tqdm_kwargs = dict(
-                desc="standardizing nodes" if not prefix else f"[{prefix}] standardizing nodes",
-                unit_scale=True,
-                disable=not use_tqdm,
-            )
+            _node_tqdm_kwargs = {
+                "desc": "standardizing nodes" if not prefix else f"[{prefix}] standardizing nodes",
+                "unit_scale": True,
+                "disable": not use_tqdm,
+            }
             if tqdm_kwargs:
                 _node_tqdm_kwargs.update(tqdm_kwargs)
             for node in tqdm(self.nodes, **_node_tqdm_kwargs):
                 node.standardize()
 
         if edges:
-            _edge_tqdm_kwargs = dict(
-                desc="standardizing edges" if not prefix else f"[{prefix}] standardizing edges",
-                unit_scale=True,
-                disable=not use_tqdm,
-            )
+            _edge_tqdm_kwargs = {
+                "desc": "standardizing edges" if not prefix else f"[{prefix}] standardizing edges",
+                "unit_scale": True,
+                "disable": not use_tqdm,
+            }
             if tqdm_kwargs:
                 _edge_tqdm_kwargs.update(tqdm_kwargs)
             for edge in tqdm(self.edges, **_edge_tqdm_kwargs):
@@ -685,7 +684,7 @@ class Graph(BaseModel, StandardizeMixin):
                 self.prefix = prefix
                 return
 
-    def get_alternative_ids(self) -> Mapping[str, List[str]]:
+    def get_alternative_ids(self) -> Mapping[str, list[str]]:
         """Get a mapping of primary identifiers to secondary identifiers."""
         rv = defaultdict(set)
         for node in self.nodes:
@@ -705,7 +704,7 @@ class Graph(BaseModel, StandardizeMixin):
                 continue
             yield node
 
-    def get_xrefs(self) -> List[Tuple[Reference, Reference, Reference]]:
+    def get_xrefs(self) -> list[tuple[Reference, Reference, Reference]]:
         """Get all database cross-references from the ontology."""
         rv = []
         for node in self.nodes:
@@ -734,7 +733,10 @@ class Graph(BaseModel, StandardizeMixin):
 
             if edge.predicate.curie not in MISSING_PREDICATE_LABELS:
                 MISSING_PREDICATE_LABELS.add(edge.predicate.curie)
-                msg = f"bioontologies.obograph could not find a label for {self.prefix} CURIE {edge.predicate.curie}"
+                msg = (
+                    f"bioontologies.obograph could not find a label for "
+                    f"{self.prefix} CURIE {edge.predicate.curie}"
+                )
                 if require_label:
                     raise ValueError(msg)
                 tqdm.write(msg)
@@ -847,7 +849,7 @@ class Graph(BaseModel, StandardizeMixin):
                 if xref.predicate and xref.value:
                     xref_types.append(xref.predicate.curie)
                     xref_values.append(xref.value.curie)
-            # prop_types, prop_values = [], []
+            # TODO include prop_types, prop_values?
             rows.append(
                 (
                     node.curie,
@@ -906,7 +908,7 @@ class Graph(BaseModel, StandardizeMixin):
 
 def _parse_uri_or_curie_or_str(
     s: str, *, debug: bool = False
-) -> Union[Tuple[str, str], Tuple[None, None]]:
+) -> tuple[str, str] | tuple[None, None]:
     """Ground the node to a standard prefix and luid based on its id (URI)."""
     reference_tuple = omni_parse(s, debug=debug)
     if reference_tuple is None:
@@ -917,14 +919,14 @@ def _parse_uri_or_curie_or_str(
     return resource.prefix, resource.standardize_identifier(reference_tuple.identifier)
 
 
-def _get_reference(s: str, *, debug: bool = False) -> Optional[Reference]:
+def _get_reference(s: str, *, debug: bool = False) -> Reference | None:
     p, i = _parse_uri_or_curie_or_str(s, debug=debug)
     if p and i:
         return Reference(prefix=p, identifier=i)
     return None
 
 
-def _get_references(strings: List[str]) -> List[Reference]:
+def _get_references(strings: list[str]) -> list[Reference]:
     references = [_get_reference(s) for s in strings]
     rv = [reference for reference in references if reference is not None]
     return rv
@@ -934,13 +936,13 @@ WARNED: typing.Counter[str] = Counter()
 YEARS = {f"{n}-" for n in range(1000, 2030)}
 
 
-def write_warned(path: Union[str, Path]) -> None:
+def write_warned(path: str | Path) -> None:
     """Write warned unparsable."""
     path = Path(path).resolve()
     path.write_text("\n".join(f"{k}\t{v}" for k, v in sorted(WARNED.items())))
 
 
-def _parse_obo_rel(s: str, identifier: str) -> Optional[ReferenceTuple]:
+def _parse_obo_rel(s: str, identifier: str) -> ReferenceTuple | None:
     _, inner_identifier = identifier.split("#", 1)
     _p, _i = ground_relation(inner_identifier)
     if _p and _i:
@@ -956,7 +958,7 @@ def _get_converter():
     return bioregistry.manager.get_converter(include_prefixes=True)
 
 
-def omni_parse(s: str, *, debug: bool = False) -> Optional[ReferenceTuple]:
+def omni_parse(s: str, *, debug: bool = False) -> ReferenceTuple | None:  # noqa:C901
     """Parse a string, CURIE, or IRI into a proper refernce, if possible."""
     from .upgrade import insert, upgrade
 
@@ -1010,7 +1012,7 @@ def omni_parse(s: str, *, debug: bool = False) -> Optional[ReferenceTuple]:
 class GraphDocument(BaseModel):
     """Represents a list of OBO graphs."""
 
-    graphs: List[Graph]
+    graphs: list[Graph]
 
     def standardize(self) -> Self:
         """Standardize all graphs in the document."""

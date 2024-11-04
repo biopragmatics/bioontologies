@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
-
 """Command line interface for :mod:`bioontologies`.
 
-Why does this file exist, and why not put this in ``__main__``? You might be tempted to import things from ``__main__``
+Why does this file exist, and why not put this in ``__main__``?
+You might be tempted to import things from ``__main__``
 later, but that will cause problems--the code will get executed twice:
 
 - When you run ``python3 -m bioontologies`` python will execute``__main__.py`` as a script.
@@ -16,7 +15,6 @@ later, but that will cause problems--the code will get executed twice:
 import json
 import logging
 from pathlib import Path
-from typing import Optional
 
 import bioregistry
 import click
@@ -44,7 +42,7 @@ def main():
     is_flag=True,
     help="Save intermediate OBO Graph JSON file if conversion from OWL is required",
 )
-def index(prefix: str, graph_id: Optional[str], directory: Optional[Path], save_obograph: bool):
+def index(prefix: str, graph_id: str | None, directory: Path | None, save_obograph: bool):
     """Generate a node index file."""
     from .robot import get_obograph_by_prefix
 

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """A wrapper around ROBOT functionality.
 
 .. seealso:: https://robot.obolibrary.org
@@ -15,13 +13,12 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from subprocess import check_output
-from typing import List, Optional, Union
+from typing import Literal
 
 import bioregistry
 import pystow
 import requests
 from pystow.utils import download, name_from_url
-from typing_extensions import Literal
 
 from .obograph import Graph, GraphDocument
 
@@ -58,7 +55,7 @@ def is_available() -> bool:
         return False
 
     try:
-        check_output(["java", "--help"])  # noqa:S607
+        check_output(["java", "--help"])  # noqa:S607,S603
     except Exception:
         logger.error(
             "java --help failed - this means the java runtime environment (JRE) "
@@ -73,7 +70,7 @@ def is_available() -> bool:
 
     try:
         # Check
-        check_output([*ROBOT_COMMAND, "--help"])
+        check_output([*ROBOT_COMMAND, "--help"])  # noqa:S603
     except Exception:
         logger.error("ROBOT was downloaded to %s but could not be run with --help", ROBOT_PATH)
         return False
@@ -85,9 +82,9 @@ def is_available() -> bool:
 class ParseResults:
     """A dataclass containing an OBO Graph JSON and text output from ROBOT."""
 
-    graph_document: Optional[GraphDocument]
-    messages: List[str] = dataclasses.field(default_factory=list)
-    iri: Optional[str] = None
+    graph_document: GraphDocument | None
+    messages: list[str] = dataclasses.field(default_factory=list)
+    iri: str | None = None
 
     def squeeze(self, standardize: bool = False) -> Graph:
         """Get the first graph."""
@@ -104,7 +101,7 @@ class ParseResults:
             raise ValueError("no graph document")
         return self.graph_document.guess(prefix)
 
-    def guess_version(self, prefix: str) -> Optional[str]:
+    def guess_version(self, prefix: str) -> str | None:
         """Guess the version."""
         try:
             graph = self.guess(prefix)
@@ -113,7 +110,7 @@ class ParseResults:
         else:
             return graph.version or graph.version_iri
 
-    def write(self, path: Union[str, Path]) -> None:
+    def write(self, path: str | Path) -> None:
         """Write the graph document to a file in JSON."""
         if not self.graph_document:
             raise ValueError
@@ -127,15 +124,16 @@ class ParseResults:
 
 def get_obograph_by_iri(
     iri: str,
+    timeout: int | None = 60,
 ) -> ParseResults:
     """Get an ontology by its OBO Graph JSON iri."""
-    res_json = requests.get(iri).json()
+    res_json = requests.get(iri, timeout=timeout).json()
     correct_raw_json(res_json)
     graph_document = GraphDocument.parse_obj(res_json)
     return ParseResults(graph_document=graph_document, iri=iri)
 
 
-def get_obograph_by_path(path: Union[str, Path], *, iri: Optional[str] = None) -> ParseResults:
+def get_obograph_by_path(path: str | Path, *, iri: str | None = None) -> ParseResults:
     """Get an ontology by its OBO Graph JSON file path."""
     res_json = json.loads(Path(path).resolve().read_text())
     correct_raw_json(res_json)
@@ -152,7 +150,7 @@ GETTER_MESSAGES = []
 def get_obograph_by_prefix(
     prefix: str,
     *,
-    json_path: Union[None, str, Path] = None,
+    json_path: None | str | Path = None,
     cache: bool = False,
     check: bool = True,
     reason: bool = True,
@@ -167,7 +165,7 @@ def get_obograph_by_prefix(
     if json_iri is not None:
         try:
             parse_results = get_obograph_by_iri(json_iri)
-        except (IOError, ValueError, TypeError) as e:
+        except (OSError, ValueError, TypeError) as e:
             msg = f"[{prefix}] could not parse JSON from {json_iri}: {e}"
             messages.append(msg)
             GETTER_MESSAGES.append(msg)
@@ -209,10 +207,10 @@ def get_obograph_by_prefix(
 
 
 def convert_to_obograph_local(
-    path: Union[str, Path],
+    path: str | Path,
     *,
-    json_path: Union[None, str, Path] = None,
-    from_iri: Optional[str] = None,
+    json_path: None | str | Path = None,
+    from_iri: str | None = None,
     check: bool = True,
 ) -> ParseResults:
     """Convert a local OWL/OBO file to an OBO Graph JSON object.
@@ -239,7 +237,7 @@ def convert_to_obograph_local(
 def convert_to_obograph_remote(
     iri: str,
     *,
-    json_path: Union[None, str, Path] = None,
+    json_path: None | str | Path = None,
     check: bool = True,
     reason: bool = True,
 ) -> ParseResults:
@@ -271,13 +269,13 @@ def convert_to_obograph_remote(
 
 
 def convert_to_obograph(
-    input_path: Union[str, Path],
+    input_path: str | Path,
     *,
-    input_flag: Optional[Literal["-i", "-I"]] = None,
-    json_path: Union[None, str, Path] = None,
+    input_flag: Literal["-i", "-I"] | None = None,
+    json_path: None | str | Path = None,
     input_is_iri: bool = False,
-    extra_args: Optional[List[str]] = None,
-    from_iri: Optional[str] = None,
+    extra_args: list[str] | None = None,
+    from_iri: str | None = None,
     merge: bool = True,
     check: bool = True,
     reason: bool = True,
@@ -343,7 +341,8 @@ def convert_to_obograph(
                 graphs_raw[0]["id"] = input_path
             elif from_iri is not None:
                 logger.warning(
-                    f"{input_path} has a single graph, missing an ID. assigning with IRI: {from_iri}"
+                    f"{input_path} has a single graph, missing an ID. "
+                    f"assigning with IRI: {from_iri}"
                 )
                 graphs_raw[0]["id"] = from_iri
             else:
@@ -407,12 +406,12 @@ PROTOCOLS = {
 }
 
 
-def _is_remote(url: Union[str, Path]) -> bool:
+def _is_remote(url: str | Path) -> bool:
     return isinstance(url, str) and any(url.startswith(protocol) for protocol in PROTOCOLS)
 
 
 @contextmanager
-def _path_context(path: Union[None, str, Path], name: str = "output.json"):
+def _path_context(path: None | str | Path, name: str = "output.json"):
     if path is not None:
         yield Path(path).resolve()
     else:
@@ -421,15 +420,15 @@ def _path_context(path: Union[None, str, Path], name: str = "output.json"):
 
 
 def convert(
-    input_path: Union[str, Path],
-    output_path: Union[str, Path],
-    input_flag: Optional[Literal["-i", "-I"]] = None,
+    input_path: str | Path,
+    output_path: str | Path,
+    input_flag: Literal["-i", "-I"] | None = None,
     *,
     merge: bool = True,
-    fmt: Optional[str] = None,
+    fmt: str | None = None,
     check: bool = True,
     reason: bool = False,
-    extra_args: Optional[List[str]] = None,
+    extra_args: list[str] | None = None,
 ) -> str:
     """Convert an OBO file to an OWL file with ROBOT.
 
@@ -456,15 +455,15 @@ def convert(
     if input_flag is None:
         input_flag = "-I" if _is_remote(input_path) else "-i"
 
-    args = list(ROBOT_COMMAND)
+    args: list[str] = list(ROBOT_COMMAND)
 
     if merge and not reason:
-        args.extend(["merge", input_flag, str(input_path), "convert"])
+        args.extend(["merge", str(input_flag), str(input_path), "convert"])
     elif merge and reason:
         args.extend(
             [
                 "merge",
-                input_flag,
+                str(input_flag),
                 str(input_path),
                 "reason",
                 "convert",
@@ -474,7 +473,7 @@ def convert(
         args.extend(
             [
                 "reason",
-                input_flag,
+                str(input_flag),
                 str(input_path),
                 "convert",
             ]
@@ -483,7 +482,7 @@ def convert(
         args.extend(
             [
                 "convert",
-                input_flag,
+                str(input_flag),
                 str(input_path),
             ]
         )
@@ -503,7 +502,7 @@ def convert(
     return ret.decode()
 
 
-def write_getter_warnings(path: Union[str, Path]) -> None:
+def write_getter_warnings(path: str | Path) -> None:
     """Write warned unparsable."""
     path = Path(path).resolve()
     path.write_text("\n".join(GETTER_MESSAGES))
