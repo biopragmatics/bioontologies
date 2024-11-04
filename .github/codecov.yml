@@ -1,0 +1,4 @@
+# see https://docs.codecov.com/v4.6/docs/codecov-yaml
+ignore:
+  - "src/bioontologies/__main__.py"
+  - "src/bioontologies/cli.py"
