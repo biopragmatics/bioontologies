@@ -1,9 +1,9 @@
 """A curated database of upgrades for outdated strings and IRIs appearing in ontologies."""
 
 import csv
+from collections.abc import Mapping
 from functools import lru_cache
 from pathlib import Path
-from typing import Mapping, Optional
 
 from curies import ReferenceTuple
 from tqdm import tqdm
@@ -23,7 +23,7 @@ PATH = HERE.joinpath("data.tsv")
 Terms = Mapping[str, ReferenceTuple]
 
 
-def upgrade(s: str) -> Optional[ReferenceTuple]:
+def upgrade(s: str) -> ReferenceTuple | None:
     """Upgrade a string, which is potentially an IRI to a curated CURIE pair."""
     return load().get(s)
 
@@ -52,7 +52,8 @@ def insert(term: str, prefix: str, identifier: str) -> None:
     if existing:
         if existing != reference_tuple:
             tqdm.write(
-                f"Conflict for inserting {term} between existing {existing} and reference {reference_tuple}. Skipping."
+                f"Conflict for inserting {term} between existing {existing} "
+                f"and reference {reference_tuple}. Skipping."
             )
         return None
     terms[term] = reference_tuple

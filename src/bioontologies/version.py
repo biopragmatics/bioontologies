@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
-
 """Version information for :mod:`bioontologies`.
 
 Run with ``python -m bioontologies.version``
 """
 
 import os
-from subprocess import CalledProcessError, check_output  # noqa: S404
+from subprocess import CalledProcessError, check_output
 
 __all__ = [
     "VERSION",
@@ -21,7 +19,7 @@ def get_git_hash() -> str:
     """Get the :mod:`bioontologies` git hash."""
     with open(os.devnull, "w") as devnull:
         try:
-            ret = check_output(  # noqa: S603,S607
+            ret = check_output(
                 ["git", "rev-parse", "HEAD"],
                 cwd=os.path.dirname(__file__),
                 stderr=devnull,
@@ -38,4 +36,4 @@ def get_version(with_git_hash: bool = False):
 
 
 if __name__ == "__main__":
-    print(get_version(with_git_hash=True))  # noqa:T201,T001
+    print(get_version(with_git_hash=True))  # noqa: T201

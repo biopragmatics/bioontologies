@@ -1,9 +1,9 @@
 """API for grounding relations."""
 
 import json
+from collections.abc import Mapping
 from functools import lru_cache
 from pathlib import Path
-from typing import Mapping, Optional, Tuple, Union
 
 import requests
 from tqdm import tqdm
@@ -50,7 +50,7 @@ LABELS = {
     "http://purl.obolibrary.org/obo/uberon/core#channels_from": "channels_from",
     "http://purl.obolibrary.org/obo/uberon/core#subdivision_of": "subdivision_of",
     "http://purl.obolibrary.org/obo/uberon/core#protects": "protects",
-    "http://purl.obolibrary.org/obo/uberon/core#posteriorly_connected_to": "posteriorly_connected_to",
+    "http://purl.obolibrary.org/obo/uberon/core#posteriorly_connected_to": "posteriorly_connected_to",  # noqa:E501
     "http://purl.obolibrary.org/obo/uberon/core#evolved_from": "evolved_from",
     "http://purl.obolibrary.org/obo/uberon/core#anteriorly_connected_to": "anteriorly_connected_to",
     #
@@ -64,12 +64,12 @@ def _norm(s: str) -> str:
     return s.replace(" ", "").replace("_", "").replace(":", "").lower()
 
 
-def ground_relation(s: str) -> Union[Tuple[str, str], Tuple[None, None]]:
+def ground_relation(s: str) -> tuple[str, str] | tuple[None, None]:
     """Ground a string to a RO property."""
     return get_lookups().get(_norm(s), (None, None))
 
 
-def get_normalized_label(curie_or_uri: str) -> Optional[str]:
+def get_normalized_label(curie_or_uri: str) -> str | None:
     """Get a normalized label."""
     rv = LABELS.get(curie_or_uri)
     if rv:
@@ -81,7 +81,7 @@ def get_normalized_label(curie_or_uri: str) -> Optional[str]:
 
 
 @lru_cache(1)
-def get_lookups() -> Mapping[str, Tuple[str, str]]:
+def get_lookups() -> Mapping[str, tuple[str, str]]:
     """Get lookups for relation ontology properties."""
     d = {}
     for record in json.loads(PATH.read_text()):
@@ -119,7 +119,7 @@ def main():
     rows = []
     for source, url in URLS:
         if url is not None:
-            res = requests.get(url)
+            res = requests.get(url, timeout=60)
             res.raise_for_status()
             res_json = res.json()
             correct_raw_json(res_json)
@@ -150,10 +150,10 @@ def main():
 
     for p in ["rdf", "rdfs", "owl"]:
         j = json.loads(HERE.joinpath(f"data_{p}.json").read_text())
-        rows.extend(tuple(row.get(h, tuple()) for h in HEADER) for row in j)
+        rows.extend(tuple(row.get(h, ()) for h in HEADER) for row in j)
 
     rows = sorted(set(rows))
-    row_dicts = [{k: v for k, v in zip(HEADER, row) if v} for row in rows]
+    row_dicts = [{k: v for k, v in zip(HEADER, row, strict=False) if v} for row in rows]
     PATH.write_text(json.dumps(row_dicts, indent=2, sort_keys=True))
 
 

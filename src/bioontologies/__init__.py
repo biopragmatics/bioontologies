@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Tools for biomedical ontologies."""
 
 from .gilda_utils import get_gilda_terms

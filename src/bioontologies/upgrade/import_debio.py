@@ -10,7 +10,7 @@ OBO_PURL = "http://purl.obolibrary.org/obo/"
 
 def main():
     """Import rewrites from DeBiO."""
-    for node in requests.get(URL).json()["graphs"][0]["nodes"]:
+    for node in requests.get(URL, timeout=5).json()["graphs"][0]["nodes"]:
         if node.get("type") != "PROPERTY":
             continue
         identifier = node["id"].removeprefix("http://purl.obolibrary.org/obo/debio_")
