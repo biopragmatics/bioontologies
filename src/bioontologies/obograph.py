@@ -105,7 +105,9 @@ class Definition(BaseModel):
         return self
 
     @classmethod
-    def from_parsed(cls, value: str, references: list[Reference] | None = None) -> Definition:
+    def from_parsed(
+        cls, value: str | None, references: list[Reference] | None = None
+    ) -> Definition:
         """Construct a definition object from pre-standardized content."""
         if not references:
             references = []
