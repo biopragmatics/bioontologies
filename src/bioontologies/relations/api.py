@@ -9,8 +9,8 @@ import requests
 from tqdm import tqdm
 
 __all__ = [
-    "ground_relation",
     "get_normalized_label",
+    "ground_relation",
 ]
 
 HERE = Path(__file__).parent.resolve()

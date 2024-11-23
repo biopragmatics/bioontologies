@@ -23,17 +23,15 @@ from pystow.utils import download, name_from_url
 from .obograph import Graph, GraphDocument
 
 __all__ = [
-    "is_available",
     "ParseResults",
-    # Conversions
     "convert",
+    "convert_to_obograph",
     "convert_to_obograph_local",
     "convert_to_obograph_remote",
-    "convert_to_obograph",
-    # Processors
-    "get_obograph_by_prefix",
     "get_obograph_by_iri",
     "get_obograph_by_path",
+    "get_obograph_by_prefix",
+    "is_available",
 ]
 
 logger = logging.getLogger(__name__)

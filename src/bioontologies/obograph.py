@@ -26,17 +26,17 @@ from .constants import CANONICAL, IRI_TO_PREFIX
 from .relations import get_normalized_label, ground_relation, label_norm
 
 __all__ = [
-    "Property",
-    "Definition",
-    "Xref",
-    "Synonym",
-    "Meta",
-    "Edge",
-    "Node",
-    "Graph",
-    "GraphDocument",
     "OBO_SYNONYM_TO_OIO",
     "OIO_TO_REFERENCE",
+    "Definition",
+    "Edge",
+    "Graph",
+    "GraphDocument",
+    "Meta",
+    "Node",
+    "Property",
+    "Synonym",
+    "Xref",
 ]
 
 logger = logging.getLogger(__name__)

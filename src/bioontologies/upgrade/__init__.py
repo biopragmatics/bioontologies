@@ -9,12 +9,12 @@ from curies import ReferenceTuple
 from tqdm import tqdm
 
 __all__ = [
-    "upgrade",
-    "load",
-    "write",
-    "insert",
     "PATH",
     "Terms",
+    "insert",
+    "load",
+    "upgrade",
+    "write",
 ]
 
 HERE = Path(__file__).parent.resolve()
