@@ -6,6 +6,7 @@ from functools import lru_cache
 from pathlib import Path
 
 import requests
+from curies import ReferenceTuple
 from tqdm import tqdm
 
 __all__ = [
@@ -64,8 +65,9 @@ def _norm(s: str) -> str:
     return s.replace(" ", "").replace("_", "").replace(":", "").lower()
 
 
-def ground_relation(s: str) -> tuple[str, str] | tuple[None, None]:
+def ground_relation(s: str) -> ReferenceTuple | tuple[None, None]:
     """Ground a string to a RO property."""
+    # TODO make regular None return
     return get_lookups().get(_norm(s), (None, None))
 
 
@@ -81,14 +83,14 @@ def get_normalized_label(curie_or_uri: str) -> str | None:
 
 
 @lru_cache(1)
-def get_lookups() -> Mapping[str, tuple[str, str]]:
+def get_lookups() -> Mapping[str, ReferenceTuple]:
     """Get lookups for relation ontology properties."""
     d = {}
     for record in json.loads(PATH.read_text()):
         prefix, identifier, label = record["prefix"], record["identifier"], record["label"]
         d[_norm(label)] = prefix, identifier
         for s in record.get("synonyms", []):
-            d[_norm(s)] = prefix, identifier
+            d[_norm(s)] = ReferenceTuple(prefix, identifier)
     return d
 
 
