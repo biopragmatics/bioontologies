@@ -1,6 +1,6 @@
 {
   "template": "https://github.com/cthoyt/cookiecutter-snekpack",
-  "commit": "3089b545d90ceb95f3e6bf354fad86e75c0c89dc",
+  "commit": "e3a8928186124d29d96565e16894fae924b067f9",
   "checkout": null,
   "context": {
     "cookiecutter": {
@@ -8,6 +8,7 @@
       "package_name_stylized": "Bioontologies",
       "short_description": "Tools for biomedical ontologies",
       "author_name": "Charles Tapley Hoyt",
+      "author_github": "",
       "author_email": "cthoyt@gmail.com",
       "github_organization_name": "biopragmatics",
       "github_repository_name": "bioontologies",
@@ -19,7 +20,8 @@
       "__runner_pip": "tox tox-uv",
       "__runner_tests": "py",
       "__gh_slug": "biopragmatics/bioontologies",
-      "_template": "https://github.com/cthoyt/cookiecutter-snekpack"
+      "_template": "https://github.com/cthoyt/cookiecutter-snekpack",
+      "_commit": "e3a8928186124d29d96565e16894fae924b067f9"
     }
   },
   "directory": null
