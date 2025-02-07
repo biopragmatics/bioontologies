@@ -1,15 +1,16 @@
 """NER utilities."""
 
-from typing import Any, Iterable, Sequence
-
-from tqdm import tqdm
+from collections.abc import Iterable, Sequence
+from typing import Any
 
 import biosynonyms
 import curies
-from bioontologies import get_obograph_by_prefix
-from bioontologies.obograph import Graph
 from biosynonyms.model import DEFAULT_PREDICATE
 from curies import vocabulary as v
+from tqdm import tqdm
+
+from bioontologies import get_obograph_by_prefix
+from bioontologies.obograph import Graph
 
 __all__ = [
     "get_literal_mappings",
@@ -91,8 +92,13 @@ def literal_mappings_from_graph(prefix: str, graph: Graph) -> Iterable[biosynony
 
 
 def get_literal_mappings_subset(
-    prefix: str, ancestors: curies.Reference | Sequence[curies.Reference], *, check: bool = False, **kwargs
+    prefix: str,
+    ancestors: curies.Reference | Sequence[curies.Reference],
+    *,
+    check: bool = False,
+    **kwargs,
 ) -> Iterable[biosynonyms.LiteralMapping]:
+    """Get a subset of literal mappings for terms under the ancestors."""
     if isinstance(ancestors, curies.Reference):
         ancestors = [ancestors]
 
@@ -111,13 +117,7 @@ def get_literal_mappings_subset(
             graph.add_edge(edge.subject, edge.object)
 
     descendants: set[curies.Reference] = {
-        descendant
-        for ancestor in ancestors
-        for descendant in nx.ancestors(graph, ancestor)
+        descendant for ancestor in ancestors for descendant in nx.ancestors(graph, ancestor)
     }
 
-    return [
-        lm
-        for lm in get_literal_mappings(prefix, **kwargs)
-        if lm.reference in descendants
-    ]
+    return [lm for lm in get_literal_mappings(prefix, **kwargs) if lm.reference in descendants]
