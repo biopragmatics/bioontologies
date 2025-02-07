@@ -1,11 +1,11 @@
 """Bioontologies' Gilda utilities."""
 
 import logging
+import warnings
 from collections.abc import Iterable
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
-from tqdm.auto import tqdm
-
+from .ner import literal_mappings_from_graph
 from .obograph import Graph
 from .robot import get_obograph_by_prefix
 
@@ -53,6 +53,10 @@ def get_gilda_terms(prefix: str, **kwargs: Any) -> Iterable["gilda.term.Term"]:
         grounder = gilda.make_grounder(terms)
         scored_matches = grounder.ground("comirna")
     """
+    warnings.warn(
+        "prefer to use bioontologies.get_literal_mappings() directly and convert to gilda yourself",
+        stacklevel=2,
+    )
     parse_results = get_obograph_by_prefix(prefix, **kwargs)
     if parse_results.graph_document is None:
         return
@@ -61,30 +65,7 @@ def get_gilda_terms(prefix: str, **kwargs: Any) -> Iterable["gilda.term.Term"]:
         yield from gilda_from_graph(prefix, graph)
 
 
-def _fast_term(
-    text, prefix, identifier, name, status, source, organism
-) -> Optional["gilda.term.Term"]:
-    import gilda.term
-    from gilda.process import normalize
-
-    try:
-        term = gilda.term.Term(
-            norm_text=normalize(text),
-            text=text,
-            db=prefix,
-            id=identifier,
-            entry_name=name,
-            status=status,
-            source=source,
-            organism=organism,
-        )
-    except ValueError:
-        return None
-    return term
-
-
-def gilda_from_graph(prefix: str, graph: Graph) -> Iterable["gilda.term.Term"]:
-    """Get Gilda terms from a given graph."""
+def _get_species(graph: Graph, prefix: str) -> dict[str, str]:
     species = {}
     for edge in graph.edges:
         if not edge.standardized:
@@ -98,33 +79,11 @@ def gilda_from_graph(prefix: str, graph: Graph) -> Iterable["gilda.term.Term"]:
             and edge.object.prefix == "ncbitaxon"
         ):
             species[edge.subject.identifier] = edge.object.identifier
-    for node in tqdm(graph.nodes, leave=False, unit_scale=True, desc=f"{prefix} to Gilda"):
-        if not node.name or node.reference is None:
-            continue
-        if node.reference.prefix != prefix:
-            # Don't add references from other namespaces
-            continue
-        organism = species.get(node.reference.identifier)
-        term = _fast_term(
-            text=node.name,
-            prefix=prefix,
-            identifier=node.reference.identifier,
-            name=node.name,
-            status="name",
-            source=prefix,
-            organism=organism,
-        )
-        if term is not None:
-            yield term
-        for synonym in node.synonyms:
-            term = _fast_term(
-                text=synonym.value,
-                prefix=prefix,
-                identifier=node.reference.identifier,
-                name=node.name,
-                status="synonym",
-                source=prefix,
-                organism=organism,
-            )
-            if term is not None:
-                yield term
+    return species
+
+
+def gilda_from_graph(prefix: str, graph: Graph) -> Iterable["gilda.term.Term"]:
+    """Get Gilda terms from a given graph."""
+    id_to_species = _get_species(graph=graph, prefix=prefix)
+    for term in literal_mappings_from_graph(graph=graph, prefix=prefix):
+        yield term.to_gilda(id_to_species.get(term.reference.identifier))
