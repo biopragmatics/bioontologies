@@ -9,8 +9,9 @@ from biosynonyms.model import DEFAULT_PREDICATE
 from curies import vocabulary as v
 from tqdm import tqdm
 
-from bioontologies import get_obograph_by_prefix
 from bioontologies.obograph import Graph
+
+from .robot import get_obograph_by_prefix
 
 __all__ = [
     "get_literal_mappings",
