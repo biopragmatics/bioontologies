@@ -58,7 +58,7 @@ dependencies = [
     "typing_extensions",
     "pystow",
     "pandas",
-    "biosynonyms",
+    "ssslm",
 ]
 
 [project.optional-dependencies]

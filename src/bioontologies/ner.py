@@ -3,10 +3,10 @@
 from collections.abc import Iterable, Sequence
 from typing import Any
 
-import biosynonyms
 import curies
-from biosynonyms.model import DEFAULT_PREDICATE
+import ssslm
 from curies import vocabulary as v
+from ssslm import DEFAULT_PREDICATE
 from tqdm import tqdm
 
 from bioontologies.obograph import Graph
@@ -19,7 +19,7 @@ __all__ = [
 ]
 
 
-def get_literal_mappings(prefix: str, **kwargs: Any) -> Iterable[biosynonyms.LiteralMapping]:
+def get_literal_mappings(prefix: str, **kwargs: Any) -> Iterable[ssslm.LiteralMapping]:
     """Get literal mappings for the given namespace.
 
     :param prefix:
@@ -27,17 +27,17 @@ def get_literal_mappings(prefix: str, **kwargs: Any) -> Iterable[biosynonyms.Lit
         via the :mod:`bioregistry` and convert with ROBOT.
     :param kwargs:
         Keyword arguments to pass to :func:`bioontologies.get_obograph_by_prefix`
-    :yields: Term objects for Gilda
+    :yields: literal mappings
 
     Example usage:
 
     .. code-block::
 
         import bioontologies
-        import biosynonyms
+        import ssslm
 
         literal_mappings = bioontologies.get_literal_mappings("go")
-        grounder = biosynonyms.grounder_from_literal_mappings(literal_mappings)
+        grounder = ssslm.make_grounder(literal_mappings)
         scored_matches = grounder.ground("apoptosis")
 
     Some ontologies don't parse nicely with ROBOT because they have malformed
@@ -46,10 +46,10 @@ def get_literal_mappings(prefix: str, **kwargs: Any) -> Iterable[biosynonyms.Lit
     .. code-block::
 
         import bioontologies
-        import gilda
+        import ssslm
 
         literal_mappings = bioontologies.get_literal_mappings("vo", check=False)
-        grounder = biosynonyms.grounder_from_literal_mappings(literal_mappings)
+        grounder = ssslm.make_grounder(literal_mappings)
         scored_matches = grounder.ground("comirna")
     """
     parse_results = get_obograph_by_prefix(prefix, **kwargs)
@@ -60,9 +60,9 @@ def get_literal_mappings(prefix: str, **kwargs: Any) -> Iterable[biosynonyms.Lit
         yield from literal_mappings_from_graph(prefix, graph)
 
 
-def literal_mappings_from_graph(prefix: str, graph: Graph) -> Iterable[biosynonyms.LiteralMapping]:
+def literal_mappings_from_graph(prefix: str, graph: Graph) -> Iterable[ssslm.LiteralMapping]:
     """Get literal mappings from a given graph."""
-    for node in tqdm(graph.nodes, leave=False, unit_scale=True, desc=f"{prefix} to Gilda"):
+    for node in tqdm(graph.nodes, leave=False, unit_scale=True, desc=f"{prefix} get synonyms"):
         if node.reference is None:
             continue
         if node.reference.prefix != prefix:
@@ -75,14 +75,14 @@ def literal_mappings_from_graph(prefix: str, graph: Graph) -> Iterable[biosynony
             name=node.name,
         )
 
-        yield biosynonyms.LiteralMapping(
+        yield ssslm.LiteralMapping(
             reference=reference,
             predicate=v.has_label,
             text=node.name,
             source=prefix,
         )
         for synonym in node.synonyms:
-            yield biosynonyms.LiteralMapping(
+            yield ssslm.LiteralMapping(
                 reference=reference,
                 predicate=curies.Reference(prefix="oboInOwl", identifier=synonym.predicate_raw)
                 if synonym.predicate_raw
@@ -98,7 +98,7 @@ def get_literal_mappings_subset(
     *,
     check: bool = False,
     **kwargs,
-) -> Iterable[biosynonyms.LiteralMapping]:
+) -> list[ssslm.LiteralMapping]:
     """Get a subset of literal mappings for terms under the ancestors."""
     if isinstance(ancestors, curies.Reference):
         ancestors = [ancestors]
