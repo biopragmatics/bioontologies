@@ -584,6 +584,8 @@ class Graph(BaseModel, StandardizeMixin):
     @property
     def version(self) -> str | None:
         """Get the version of the ontology."""
+        if self.meta and self.meta.version:
+            return self.meta.version
         rv = self._get_property("http://www.w3.org/2002/07/owl#versionInfo")
         if rv:
             return rv
