@@ -127,7 +127,7 @@ def get_obograph_by_iri(
     """Get an ontology by its OBO Graph JSON iri."""
     res_json = requests.get(iri, timeout=timeout).json()
     correct_raw_json(res_json)
-    graph_document = GraphDocument.parse_obj(res_json)
+    graph_document = GraphDocument.model_validate(res_json)
     return ParseResults(graph_document=graph_document, iri=iri)
 
 
@@ -135,7 +135,7 @@ def get_obograph_by_path(path: str | Path, *, iri: str | None = None) -> ParseRe
     """Get an ontology by its OBO Graph JSON file path."""
     res_json = json.loads(Path(path).resolve().read_text())
     correct_raw_json(res_json)
-    graph_document = GraphDocument.parse_obj(res_json)
+    graph_document = GraphDocument.model_validate(res_json)
     if iri is None:
         if graph_document.graphs and len(graph_document.graphs) == 1:
             iri = graph_document.graphs[0].id
