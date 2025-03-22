@@ -627,6 +627,7 @@ class Graph(BaseModel, StandardizeMixin):
                 "desc": "standardizing nodes" if not prefix else f"[{prefix}] standardizing nodes",
                 "unit_scale": True,
                 "disable": not use_tqdm,
+                "leave": False,
             }
             if tqdm_kwargs:
                 _node_tqdm_kwargs.update(tqdm_kwargs)
