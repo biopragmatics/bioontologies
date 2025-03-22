@@ -154,8 +154,8 @@ class Synonym(BaseModel, StandardizeMixin):
 
     value: str | None = Field(default=None, alias="val")
     predicate_raw: str = Field(default="hasExactSynonym", alias="pred")
-    synonym_type_raw: str = Field(
-        alias="synonymType", default="oboInOwl:SynonymType", examples=["OMO:0003000"]
+    synonym_type_raw: str | None = Field(
+        alias="synonymType", default=None, examples=["OMO:0003000"]
     )
     xrefs_raw: list[str] = Field(
         default_factory=list,
