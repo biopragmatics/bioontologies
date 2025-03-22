@@ -26,8 +26,6 @@ from .constants import CANONICAL, IRI_TO_PREFIX
 from .relations import get_normalized_label, ground_relation, label_norm
 
 __all__ = [
-    "OBO_SYNONYM_TO_OIO",
-    "OIO_TO_REFERENCE",
     "Definition",
     "Edge",
     "Graph",
@@ -149,24 +147,6 @@ class Xref(BaseModel, StandardizeMixin):
             predicate=predicate,
             standardized=True,
         )
-
-
-#: Mapping from shorthand for predicates to qualified references
-OIO_TO_REFERENCE: Mapping[str, Reference] = {
-    "hasExactSynonym": Reference(prefix="oboInOwl", identifier="hasExactSynonym"),
-    "hasBroadSynonym": Reference(prefix="oboInOwl", identifier="hasBroadSynonym"),
-    "hasNarrowSynonym": Reference(prefix="oboInOwl", identifier="hasNarrowSynonym"),
-    "hasRelatedSynonym": Reference(prefix="oboInOwl", identifier="hasRelatedSynonym"),
-}
-
-#: A mapping from OBO flat file format internal synonym types to OBO in OWL vocabulary
-#: identifiers. See https://owlcollab.github.io/oboformat/doc/GO.format.obo-1_4.html
-OBO_SYNONYM_TO_OIO = {
-    "EXACT": "hasExactSynonym",
-    "BROAD": "hasBroadSynonym",
-    "NARROW": "hasNarrowSynonym",
-    "RELATED": "hasRelatedSynonym",
-}
 
 
 class Synonym(BaseModel, StandardizeMixin):
