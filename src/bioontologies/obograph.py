@@ -165,7 +165,8 @@ class Synonym(BaseModel, StandardizeMixin):
 
     # Added
     predicate: Reference | None = Field(
-        default=None, examples=[Reference(prefix="", identifier="hasExactSynonym")]
+        default=None,
+        examples=[Reference(prefix="oboInOwl", identifier="hasExactSynonym")],
     )
     synonym_type: Reference | None = Field(
         default=None, examples=[Reference(prefix="OMO", identifier="0003000")]
