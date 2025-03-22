@@ -26,8 +26,6 @@ from .constants import CANONICAL, IRI_TO_PREFIX
 from .relations import get_normalized_label, ground_relation, label_norm
 
 __all__ = [
-    "OBO_SYNONYM_TO_OIO",
-    "OIO_TO_REFERENCE",
     "Definition",
     "Edge",
     "Graph",
@@ -151,31 +149,13 @@ class Xref(BaseModel, StandardizeMixin):
         )
 
 
-#: Mapping from shorthand for predicates to qualified references
-OIO_TO_REFERENCE: Mapping[str, Reference] = {
-    "hasExactSynonym": Reference(prefix="oboInOwl", identifier="hasExactSynonym"),
-    "hasBroadSynonym": Reference(prefix="oboInOwl", identifier="hasBroadSynonym"),
-    "hasNarrowSynonym": Reference(prefix="oboInOwl", identifier="hasNarrowSynonym"),
-    "hasRelatedSynonym": Reference(prefix="oboInOwl", identifier="hasRelatedSynonym"),
-}
-
-#: A mapping from OBO flat file format internal synonym types to OBO in OWL vocabulary
-#: identifiers. See https://owlcollab.github.io/oboformat/doc/GO.format.obo-1_4.html
-OBO_SYNONYM_TO_OIO = {
-    "EXACT": "hasExactSynonym",
-    "BROAD": "hasBroadSynonym",
-    "NARROW": "hasNarrowSynonym",
-    "RELATED": "hasRelatedSynonym",
-}
-
-
 class Synonym(BaseModel, StandardizeMixin):
     """Represents a synonym inside an object meta."""
 
     value: str | None = Field(default=None, alias="val")
     predicate_raw: str = Field(default="hasExactSynonym", alias="pred")
-    synonym_type_raw: str = Field(
-        alias="synonymType", default="oboInOwl:SynonymType", examples=["OMO:0003000"]
+    synonym_type_raw: str | None = Field(
+        alias="synonymType", default=None, examples=["OMO:0003000"]
     )
     xrefs_raw: list[str] = Field(
         default_factory=list,
@@ -185,7 +165,8 @@ class Synonym(BaseModel, StandardizeMixin):
 
     # Added
     predicate: Reference | None = Field(
-        default=None, examples=[Reference(prefix="", identifier="hasExactSynonym")]
+        default=None,
+        examples=[Reference(prefix="oboInOwl", identifier="hasExactSynonym")],
     )
     synonym_type: Reference | None = Field(
         default=None, examples=[Reference(prefix="OMO", identifier="0003000")]
@@ -646,6 +627,7 @@ class Graph(BaseModel, StandardizeMixin):
                 "desc": "standardizing nodes" if not prefix else f"[{prefix}] standardizing nodes",
                 "unit_scale": True,
                 "disable": not use_tqdm,
+                "leave": False,
             }
             if tqdm_kwargs:
                 _node_tqdm_kwargs.update(tqdm_kwargs)

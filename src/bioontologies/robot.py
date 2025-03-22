@@ -355,7 +355,7 @@ def convert_to_obograph(
                 raise ValueError(f"{input_path} graphs missing IDs: {missing}")
 
         correct_raw_json(graph_document_raw)
-        graph_document = GraphDocument.parse_obj(graph_document_raw)
+        graph_document = GraphDocument.model_validate(graph_document_raw)
         return ParseResults(
             graph_document=graph_document,
             messages=messages,
