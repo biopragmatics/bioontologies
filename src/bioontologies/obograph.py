@@ -153,7 +153,7 @@ class Synonym(BaseModel, StandardizeMixin):
     """Represents a synonym inside an object meta."""
 
     value: str | None = Field(default=None, alias="val")
-    predicate_raw: str = Field(default="hasExactSynonym", alias="pred")
+    predicate_raw: str = Field(default="hasRelatedSynonym", alias="pred")
     synonym_type_raw: str | None = Field(
         alias="synonymType", default=None, examples=["OMO:0003000"]
     )

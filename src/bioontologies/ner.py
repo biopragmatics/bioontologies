@@ -6,7 +6,6 @@ from typing import Any
 import curies
 import ssslm
 from curies import vocabulary as v
-from ssslm import DEFAULT_PREDICATE
 from tqdm import tqdm
 
 from bioontologies.obograph import Graph
@@ -60,8 +59,16 @@ def get_literal_mappings(prefix: str, **kwargs: Any) -> Iterable[ssslm.LiteralMa
         yield from literal_mappings_from_graph(prefix, graph)
 
 
-def literal_mappings_from_graph(prefix: str, graph: Graph) -> Iterable[ssslm.LiteralMapping]:
+def literal_mappings_from_graph(
+    prefix: str,
+    graph: Graph,
+    *,
+    reference_cls: type[curies.NamableReference] = curies.NamableReference,
+) -> Iterable[ssslm.LiteralMapping]:
     """Get literal mappings from a given graph."""
+    label_predicate = reference_cls(
+        prefix=v.has_label.prefix, identifier=v.has_label.identifier, name=v.has_label.name
+    )
     for node in tqdm(graph.nodes, leave=False, unit_scale=True, desc=f"{prefix} get synonyms"):
         if node.reference is None:
             continue
@@ -69,27 +76,29 @@ def literal_mappings_from_graph(prefix: str, graph: Graph) -> Iterable[ssslm.Lit
             # Don't add references from other namespaces
             continue
 
-        reference = curies.NamableReference(
+        if node.name:
+            node_name = node.name.strip() or None
+        else:
+            node_name = None
+
+        reference = reference_cls(
             prefix=prefix,
             identifier=node.reference.identifier,
-            name=node.name,
+            name=node_name,
         )
 
-        yield ssslm.LiteralMapping(
-            reference=reference,
-            predicate=v.has_label,
-            text=node.name,
-            source=prefix,
-        )
-        for synonym in node.synonyms:
+        if node_name:
             yield ssslm.LiteralMapping(
-                reference=reference,
-                predicate=curies.Reference(prefix="oboInOwl", identifier=synonym.predicate_raw)
-                if synonym.predicate_raw
-                else DEFAULT_PREDICATE,
-                text=synonym.value,
-                source=prefix,
+                reference=reference, predicate=label_predicate, text=node_name, source=prefix
             )
+        for synonym in node.synonyms:
+            if text := synonym.value.strip():
+                yield ssslm.LiteralMapping(
+                    reference=reference,
+                    predicate=reference_cls(prefix="oboInOwl", identifier=synonym.predicate_raw),
+                    text=text,
+                    source=prefix,
+                )
 
 
 def get_literal_mappings_subset(
