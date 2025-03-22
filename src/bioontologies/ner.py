@@ -5,6 +5,7 @@ from typing import Any
 
 import curies
 import ssslm
+from bioregistry import NormalizedNamableReference
 from curies import vocabulary as v
 from tqdm import tqdm
 
@@ -59,16 +60,13 @@ def get_literal_mappings(prefix: str, **kwargs: Any) -> Iterable[ssslm.LiteralMa
         yield from literal_mappings_from_graph(prefix, graph)
 
 
-def literal_mappings_from_graph(
-    prefix: str,
-    graph: Graph,
-    *,
-    reference_cls: type[curies.NamableReference] = curies.NamableReference,
-) -> Iterable[ssslm.LiteralMapping]:
+_LABEL = NormalizedNamableReference(
+    prefix=v.has_label.prefix, identifier=v.has_label.identifier, name=v.has_label.name
+)
+
+
+def literal_mappings_from_graph(prefix: str, graph: Graph) -> Iterable[ssslm.LiteralMapping]:
     """Get literal mappings from a given graph."""
-    label_predicate = reference_cls(
-        prefix=v.has_label.prefix, identifier=v.has_label.identifier, name=v.has_label.name
-    )
     for node in tqdm(graph.nodes, leave=False, unit_scale=True, desc=f"{prefix} get synonyms"):
         if node.reference is None:
             continue
@@ -81,7 +79,7 @@ def literal_mappings_from_graph(
         else:
             node_name = None
 
-        reference = reference_cls(
+        reference = NormalizedNamableReference(
             prefix=prefix,
             identifier=node.reference.identifier,
             name=node_name,
@@ -89,13 +87,15 @@ def literal_mappings_from_graph(
 
         if node_name:
             yield ssslm.LiteralMapping(
-                reference=reference, predicate=label_predicate, text=node_name, source=prefix
+                reference=reference, predicate=_LABEL, text=node_name, source=prefix
             )
         for synonym in node.synonyms:
             if text := synonym.value.strip():
                 yield ssslm.LiteralMapping(
                     reference=reference,
-                    predicate=reference_cls(prefix="oboInOwl", identifier=synonym.predicate_raw),
+                    predicate=NormalizedNamableReference(
+                        prefix="oboInOwl", identifier=synonym.predicate_raw
+                    ),
                     text=text,
                     source=prefix,
                 )
@@ -111,6 +111,11 @@ def get_literal_mappings_subset(
     """Get a subset of literal mappings for terms under the ancestors."""
     if isinstance(ancestors, curies.Reference):
         ancestors = [ancestors]
+
+    ancestors = [
+        NormalizedNamableReference(prefix=ancestor.prefix, identifier=ancestor.identifier)
+        for ancestor in ancestors
+    ]
 
     import networkx as nx
 
