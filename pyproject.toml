@@ -51,7 +51,7 @@ license = { file = "LICENSE" }
 
 requires-python = ">=3.10"
 dependencies = [
-    "bioregistry>=0.10.0",
+    "bioregistry>=0.12.5",
     "curies>=0.6.0",
     "requests",
     "pydantic>=2.0",
