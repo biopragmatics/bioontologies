@@ -17,7 +17,7 @@ from typing import Any, Literal
 import bioregistry
 import pandas as pd
 from bioregistry import manager
-from curies import Reference, ReferenceTuple
+from curies import Reference, ReferenceTuple, vocabulary
 from pydantic import BaseModel, Field
 from tqdm.auto import tqdm
 from typing_extensions import Self
@@ -153,9 +153,11 @@ class Synonym(BaseModel, StandardizeMixin):
     """Represents a synonym inside an object meta."""
 
     value: str | None = Field(default=None, alias="val")
-    predicate_raw: str = Field(default="hasExactSynonym", alias="pred")
+    predicate_raw: str = Field(
+        default="hasRelatedSynonym", alias="pred", examples=sorted(vocabulary.synonym_scopes)
+    )
     synonym_type_raw: str | None = Field(
-        alias="synonymType", default=None, examples=["OMO:0003000"]
+        None, alias="synonymType", examples=sorted(x.curie for x in vocabulary.synonym_types)
     )
     xrefs_raw: list[str] = Field(
         default_factory=list,
@@ -165,12 +167,10 @@ class Synonym(BaseModel, StandardizeMixin):
 
     # Added
     predicate: Reference | None = Field(
-        default=None,
-        examples=[Reference(prefix="oboInOwl", identifier="hasExactSynonym")],
+        None,
+        examples=sorted(vocabulary.synonym_scopes.values()),
     )
-    synonym_type: Reference | None = Field(
-        default=None, examples=[Reference(prefix="OMO", identifier="0003000")]
-    )
+    synonym_type: Reference | None = Field(None, examples=sorted(vocabulary.synonym_types))
     references: list[Reference] | None = None
     standardized: bool = Field(False, exclude=True)
 
