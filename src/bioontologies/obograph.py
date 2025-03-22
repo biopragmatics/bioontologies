@@ -47,8 +47,6 @@ PROVENANCE_PREFIXES = {"pubmed", "pmc", "doi", "arxiv", "biorxiv", "medrxiv", "a
 
 MISSING_PREDICATE_LABELS = set()
 
-MaybeCURIE = tuple[str, str] | tuple[None, None]
-
 
 class StandardizeMixin:
     """A mixin for classes representing standardizable data."""
