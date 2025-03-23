@@ -18,7 +18,7 @@ import bioregistry
 import pandas as pd
 from bioregistry import NormalizedNamableReference as Reference
 from bioregistry import manager
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 from tqdm.auto import tqdm
 from typing_extensions import Self
 
