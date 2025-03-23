@@ -25,10 +25,7 @@ Terms = Mapping[str, NormalizedNamableReference]
 
 def upgrade(s: str) -> NormalizedNamedReference | None:
     """Upgrade a string, which is potentially an IRI to a curated CURIE pair."""
-    rv = load().get(s)
-    if rv is not None:
-        return rv.pair
-    return None
+    return load().get(s)
 
 
 @lru_cache(1)

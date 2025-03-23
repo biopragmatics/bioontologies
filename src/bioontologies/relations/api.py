@@ -87,7 +87,7 @@ def get_lookups() -> Mapping[str, NormalizedNamedReference]:
     d = {}
     for record in json.loads(PATH.read_text()):
         prefix, identifier, label = record["prefix"], record["identifier"], record["label"]
-        d[_norm(label)] = prefix, identifier
+        d[_norm(label)] = NormalizedNamedReference(prefix=prefix, identifier=identifier, name=label)
         for s in record.get("synonyms", []):
             d[_norm(s)] = NormalizedNamedReference(prefix=prefix, identifier=identifier, name=label)
     return d

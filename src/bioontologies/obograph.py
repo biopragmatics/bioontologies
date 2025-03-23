@@ -918,8 +918,15 @@ def _get_reference(s: str, *, debug: bool = False) -> Reference | None:  # noqa:
 
     reference_tuple = _get_converter().parse_uri(s, return_none=True)
     if reference_tuple is not None:
+        if not reference_tuple.identifier:
+            return None
         if reference_tuple.prefix != "obo" or "#" not in reference_tuple.identifier:
-            return Reference(prefix=reference_tuple.prefix, identifier=reference_tuple.identifier)
+            try:
+                rv = Reference(prefix=reference_tuple.prefix, identifier=reference_tuple.identifier)
+            except ValidationError:
+                return None
+            else:
+                return rv
 
         _, inner_identifier = reference_tuple.identifier.split("#", 1)
         reference = ground_relation(inner_identifier)
