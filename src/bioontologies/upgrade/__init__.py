@@ -5,7 +5,7 @@ from collections.abc import Mapping
 from functools import lru_cache
 from pathlib import Path
 
-from curies import ReferenceTuple
+from bioregistry import NormalizedNamableReference, NormalizedNamedReference
 from tqdm import tqdm
 
 __all__ = [
@@ -20,10 +20,10 @@ __all__ = [
 HERE = Path(__file__).parent.resolve()
 PATH = HERE.joinpath("data.tsv")
 
-Terms = Mapping[str, ReferenceTuple]
+Terms = Mapping[str, NormalizedNamableReference]
 
 
-def upgrade(s: str) -> ReferenceTuple | None:
+def upgrade(s: str) -> NormalizedNamedReference | None:
     """Upgrade a string, which is potentially an IRI to a curated CURIE pair."""
     return load().get(s)
 
@@ -33,30 +33,33 @@ def load() -> Terms:
     """Load the upgrade terms."""
     with PATH.open() as file:
         reader = csv.reader(file, delimiter="\t")
-        return {term: ReferenceTuple(prefix, identifier) for term, prefix, identifier in reader}
+        return {
+            term: NormalizedNamableReference(prefix=prefix, identifier=identifier)
+            for term, prefix, identifier in reader
+        }
 
 
 def write(terms: Terms) -> None:
     """Write the upgrade terms."""
     with PATH.open("w") as file:
         writer = csv.writer(file, delimiter="\t")
-        for term, (prefix, identifier) in sorted(terms.items()):
-            writer.writerow((term, prefix, identifier))
+        for term, reference in sorted(terms.items()):
+            writer.writerow((term, reference.prefix, reference.identifier))
 
 
-def insert(term: str, prefix: str, identifier: str) -> None:
+def insert(term: str, prefix: str, identifier: str, *, name: str | None = None) -> None:
     """Insert a new upgrade term."""
     terms = dict(load())
     existing = terms.get(term)
-    reference_tuple = ReferenceTuple(prefix, identifier)
+    reference = NormalizedNamableReference(prefix=prefix, identifier=identifier, name=name)
     if existing:
-        if existing != reference_tuple:
+        if existing != reference:
             tqdm.write(
                 f"Conflict for inserting {term} between existing {existing} "
-                f"and reference {reference_tuple}. Skipping."
+                f"and reference {reference}. Skipping."
             )
         return None
-    terms[term] = reference_tuple
+    terms[term] = reference
     write(terms)
     load.cache_clear()
 

@@ -16,9 +16,9 @@ from typing import Any, Literal
 
 import bioregistry
 import pandas as pd
+from bioregistry import NormalizedNamableReference as Reference
 from bioregistry import manager
-from curies import Reference, ReferenceTuple
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 from tqdm.auto import tqdm
 from typing_extensions import Self
 
@@ -46,8 +46,6 @@ IDENTIFIERS_HTTPS_PREFIX = "https://identifiers.org/"
 PROVENANCE_PREFIXES = {"pubmed", "pmc", "doi", "arxiv", "biorxiv", "medrxiv", "agricola"}
 
 MISSING_PREDICATE_LABELS = set()
-
-MaybeCURIE = tuple[str, str] | tuple[None, None]
 
 
 class StandardizeMixin:
@@ -341,9 +339,8 @@ class Node(BaseModel, StandardizeMixin):
 
     def standardize(self) -> Self:
         """Ground the node to a standard prefix and luid based on its id (URI)."""
-        prefix, identifier = _parse_uri_or_curie_or_str(self.id)
-        if prefix and identifier:
-            self.reference = Reference(prefix=prefix, identifier=identifier)
+        if reference := _get_reference(self.id):
+            self.reference = reference
         if self.name:
             self.name = self.name.strip().replace("\n", " ").replace("  ", " ")
         if self.meta:
@@ -484,10 +481,6 @@ class Node(BaseModel, StandardizeMixin):
 
     def _get_properties(self, pred: str | list[str]) -> list[str]:
         return _help_get_properties(self, pred)
-
-    def parse_curie(self) -> MaybeCURIE:
-        """Parse the identifier into a pair, assuming it's a CURIE."""
-        return _parse_uri_or_curie_or_str(self.id)
 
     @property
     def definition_provenance(self) -> list[Reference]:
@@ -892,26 +885,6 @@ class Graph(BaseModel, StandardizeMixin):
         return graph
 
 
-def _parse_uri_or_curie_or_str(
-    s: str, *, debug: bool = False
-) -> tuple[str, str] | tuple[None, None]:
-    """Ground the node to a standard prefix and luid based on its id (URI)."""
-    reference_tuple = omni_parse(s, debug=debug)
-    if reference_tuple is None:
-        return None, None
-    resource = manager.get_resource(reference_tuple.prefix)
-    if resource is None:
-        return None, None
-    return resource.prefix, resource.standardize_identifier(reference_tuple.identifier)
-
-
-def _get_reference(s: str, *, debug: bool = False) -> Reference | None:
-    p, i = _parse_uri_or_curie_or_str(s, debug=debug)
-    if p and i:
-        return Reference(prefix=p, identifier=i)
-    return None
-
-
 def _get_references(strings: list[str]) -> list[Reference]:
     references = [_get_reference(s) for s in strings]
     rv = [reference for reference in references if reference is not None]
@@ -928,37 +901,40 @@ def write_warned(path: str | Path) -> None:
     path.write_text("\n".join(f"{k}\t{v}" for k, v in sorted(WARNED.items())))
 
 
-def _parse_obo_rel(s: str, identifier: str) -> ReferenceTuple | None:
-    _, inner_identifier = identifier.split("#", 1)
-    _p, _i = ground_relation(inner_identifier)
-    if _p and _i:
-        return ReferenceTuple(_p, _i)
-    if s not in WARNED:
-        tqdm.write(f"could not parse OBO internal relation: {s}")
-    WARNED[s] += 1
-    return None
-
-
 @lru_cache(1)
 def _get_converter():
     return bioregistry.manager.get_converter(include_prefixes=True)
 
 
-def omni_parse(s: str, *, debug: bool = False) -> ReferenceTuple | None:  # noqa:C901
+def _get_reference(s: str, *, debug: bool = False) -> Reference | None:  # noqa:C901
     """Parse a string, CURIE, or IRI into a proper refernce, if possible."""
     from .upgrade import insert, upgrade
 
     s = s.replace(" ", "")
 
-    cv = upgrade(s)
-    if cv is not None:
-        return cv
+    upgraded_reference = upgrade(s)
+    if upgraded_reference is not None:
+        return upgraded_reference
 
-    prefix, identifier = _get_converter().parse_uri(s)
-    if prefix and identifier:
-        if prefix == "obo" and "#" in identifier:
-            return _parse_obo_rel(s, identifier)
-        return ReferenceTuple(prefix, identifier)
+    reference_tuple = _get_converter().parse_uri(s, return_none=True)
+    if reference_tuple is not None:
+        if not reference_tuple.identifier:
+            return None
+        if reference_tuple.prefix != "obo" or "#" not in reference_tuple.identifier:
+            try:
+                rv = Reference(prefix=reference_tuple.prefix, identifier=reference_tuple.identifier)
+            except ValidationError:
+                return None
+            else:
+                return rv
+
+        _, inner_identifier = reference_tuple.identifier.split("#", 1)
+        reference = ground_relation(inner_identifier)
+        if reference is not None:
+            return reference
+        if s not in WARNED:
+            logger.warning("could not parse OBO internal relation: %s", s)
+        WARNED[s] += 1
 
     if "upload.wikimedia.org" in s:
         return None
@@ -968,17 +944,17 @@ def omni_parse(s: str, *, debug: bool = False) -> ReferenceTuple | None:  # noqa
         "http://www.obofoundry.org/ro/ro.owl#",
     ]:
         if s.startswith(x):
-            prefix, identifier = ground_relation(s[len(x) :])
-            if prefix and identifier:
-                insert(s, prefix, identifier)
-                return ReferenceTuple(prefix, identifier)
+            reference = ground_relation(s[len(x) :])
+            if reference is not None:
+                insert(s, reference.prefix, reference.identifier, name=reference.name)
+                return reference
             if s not in WARNED:
                 tqdm.write(f"could not parse legacy RO: {s}")
             WARNED[s] += 1
 
-    prefix, identifier = ground_relation(s)
-    if prefix and identifier:
-        return ReferenceTuple(prefix, identifier)
+    reference = ground_relation(s)
+    if reference is not None:
+        return reference
 
     # couldn't parse anything...
     if debug and (
