@@ -37,7 +37,9 @@ def main() -> None:
             except ValueError:
                 tqdm.write(f"[{prefix}] failed to parse")
             else:
-                tqdm.write(click.style(f"[{prefix}] parsed {graph.title} - v{graph.version}", fg="red"))
+                tqdm.write(
+                    click.style(f"[{prefix}] parsed {graph.title} - v{graph.version}", fg="red")
+                )
 
 
 if __name__ == "__main__":
