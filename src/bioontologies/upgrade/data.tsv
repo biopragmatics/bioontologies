@@ -13,7 +13,7 @@ dc-description	dc	description
 dc-license	dc	license
 dc-title	dc	title
 depicted_by	foaf	depicted_by
-develops_from	RO	0002202
+develops_from	ro	0002202
 editor_note	oboinowl	editor_note
 ends_at_start_of	ro	0002593
 exactMatch	skos	exactMatch
@@ -30,8 +30,10 @@ http://creativecommons.org/publicdomain/zero/1.0/	spdx	CC0-1.0
 http://example.com/bfo-spec-label	bfo	0000179
 http://purl.obolibrary.org/obo/NCBITaxon#_species_group	debio	0000024
 http://purl.obolibrary.org/obo/OBO_REL#_agent_in	sio	000063
+http://www.obofoundry.org/ro/ro.owl#agent_in	sio	000063
 http://purl.obolibrary.org/obo/OBO_REL#_bearer_of	ro	0000053
 http://purl.obolibrary.org/obo/OBO_REL#_derived_into	sio	000245
+http://www.obofoundry.org/ro/ro.owl#derived_into	sio	000245
 http://purl.obolibrary.org/obo/OBO_REL#_has_agent	sio	000139
 http://purl.obolibrary.org/obo/OBO_REL#_has_function	ro	0000085
 http://purl.obolibrary.org/obo/OBO_REL#_has_improper_part	bfo	0000051
@@ -119,6 +121,9 @@ http://purl.obolibrary.org/obo/mondo#exactMatch	skos	exactMatch
 http://purl.obolibrary.org/obo/mondo#narrowMatch	skos	narrowMatch
 http://purl.obolibrary.org/obo/mondo#relatedMatch	skos	relatedMatch
 http://purl.obolibrary.org/obo/mpath#is_a	rdfs	subClassOf
+http://purl.obolibrary.org/obo/reto#is_a	rdfs	subClassOf
+http://purl.obolibrary.org/obo/rex#is_a	rdfs	subClassOf
+http://purl.obolibrary.org/obo/rexo#is_a	rdfs	subClassOf
 http://purl.obolibrary.org/obo/nbo#has_participant	ro	0000057
 http://purl.obolibrary.org/obo/nbo#is_about	iao	0000136
 http://purl.obolibrary.org/obo/ncbitaxon#acronym	omo	0003000
@@ -178,12 +183,15 @@ http://www.obofoundry.org/ro/ro.owl#has_part	bfo	0000051
 http://www.obofoundry.org/ro/ro.owl#has_participant	ro	0000057
 http://www.obofoundry.org/ro/ro.owl#has_proper_part	bfo	0000051
 http://www.obofoundry.org/ro/ro.owl#improper_part_of	bfo	0000050
+http://www.obofoundry.org/ro/ro.owl#has_improper_part	bfo	0000050
 http://www.obofoundry.org/ro/ro.owl#inheres_in	ro	0004096
 http://www.obofoundry.org/ro/ro.owl#integral_part_of	bfo	0000050
+http://www.obofoundry.org/ro/ro.owl#located_in	ro	0001025
 http://www.obofoundry.org/ro/ro.owl#location_of	ro	0001015
 http://www.obofoundry.org/ro/ro.owl#part_of	bfo	0000050
 http://www.obofoundry.org/ro/ro.owl#participates_in	ro	0000056
 http://www.obofoundry.org/ro/ro.owl#preceded_by	bfo	0000062
+http://www.obofoundry.org/ro/ro.owl#precedes	bfo	0000063
 http://www.obofoundry.org/ro/ro.owl#proper_part_of	bfo	0000050
 http://www.obofoundry.org/ro/ro.owl#relationship	owl	ObjectProperty
 http://www.obofoundry.org/ro/ro.owl#transformation_of	ro	0002494
@@ -194,6 +202,7 @@ immediately_preceded_by	ro	0002087
 immediately_precedes	ro	0002090
 innervates	ro	0002134
 inverseOf	owl	inverseOf
+http://purl.obolibrary.org/obo/rex#inverse_of	owl	inverseOf
 is_a	rdfs	subClassOf
 isa	rdfs	subClassOf
 narrowMatch	skos	narrowMatch
