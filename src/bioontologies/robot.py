@@ -13,7 +13,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from subprocess import check_output
-from typing import Literal
+from typing import Any, Literal
 
 import bioregistry
 import pystow
@@ -84,13 +84,13 @@ class ParseResults:
     messages: list[str] = dataclasses.field(default_factory=list)
     iri: str | None = None
 
-    def squeeze(self, standardize: bool = False) -> Graph:
+    def squeeze(self, standardize: bool = False, **kwargs: Any) -> Graph:
         """Get the first graph."""
         if self.graph_document is None:
             raise ValueError(f"graph document was not successfully parsed: {self.messages}")
         rv = self.graph_document.graphs[0]
         if standardize:
-            rv = rv.standardize()
+            rv = rv.standardize(**kwargs)
         return rv
 
     def guess(self, prefix: str) -> Graph:
@@ -369,6 +369,8 @@ def correct_raw_json(graph_document_raw) -> None:
         _clean_raw_meta(graph)
         for node in graph["nodes"]:
             _clean_raw_meta(node)
+        for edge in graph["edges"]:
+            _clean_raw_meta(edge)
         graph["nodes"] = [node for node in graph["nodes"] if "type" in node]
     return graph_document_raw
 
