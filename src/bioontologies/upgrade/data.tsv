@@ -38,12 +38,14 @@ http://purl.obolibrary.org/obo/OBO_REL#_has_agent	sio	000139
 http://purl.obolibrary.org/obo/OBO_REL#_has_function	ro	0000085
 http://purl.obolibrary.org/obo/OBO_REL#_has_improper_part	bfo	0000051
 http://purl.obolibrary.org/obo/OBO_REL#_has_integral_part	bfo	0000051
+http://purl.obolibrary.org/obo/vsao#has_integral_part	bfo	0000051
 http://purl.obolibrary.org/obo/OBO_REL#_has_proper_part	bfo	0000051
 http://purl.obolibrary.org/obo/OBO_REL#_has_quality	bfo	0000086
 http://purl.obolibrary.org/obo/OBO_REL#_has_role	ro	0000087
 http://purl.obolibrary.org/obo/OBO_REL#_has_vector	ro	0002460
 http://purl.obolibrary.org/obo/OBO_REL#_improper_part_of	bfo	0000050
 http://purl.obolibrary.org/obo/OBO_REL#_integral_part_of	bfo	0000050
+http://purl.obolibrary.org/obo/vsao#integral_part_of	bfo	0000050
 http://purl.obolibrary.org/obo/OBO_REL#_part_of	bfo	0000050
 http://purl.obolibrary.org/obo/OBO_REL#_proper_part_of	bfo	0000050
 http://purl.obolibrary.org/obo/OBO_REL#_realized_as	bfo	0000054
@@ -175,10 +177,12 @@ http://www.obofoundry.org/ro/#OBO_REL:preceded_by	bfo	0000062
 http://www.obofoundry.org/ro/ro.owl#adjacent_to	ro	0002220
 http://www.obofoundry.org/ro/ro.owl#bearer_of	ro	0000053
 http://www.obofoundry.org/ro/ro.owl#contained_in	ro	0001018
+http://purl.obolibrary.org/obo/OBO_REL#_contained_in	ro	0001018
 http://www.obofoundry.org/ro/ro.owl#derives_from	ro	0001000
 http://www.obofoundry.org/ro/ro.owl#has_agent	ro	0002218
 http://www.obofoundry.org/ro/ro.owl#has_disposition	ro	0000091
 http://www.obofoundry.org/ro/ro.owl#has_integral_part	bfo	0000051
+http://purl.obolibrary.org/obo/so#has_integral_part	bfo	0000051
 http://www.obofoundry.org/ro/ro.owl#has_part	bfo	0000051
 http://www.obofoundry.org/ro/ro.owl#has_participant	ro	0000057
 http://www.obofoundry.org/ro/ro.owl#has_proper_part	bfo	0000051
@@ -186,6 +190,7 @@ http://www.obofoundry.org/ro/ro.owl#improper_part_of	bfo	0000050
 http://www.obofoundry.org/ro/ro.owl#has_improper_part	bfo	0000050
 http://www.obofoundry.org/ro/ro.owl#inheres_in	ro	0004096
 http://www.obofoundry.org/ro/ro.owl#integral_part_of	bfo	0000050
+http://purl.obolibrary.org/obo/so#integral_part_of	bfo	0000050
 http://www.obofoundry.org/ro/ro.owl#located_in	ro	0001025
 http://www.obofoundry.org/ro/ro.owl#location_of	ro	0001015
 http://www.obofoundry.org/ro/ro.owl#part_of	bfo	0000050
@@ -214,3 +219,4 @@ starts_at_end_of	ro	0002583
 structure_notes	ubprop	0000010
 subPropertyOf	rdfs	subPropertyOf
 type	rdf	type
+http://purl.obolibrary.org/obo/OBO_REL#_instance_of	rdf	type
