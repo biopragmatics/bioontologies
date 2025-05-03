@@ -433,6 +433,17 @@ class RobotError(Exception):
         output: str | None = None,
         preview_length: int = 500,
     ):
+        """Initialize RobotError
+
+        :param command: The command that was executed and failed
+        :param returncode: The exit code returned by the command
+        :param output: The stdout/stderr output from the command execution
+        :param preview_length: Maximum number of characters to include in the
+            error message preview. Default is 500 characters.
+
+        The error message will contain the command, return code, and a preview
+        of the output truncated to preview_length characters.
+        """
         self.command = command
         self.returncode = returncode
         self.output = output
