@@ -13,7 +13,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from subprocess import check_output
-from typing import Any, List, Literal, Optional
+from typing import Any, Literal
 
 import bioregistry
 import pystow
@@ -427,9 +427,9 @@ class RobotError(Exception):
 
     def __init__(
         self,
-        command: List[str],
+        command: list[str],
         returncode: int,
-        output: Optional[str] = None,
+        output: str | None = None,
         preview_length: int = 500
     ):
         self.command = command
@@ -439,7 +439,10 @@ class RobotError(Exception):
 
         # Create the error message
         command_str = str(command)
-        output_preview = output[:preview_length] + "..." if output and len(output) > preview_length else output
+        output_preview = (
+            output[:preview_length] + "..." if output and len(output) > preview_length
+            else output
+        )
 
         message = (
             f"Command {command_str} returned non-zero exit status {returncode}. \n"
