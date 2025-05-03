@@ -13,7 +13,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from subprocess import check_output
-from typing import Any, Literal
+from typing import Any, List, Literal, Optional
 
 import bioregistry
 import pystow
@@ -422,6 +422,33 @@ def _path_context(path: None | str | Path, name: str = "output.json"):
         with tempfile.TemporaryDirectory() as directory:
             yield Path(directory).joinpath(name)
 
+class RobotError(Exception):
+    """Custom error for Robot command failures that includes output preview."""
+
+    def __init__(
+        self,
+        command: List[str],
+        returncode: int,
+        output: Optional[str] = None,
+        preview_length: int = 500
+    ):
+        self.command = command
+        self.returncode = returncode
+        self.output = output
+        self.preview_length = preview_length
+
+        # Create the error message
+        command_str = str(command)
+        output_preview = output[:preview_length] + "..." if output and len(output) > preview_length else output
+
+        message = (
+            f"Command {command_str} returned non-zero exit status {returncode}. \n"
+            f"Output: {output_preview}"
+        )
+
+        super().__init__(message)
+
+
 
 def convert(
     input_path: str | Path,
@@ -504,10 +531,17 @@ def convert(
     if debug:
         args.append("-vvv")
     logger.debug("Running shell command: %s", args)
-    ret = check_output(  # noqa:S603
-        args,
-        cwd=os.path.dirname(__file__),
-    )
+    try:
+        ret = check_output(  # noqa:S603
+            args,
+            cwd=os.path.dirname(__file__),
+        )
+    except subprocess.CalledProcessError as e:
+        raise RobotError(
+            command=e.cmd,
+            returncode=e.returncode,
+            output=e.output.decode()
+        ) from None
     return ret.decode()
 
 
