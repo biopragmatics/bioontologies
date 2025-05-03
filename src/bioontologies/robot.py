@@ -433,7 +433,7 @@ class RobotError(Exception):
         output: str | None = None,
         preview_length: int = 500,
     ):
-        """Initialize RobotError
+        """Initialize RobotError.
 
         :param command: The command that was executed and failed
         :param returncode: The exit code returned by the command
