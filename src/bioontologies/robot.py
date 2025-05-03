@@ -422,6 +422,7 @@ def _path_context(path: None | str | Path, name: str = "output.json"):
         with tempfile.TemporaryDirectory() as directory:
             yield Path(directory).joinpath(name)
 
+
 class RobotError(Exception):
     """Custom error for Robot command failures that includes output preview."""
 
@@ -430,7 +431,7 @@ class RobotError(Exception):
         command: list[str],
         returncode: int,
         output: str | None = None,
-        preview_length: int = 500
+        preview_length: int = 500,
     ):
         self.command = command
         self.returncode = returncode
@@ -440,8 +441,7 @@ class RobotError(Exception):
         # Create the error message
         command_str = str(command)
         output_preview = (
-            output[:preview_length] + "..." if output and len(output) > preview_length
-            else output
+            output[:preview_length] + "..." if output and len(output) > preview_length else output
         )
 
         message = (
@@ -450,7 +450,6 @@ class RobotError(Exception):
         )
 
         super().__init__(message)
-
 
 
 def convert(
@@ -540,11 +539,7 @@ def convert(
             cwd=os.path.dirname(__file__),
         )
     except subprocess.CalledProcessError as e:
-        raise RobotError(
-            command=e.cmd,
-            returncode=e.returncode,
-            output=e.output.decode()
-        ) from None
+        raise RobotError(command=e.cmd, returncode=e.returncode, output=e.output.decode()) from None
     return ret.decode()
 
 
