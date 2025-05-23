@@ -29,13 +29,19 @@ for resource in bioregistry.resources():
         IRI_TO_PREFIX[owl_iri] = resource.prefix
 
 
-@overload
-def guess(self: obographs.GraphDocument, prefix: str) -> obographs.Graph: ...
-
-
+# docstr-coverage:excused `overload`
 @overload
 def guess(
-    self: obographs.StandardizedGraphDocument, prefix: str
+    graph_document: obographs.GraphDocument,
+    prefix: str,
+) -> obographs.Graph: ...
+
+
+# docstr-coverage:excused `overload`
+@overload
+def guess(
+    graph_document: obographs.StandardizedGraphDocument,
+    prefix: str,
 ) -> obographs.StandardizedGraph: ...
 
 

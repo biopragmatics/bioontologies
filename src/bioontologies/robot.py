@@ -82,11 +82,13 @@ class ParseResults:
     messages: list[str] = dataclasses.field(default_factory=list)
     iri: str | None = None
 
+    # docstr-coverage:excused `overload`
     @overload
     def squeeze(
         self, *, standardize: Literal[True] = True, **kwargs: Any
     ) -> obographs.StandardizedGraph: ...
 
+    # docstr-coverage:excused `overload`
     @overload
     def squeeze(
         self, *, standardize: Literal[False] = False, **kwargs: Any
