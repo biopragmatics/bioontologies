@@ -16,8 +16,8 @@ from subprocess import check_output
 from typing import Any, Literal
 
 import bioregistry
+import obographs
 import pystow
-import requests
 from pystow.utils import download, name_from_url
 
 from .obograph import Graph, GraphDocument
@@ -80,7 +80,7 @@ def is_available() -> bool:
 class ParseResults:
     """A dataclass containing an OBO Graph JSON and text output from ROBOT."""
 
-    graph_document: GraphDocument | None
+    graph_document: obographs.GraphDocument | None
     messages: list[str] = dataclasses.field(default_factory=list)
     iri: str | None = None
 
@@ -125,17 +125,13 @@ def get_obograph_by_iri(
     timeout: int | None = 60,
 ) -> ParseResults:
     """Get an ontology by its OBO Graph JSON iri."""
-    res_json = requests.get(iri, timeout=timeout).json()
-    correct_raw_json(res_json)
-    graph_document = GraphDocument.model_validate(res_json)
+    graph_document = obographs.read(iri, timeout=timeout, squeeze=False)
     return ParseResults(graph_document=graph_document, iri=iri)
 
 
 def get_obograph_by_path(path: str | Path, *, iri: str | None = None) -> ParseResults:
     """Get an ontology by its OBO Graph JSON file path."""
-    res_json = json.loads(Path(path).resolve().read_text())
-    correct_raw_json(res_json)
-    graph_document = GraphDocument.model_validate(res_json)
+    graph_document = obographs.read(path, squeeze=False)
     if iri is None:
         if graph_document.graphs and len(graph_document.graphs) == 1:
             iri = graph_document.graphs[0].id
@@ -154,27 +150,29 @@ def get_obograph_by_prefix(
     reason: bool = True,
 ) -> ParseResults:
     """Get an ontology by its Bioregistry prefix."""
-    if prefix != bioregistry.normalize_prefix(prefix):
-        raise ValueError(f"this function requires bioregistry canonical prefixes: {prefix}")
+    resource = bioregistry.get_resource(prefix)
+    if resource is None:
+        raise ValueError
 
     messages = []
-    json_iri = bioregistry.get_json_download(prefix)
+    json_iri = resource.get_download_obograph()
 
     if json_iri is not None:
         try:
             parse_results = get_obograph_by_iri(json_iri)
         except (OSError, ValueError, TypeError) as e:
-            msg = f"[{prefix}] could not parse JSON from {json_iri}: {e}"
+            msg = f"[{resource.prefix}] could not parse JSON from {json_iri}: {e}"
             messages.append(msg)
             GETTER_MESSAGES.append(msg)
             logger.warning(msg)
         else:
             return parse_results
 
-    owl_iri = bioregistry.get_owl_download(prefix)
-    obo_iri = bioregistry.get_obo_download(prefix)
+    owl_iri = resource.get_download_owl()
+    obo_iri = resource.get_download_obo()
+    ttl_iri = resource.get_download_rdf()
 
-    for label, iri in [("OWL", owl_iri), ("OBO", obo_iri)]:
+    for label, iri in [("OWL", owl_iri), ("OBO", obo_iri), ("Turtle", ttl_iri)]:
         if iri is None:
             continue
 
@@ -191,7 +189,7 @@ def get_obograph_by_prefix(
                     iri, json_path=json_path, check=check, reason=reason
                 )
         except (subprocess.CalledProcessError, KeyError):
-            msg = f"[{prefix}] could not parse {label} from {iri}"
+            msg = f"[{resource.prefix}] could not parse {label} from {iri}"
             messages.append(msg)
             GETTER_MESSAGES.append(msg)
             logger.warning(msg)

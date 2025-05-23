@@ -5,8 +5,9 @@ import warnings
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any
 
+import obographs
+
 from .ner import literal_mappings_from_graph
-from .obograph import Graph
 from .robot import get_obograph_by_prefix
 
 if TYPE_CHECKING:
@@ -65,7 +66,7 @@ def get_gilda_terms(prefix: str, **kwargs: Any) -> Iterable["gilda.term.Term"]:
         yield from gilda_from_graph(prefix, graph)
 
 
-def _get_species(graph: Graph, prefix: str) -> dict[str, str]:
+def _get_species(graph: obographs.Graph, prefix: str) -> dict[str, str]:
     species = {}
     for edge in graph.edges:
         if not edge.standardized:
@@ -82,7 +83,7 @@ def _get_species(graph: Graph, prefix: str) -> dict[str, str]:
     return species
 
 
-def gilda_from_graph(prefix: str, graph: Graph) -> Iterable["gilda.term.Term"]:
+def gilda_from_graph(prefix: str, graph: obographs.Graph) -> Iterable["gilda.term.Term"]:
     """Get Gilda terms from a given graph."""
     id_to_species = _get_species(graph=graph, prefix=prefix)
     for term in literal_mappings_from_graph(graph=graph, prefix=prefix):
