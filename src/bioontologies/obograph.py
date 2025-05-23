@@ -22,7 +22,7 @@ from pydantic import BaseModel, Field, ValidationError
 from tqdm.auto import tqdm
 from typing_extensions import Self
 
-from .constants import CANONICAL, IRI_TO_PREFIX
+from .constants import IRI_TO_PREFIX, guess
 from .relations import get_normalized_label, ground_relation, label_norm
 
 __all__ = [
@@ -984,13 +984,4 @@ class GraphDocument(BaseModel):
 
     def guess(self, prefix: str) -> Graph:
         """Guess the primary graph."""
-        if 1 == len(self.graphs):
-            return self.graphs[0]
-        id_to_graph = {graph.id: graph for graph in self.graphs if graph.id}
-        for suffix in ["owl", "obo", "json"]:
-            standard_id = f"http://purl.obolibrary.org/obo/{prefix.lower()}.{suffix}"
-            if standard_id in id_to_graph:
-                return id_to_graph[standard_id]
-        if prefix in CANONICAL and CANONICAL[prefix] in id_to_graph:
-            return id_to_graph[CANONICAL[prefix]]
-        raise ValueError(f"Several graphs in {prefix}: {sorted(id_to_graph)}")
+        return guess(self, prefix)

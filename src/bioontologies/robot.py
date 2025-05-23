@@ -13,14 +13,12 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from subprocess import check_output
-from typing import Any, Literal
+from typing import Any, Literal, overload
 
 import bioregistry
 import obographs
 import pystow
 from pystow.utils import download, name_from_url
-
-from .obograph import Graph, GraphDocument
 
 __all__ = [
     "ParseResults",
@@ -84,16 +82,28 @@ class ParseResults:
     messages: list[str] = dataclasses.field(default_factory=list)
     iri: str | None = None
 
-    def squeeze(self, standardize: bool = False, **kwargs: Any) -> Graph:
+    @overload
+    def squeeze(
+        self, *, standardize: Literal[True] = True, **kwargs: Any
+    ) -> obographs.StandardizedGraph: ...
+
+    @overload
+    def squeeze(
+        self, *, standardize: Literal[False] = False, **kwargs: Any
+    ) -> obographs.StandardizedGraph: ...
+
+    def squeeze(
+        self, *, standardize: bool = False, **kwargs: Any
+    ) -> obographs.Graph | obographs.StandardizedGraph:
         """Get the first graph."""
         if self.graph_document is None:
             raise ValueError(f"graph document was not successfully parsed: {self.messages}")
         rv = self.graph_document.graphs[0]
         if standardize:
-            rv = rv.standardize(**kwargs)
+            return rv.standardize(**kwargs)
         return rv
 
-    def guess(self, prefix: str) -> Graph:
+    def guess(self, prefix: str) -> obographs.Graph:
         """Guess the right graph."""
         if self.graph_document is None:
             raise ValueError("no graph document")
@@ -352,8 +362,7 @@ def convert_to_obograph(
             if missing:
                 raise ValueError(f"{input_path} graphs missing IDs: {missing}")
 
-        correct_raw_json(graph_document_raw)
-        graph_document = GraphDocument.model_validate(graph_document_raw)
+        graph_document = obographs.GraphDocument.model_validate(graph_document_raw)
         return ParseResults(
             graph_document=graph_document,
             messages=messages,

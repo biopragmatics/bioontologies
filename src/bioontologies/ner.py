@@ -4,12 +4,11 @@ from collections.abc import Iterable, Sequence
 from typing import Any
 
 import curies
+import obographs
 import ssslm
 from curies import vocabulary as v
 from ssslm import DEFAULT_PREDICATE
 from tqdm import tqdm
-
-from bioontologies.obograph import Graph
 
 from .robot import get_obograph_by_prefix
 
@@ -60,7 +59,9 @@ def get_literal_mappings(prefix: str, **kwargs: Any) -> Iterable[ssslm.LiteralMa
         yield from literal_mappings_from_graph(prefix, graph)
 
 
-def literal_mappings_from_graph(prefix: str, graph: Graph) -> Iterable[ssslm.LiteralMapping]:
+def literal_mappings_from_graph(
+    prefix: str, graph: obographs.StandardizedGraph
+) -> Iterable[ssslm.LiteralMapping]:
     """Get literal mappings from a given graph."""
     for node in tqdm(graph.nodes, leave=False, unit_scale=True, desc=f"{prefix} get synonyms"):
         if node.reference is None:
