@@ -36,11 +36,17 @@ __all__ = [
 
 logger = logging.getLogger(__name__)
 
+#: The default ROBOT version to download
 VERSION = "1.9.7"
-ROBOT_URL = f"https://github.com/ontodev/robot/releases/download/v{VERSION}/robot.jar"
-ROBOT_MODULE = pystow.module("robot", VERSION)
-ROBOT_PATH = ROBOT_MODULE.ensure(url=ROBOT_URL)
-ROBOT_COMMAND = ["java", "-jar", str(ROBOT_PATH)]
+ROBOT_MODULE = pystow.module("robot")
+
+
+def get_robot_jar_path(*, version: str | None = None) -> Path:
+    """Ensure the robot jar is there."""
+    if version is None:
+        version = VERSION
+    url = f"https://github.com/ontodev/robot/releases/download/v{version}/robot.jar"
+    return ROBOT_MODULE.ensure(url=url, version=version)
 
 
 def is_available() -> bool:
@@ -61,19 +67,30 @@ def is_available() -> bool:
         )
         return False
 
-    if not ROBOT_PATH.is_file():
-        logger.error("ROBOT was not successfully downloaded to %s", ROBOT_PATH)
+    robot_jar_path = get_robot_jar_path()
+    if not robot_jar_path.is_file():
+        logger.error("ROBOT was not successfully downloaded to %s", robot_jar_path)
         # ROBOT was unsuccessfully downloaded
         return False
 
     try:
-        # Check
-        check_output([*ROBOT_COMMAND, "--help"])  # noqa:S603
+        call_robot(["--help"])
     except Exception:
-        logger.error("ROBOT was downloaded to %s but could not be run with --help", ROBOT_PATH)
+        logger.error("ROBOT was downloaded to %s but could not be run with --help", robot_jar_path)
         return False
 
     return True
+
+
+def call_robot(args: list[str]) -> str:
+    """Run a robot command and return the output as a string."""
+    rr = ["java", "-jar", str(get_robot_jar_path()), *args]
+    logger.debug("Running shell command: %s", args)
+    ret = check_output(  # noqa:S603
+        rr,
+        cwd=os.path.dirname(__file__),
+    )
+    return ret.decode()
 
 
 @dataclass
@@ -462,7 +479,7 @@ def convert(
     if input_flag is None:
         input_flag = "-I" if _is_remote(input_path) else "-i"
 
-    args: list[str] = list(ROBOT_COMMAND)
+    args: list[str] = []
 
     if merge and not reason:
         args.extend(["merge", str(input_flag), str(input_path), "convert"])
@@ -503,12 +520,8 @@ def convert(
         args.extend(("--format", fmt))
     if debug:
         args.append("-vvv")
-    logger.debug("Running shell command: %s", args)
-    ret = check_output(  # noqa:S603
-        args,
-        cwd=os.path.dirname(__file__),
-    )
-    return ret.decode()
+
+    return call_robot(args)
 
 
 def write_getter_warnings(path: str | Path) -> None:
