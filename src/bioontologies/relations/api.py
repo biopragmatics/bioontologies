@@ -115,17 +115,16 @@ def main():
     import obographs
 
     from bioontologies import get_obograph_by_prefix
-    from bioontologies.constants import guess
 
     rows = []
     for source, url in URLS:
         if url is not None:
             graph_document = obographs.read(url, squeeze=False)
-            graph = guess(graph_document, source)
+            graph = obographs.guess_primary_graph(graph_document, source)
         else:
             try:
                 results = get_obograph_by_prefix(source)
-                graph = guess(results.graph_document, source)
+                graph = obographs.guess_primary_graph(results.graph_document, source)
             except ValueError as e:
                 tqdm.write(f"[{source}] error: {e}")
                 continue

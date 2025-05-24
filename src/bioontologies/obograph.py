@@ -15,14 +15,15 @@ from pathlib import Path
 from typing import Any, Literal
 
 import bioregistry
+import obographs
 import pandas as pd
 from bioregistry import NormalizedNamableReference as Reference
 from bioregistry import manager
+from obographs.contrib import CANONICAL
 from pydantic import BaseModel, Field, ValidationError
 from tqdm.auto import tqdm
 from typing_extensions import Self
 
-from .constants import IRI_TO_PREFIX, guess
 from .relations import get_normalized_label, ground_relation, label_norm
 
 __all__ = [
@@ -46,6 +47,12 @@ IDENTIFIERS_HTTPS_PREFIX = "https://identifiers.org/"
 PROVENANCE_PREFIXES = {"pubmed", "pmc", "doi", "arxiv", "biorxiv", "medrxiv", "agricola"}
 
 MISSING_PREDICATE_LABELS = set()
+
+IRI_TO_PREFIX = {v: k for k, v in CANONICAL.items()}
+for resource in bioregistry.resources():
+    owl_iri = resource.get_download_owl()
+    if owl_iri:
+        IRI_TO_PREFIX[owl_iri] = resource.prefix
 
 
 class StandardizeMixin:
@@ -984,4 +991,4 @@ class GraphDocument(BaseModel):
 
     def guess(self, prefix: str) -> Graph:
         """Guess the primary graph."""
-        return guess(self, prefix)
+        return obographs.guess_primary_graph(self, prefix)
