@@ -96,7 +96,6 @@ def call_robot(args: list[str]) -> str:
     return ret.decode()
 
 
-
 @dataclass
 class ParseResults:
     """A dataclass containing an OBO Graph JSON and text output from ROBOT."""
