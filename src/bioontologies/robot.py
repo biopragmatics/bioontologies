@@ -60,7 +60,7 @@ def is_available() -> bool:
         return False
 
     try:
-        check_output(["java", "--help"])  # noqa:S607,S603
+        check_output(["java", "--help"])  # noqa: S607
     except Exception:
         logger.error(
             "java --help failed - this means the java runtime environment (JRE) "
@@ -475,7 +475,10 @@ class ROBOTError(Exception):
 
         # Create the error message
         command_str = " ".join(command)
-        output_preview = textwrap.indent(textwrap.shorten(output, preview_length), "  ")
+        if output is None:
+            output_preview = "<no output>"
+        else:
+            output_preview = textwrap.indent(textwrap.shorten(output, preview_length), "  ")
 
         message = (
             f"Command `{command_str}` returned non-zero exit status {return_code}.\n\n"
