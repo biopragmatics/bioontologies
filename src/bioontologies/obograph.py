@@ -12,9 +12,10 @@ from collections import Counter, defaultdict
 from collections.abc import Iterable, Mapping
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 import bioregistry
+import curies
 import pandas as pd
 from bioregistry import NormalizedNamableReference as Reference
 from bioregistry import manager
@@ -24,6 +25,9 @@ from typing_extensions import Self
 
 from .constants import CANONICAL, IRI_TO_PREFIX
 from .relations import get_normalized_label, ground_relation, label_norm
+
+if TYPE_CHECKING:
+    import networkx as nx
 
 __all__ = [
     "Definition",
@@ -51,11 +55,13 @@ MISSING_PREDICATE_LABELS = set()
 class StandardizeMixin:
     """A mixin for classes representing standardizable data."""
 
+    standardized: bool
+
     def standardize(self) -> Self:
         """Standardize the data in this class."""
         raise NotImplementedError
 
-    def raise_on_unstandardized(self):
+    def raise_on_unstandardized(self) -> None:
         """Raise an exception if standarization has not occurred."""
         if not self.standardized:
             raise ValueError
@@ -175,7 +181,10 @@ class Synonym(BaseModel, StandardizeMixin):
     def standardize(self) -> Self:
         """Standardize the synoynm."""
         self.predicate = _get_reference(self.predicate_raw)
-        self.synonym_type = self.synonym_type_raw and _get_reference(self.synonym_type_raw)
+        if self.synonym_type_raw:
+            self.synonym_type = _get_reference(self.synonym_type_raw)
+        else:
+            self.synonym_type = None
         if self.value:
             self.value = self.value.strip().replace("\n", " ").replace("  ", " ")
         if self.xrefs_raw:
@@ -215,7 +224,7 @@ class Meta(BaseModel, StandardizeMixin):
     subsets: list[str] | None = None
     xrefs: list[Xref] | None = None
     synonyms: list[Synonym] | None = None
-    comments: list | None = None
+    comments: list[str] | None = None
     version: str | None = None
     properties: list[Property] | None = Field(None, alias="basicPropertyValues")
     deprecated: bool = False
@@ -303,7 +312,7 @@ class Edge(BaseModel):
         )
 
 
-def _help_get_properties(self, predicate_iris: str | list[str]) -> list[str]:
+def _help_get_properties(self: Graph | Node, predicate_iris: str | list[str]) -> list[str]:
     if not self.meta:
         return []
     if isinstance(predicate_iris, str):
@@ -330,12 +339,16 @@ class Node(BaseModel, StandardizeMixin):
     @property
     def prefix(self) -> str | None:
         """Get the prefix for the node if it has been standardized."""
-        return self.reference and self.reference.prefix
+        if self.reference:
+            return self.reference.prefix
+        return None
 
     @property
     def identifier(self) -> str | None:
         """Get the identifier for the node if it has been standardized."""
-        return self.reference and self.reference.identifier
+        if self.reference is not None:
+            return self.reference.identifier
+        return None
 
     def standardize(self) -> Self:
         """Ground the node to a standard prefix and luid based on its id (URI)."""
@@ -536,17 +549,23 @@ class Graph(BaseModel, StandardizeMixin):
     @property
     def license(self) -> str | None:
         """Get the license of the ontology."""
-        return self._get_property("http://purl.org/dc/terms/license")
+        return self._get_property(
+            ["http://purl.org/dc/terms/license", "http://purl.org/dc/elements/1.1/license"]
+        )
 
     @property
     def title(self) -> str | None:
         """Get the title of the ontology."""
-        return self._get_property("http://purl.org/dc/elements/1.1/title")
+        return self._get_property(
+            ["http://purl.org/dc/terms/title", "http://purl.org/dc/elements/1.1/title"]
+        )
 
     @property
     def description(self) -> str | None:
         """Get the license of the ontology."""
-        return self._get_property("http://purl.org/dc/elements/1.1/description")
+        return self._get_property(
+            ["http://purl.org/dc/terms/description", "http://purl.org/dc/elements/1.1/description"]
+        )
 
     @property
     def version_iri(self) -> str | None:
@@ -643,9 +662,9 @@ class Graph(BaseModel, StandardizeMixin):
 
         return self
 
-    def _standardize_prefix(self):
+    def _standardize_prefix(self) -> None:
         if not self.id:
-            return
+            return None
         if self.id in IRI_TO_PREFIX:
             self.prefix = IRI_TO_PREFIX[self.id]
         elif self.id.startswith("http://purl.obolibrary.org/obo/"):
@@ -656,10 +675,12 @@ class Graph(BaseModel, StandardizeMixin):
                     self.id.removeprefix("http://purl.obolibrary.org/obo/")
                     .removesuffix(suffix)
                     .removesuffix("_import")
+                    .removesuffix("_merged")
                 )
                 if prefix != bioregistry.normalize_prefix(prefix):
                     tqdm.write(f"could not guess prefix from {self.id}")
                     return
+                # FIXME check if clyh/clyh
                 self.prefix = prefix
                 return
 
@@ -685,7 +706,7 @@ class Graph(BaseModel, StandardizeMixin):
 
     def get_xrefs(self) -> list[tuple[Reference, Reference, Reference]]:
         """Get all database cross-references from the ontology."""
-        rv = []
+        rv: list[tuple[Reference, Reference, Reference]] = []
         for node in self.nodes:
             if node.reference is None:
                 continue
@@ -693,10 +714,14 @@ class Graph(BaseModel, StandardizeMixin):
                 if xref.value is None or " " in xref.value.identifier:
                     tqdm.write(f"node {node.id} with space in xref {xref.value_raw}")
                     continue
+                if not xref.predicate:
+                    continue
                 rv.append((node.reference, xref.predicate, xref.value))
         return rv
 
-    def _get_edge_predicate_label(self, edge: Edge, ctn, require_label: bool = False) -> str:
+    def _get_edge_predicate_label(
+        self, edge: Edge, ctn: Mapping[str, str], require_label: bool = False
+    ) -> str:
         if edge.predicate:
             label = get_normalized_label(edge.predicate.curie)
             if label:
@@ -870,7 +895,7 @@ class Graph(BaseModel, StandardizeMixin):
             node.curie: node.name for node in self.nodes if node.name and node.reference is not None
         }
 
-    def get_networkx(self):
+    def get_networkx(self) -> nx.MultiDiGraph:
         """Get a networkx multi-directional graph."""
         import networkx as nx
 
@@ -902,7 +927,7 @@ def write_warned(path: str | Path) -> None:
 
 
 @lru_cache(1)
-def _get_converter():
+def _get_converter() -> curies.Converter:
     return bioregistry.manager.get_converter(include_prefixes=True)
 
 
@@ -933,7 +958,7 @@ def _get_reference(s: str, *, debug: bool = False) -> Reference | None:  # noqa:
         if reference is not None:
             return reference
         if s not in WARNED:
-            logger.warning("could not parse OBO internal relation: %s", s)
+            logger.debug("could not parse OBO internal relation: %s", s)
         WARNED[s] += 1
 
     if "upload.wikimedia.org" in s:

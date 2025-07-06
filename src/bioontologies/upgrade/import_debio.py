@@ -8,7 +8,7 @@ URL = "https://raw.githubusercontent.com/biopragmatics/debio/main/releases/curre
 OBO_PURL = "http://purl.obolibrary.org/obo/"
 
 
-def main():
+def main() -> None:
     """Import rewrites from DeBiO."""
     for node in requests.get(URL, timeout=5).json()["graphs"][0]["nodes"]:
         if node.get("type") != "PROPERTY":
