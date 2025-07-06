@@ -10,6 +10,7 @@ import os
 import subprocess
 import tempfile
 import textwrap
+from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
@@ -412,7 +413,7 @@ def convert_to_obograph(
         )
 
 
-def correct_raw_json(graph_document_raw) -> None:
+def correct_raw_json(graph_document_raw: dict[str, Any]) -> dict[str, Any]:
     """Correct issues in raw graph documents, in place."""
     for graph in graph_document_raw["graphs"]:
         _clean_raw_meta(graph)
@@ -464,7 +465,9 @@ def _is_remote(url: str | Path) -> bool:
 
 
 @contextmanager
-def _path_context(path: None | str | Path, name: str = "output.json"):
+def _path_context(
+    path: None | str | Path, name: str = "output.json"
+) -> Generator[Path, None, None]:
     if path is not None:
         yield Path(path).resolve()
     else:

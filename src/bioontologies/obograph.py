@@ -55,6 +55,8 @@ MISSING_PREDICATE_LABELS = set()
 class StandardizeMixin:
     """A mixin for classes representing standardizable data."""
 
+    standardized: bool
+
     def standardize(self) -> Self:
         """Standardize the data in this class."""
         raise NotImplementedError
@@ -179,7 +181,10 @@ class Synonym(BaseModel, StandardizeMixin):
     def standardize(self) -> Self:
         """Standardize the synoynm."""
         self.predicate = _get_reference(self.predicate_raw)
-        self.synonym_type = self.synonym_type_raw and _get_reference(self.synonym_type_raw)
+        if self.synonym_type_raw:
+            self.synonym_type = _get_reference(self.synonym_type_raw)
+        else:
+            self.synonym_type = None
         if self.value:
             self.value = self.value.strip().replace("\n", " ").replace("  ", " ")
         if self.xrefs_raw:
@@ -701,13 +706,15 @@ class Graph(BaseModel, StandardizeMixin):
 
     def get_xrefs(self) -> list[tuple[Reference, Reference, Reference]]:
         """Get all database cross-references from the ontology."""
-        rv = []
+        rv: list[tuple[Reference, Reference, Reference]] = []
         for node in self.nodes:
             if node.reference is None:
                 continue
             for xref in node.xrefs:
                 if xref.value is None or " " in xref.value.identifier:
                     tqdm.write(f"node {node.id} with space in xref {xref.value_raw}")
+                    continue
+                if not xref.predicate:
                     continue
                 rv.append((node.reference, xref.predicate, xref.value))
         return rv

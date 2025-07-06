@@ -84,6 +84,5 @@ def _get_species(graph: Graph, prefix: str) -> dict[str, str]:
 
 def gilda_from_graph(prefix: str, graph: Graph) -> Iterable["gilda.term.Term"]:
     """Get Gilda terms from a given graph."""
-    id_to_species = _get_species(graph=graph, prefix=prefix)
     for term in literal_mappings_from_graph(graph=graph, prefix=prefix):
-        yield term.to_gilda(id_to_species.get(term.reference.identifier))
+        yield term.to_gilda()

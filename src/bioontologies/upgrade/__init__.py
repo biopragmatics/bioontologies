@@ -5,7 +5,7 @@ from collections.abc import Mapping
 from functools import lru_cache
 from pathlib import Path
 
-from bioregistry import NormalizedNamableReference, NormalizedNamedReference
+from bioregistry import NormalizedNamableReference
 from tqdm import tqdm
 
 __all__ = [
@@ -23,7 +23,7 @@ PATH = HERE.joinpath("data.tsv")
 Terms = Mapping[str, NormalizedNamableReference]
 
 
-def upgrade(s: str) -> NormalizedNamedReference | None:
+def upgrade(s: str) -> NormalizedNamableReference | None:
     """Upgrade a string, which is potentially an IRI to a curated CURIE pair."""
     return load().get(s)
 
