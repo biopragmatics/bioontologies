@@ -97,7 +97,7 @@ def get_literal_mappings_subset(
     ancestors: curies.Reference | Sequence[curies.Reference],
     *,
     check: bool = False,
-    **kwargs,
+    **kwargs: Any,
 ) -> list[ssslm.LiteralMapping]:
     """Get a subset of literal mappings for terms under the ancestors."""
     if isinstance(ancestors, curies.Reference):
