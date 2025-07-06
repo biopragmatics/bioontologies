@@ -9,6 +9,7 @@ import logging
 import os
 import subprocess
 import tempfile
+import textwrap
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
@@ -24,6 +25,7 @@ from .obograph import Graph, GraphDocument
 
 __all__ = [
     "ParseResults",
+    "ROBOTError",
     "convert",
     "convert_to_obograph",
     "convert_to_obograph_local",
@@ -59,7 +61,7 @@ def is_available() -> bool:
         return False
 
     try:
-        check_output(["java", "--help"])  # noqa:S607,S603
+        check_output(["java", "--help"])  # noqa: S607
     except Exception:
         logger.error(
             "java --help failed - this means the java runtime environment (JRE) "
@@ -85,11 +87,19 @@ def is_available() -> bool:
 def call_robot(args: list[str]) -> str:
     """Run a robot command and return the output as a string."""
     rr = ["java", "-jar", str(get_robot_jar_path()), *args]
-    logger.debug("Running shell command: %s", args)
-    ret = check_output(  # noqa:S603
-        rr,
-        cwd=os.path.dirname(__file__),
-    )
+    logger.debug("Running shell command: %s", rr)
+    try:
+        ret = check_output(  # noqa:S603
+            rr,
+            cwd=os.path.dirname(__file__),
+        )
+    except subprocess.CalledProcessError as e:
+        raise ROBOTError(
+            command=e.cmd,
+            return_code=e.returncode,
+            output=e.output.decode() if e.output is not None else None,
+        ) from None
+
     return ret.decode()
 
 
@@ -438,6 +448,45 @@ def _path_context(path: None | str | Path, name: str = "output.json"):
     else:
         with tempfile.TemporaryDirectory() as directory:
             yield Path(directory).joinpath(name)
+
+
+class ROBOTError(Exception):
+    """Custom error for ROBOT command failures that includes output preview."""
+
+    def __init__(
+        self,
+        command: list[str],
+        return_code: int,
+        output: str | None = None,
+        preview_length: int = 500,
+    ) -> None:
+        """Initialize a wrapper around a ROBOT exception.
+
+        :param command: The command that was executed and failed
+        :param return_code: The exit code returned by the command
+        :param output: The stdout/stderr output from the command execution
+        :param preview_length:
+            Maximum number of characters to include in the
+            error message preview. Default is 500 characters.
+
+        The error message will contain the command, return code, and a preview
+        of the output truncated to preview_length characters.
+        """
+        self.command = command
+        self.return_code = return_code
+        self.output = output or "<no output>"
+        self.preview_length = preview_length
+
+        # Create the error message
+        command_str = " ".join(command)
+        output_preview = textwrap.indent(textwrap.shorten(self.output, preview_length), "  ")
+
+        message = (
+            f"Command `{command_str}` returned non-zero exit status {return_code}.\n\n"
+            f"Output:\n\n{output_preview}"
+        )
+
+        super().__init__(message)
 
 
 def convert(
