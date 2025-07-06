@@ -473,15 +473,12 @@ class ROBOTError(Exception):
         """
         self.command = command
         self.return_code = return_code
-        self.output = output
+        self.output = output or "<no output>"
         self.preview_length = preview_length
 
         # Create the error message
         command_str = " ".join(command)
-        if output is None:
-            output_preview = "<no output>"
-        else:
-            output_preview = textwrap.indent(textwrap.shorten(output, preview_length), "  ")
+        output_preview = textwrap.indent(textwrap.shorten(self.output, preview_length), "  ")
 
         message = (
             f"Command `{command_str}` returned non-zero exit status {return_code}.\n\n"
