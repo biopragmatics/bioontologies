@@ -571,6 +571,7 @@ def convert(
         args.extend(("--format", fmt))
     if debug:
         args.append("-vvv")
+
     return call_robot(args)
 
 
