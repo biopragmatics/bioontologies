@@ -94,8 +94,11 @@ def call_robot(args: list[str]) -> str:
         )
     except subprocess.CalledProcessError as e:
         raise ROBOTError(
-            command=e.cmd, return_code=e.returncode, output=e.output.decode()
+            command=e.cmd,
+            return_code=e.returncode,
+            output=e.output.decode() if e.output is not None else None,
         ) from None
+
     return ret.decode()
 
 
