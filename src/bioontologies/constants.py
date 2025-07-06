@@ -15,6 +15,10 @@ CANONICAL = {
     "one": "http://purl.obolibrary.org/obo/ONE",
     "ons": "https://raw.githubusercontent.com/enpadasi/Ontology-for-Nutritional-Studies/master/ons.owl",
     "ontie": "https://ontology.iedb.org/ontology/ontie.owl",
+    "aro": "http://purl.obolibrary.org/obo/antibiotic_resistance.owl",
+    "http://purl.obolibrary.org/obo/iao/cdt.owl": "cdt",
+    "http://purl.obolibrary.org/obo/clo/clo_merged.owl": "clo",
+    "http://purl.obolibrary.org/obo/clyh/clyh.owl": "clyh",
 }
 
 IRI_TO_PREFIX = {v: k for k, v in CANONICAL.items()}

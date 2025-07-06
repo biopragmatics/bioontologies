@@ -17,9 +17,11 @@ from subprocess import check_output
 from typing import Any, Literal
 
 import bioregistry
+import click
 import pystow
 import requests
 from pystow.utils import download, name_from_url
+from tqdm import tqdm
 
 from .obograph import Graph, GraphDocument
 
@@ -178,7 +180,8 @@ def get_obograph_by_prefix(
     json_path: None | str | Path = None,
     cache: bool = False,
     check: bool = True,
-    reason: bool = True,
+    reason: bool = False,
+    merge: bool = False,
 ) -> ParseResults:
     """Get an ontology by its Bioregistry prefix."""
     if prefix != bioregistry.normalize_prefix(prefix):
@@ -194,7 +197,7 @@ def get_obograph_by_prefix(
             msg = f"[{prefix}] could not parse JSON from {json_iri}: {e}"
             messages.append(msg)
             GETTER_MESSAGES.append(msg)
-            logger.warning(msg)
+            tqdm.write(click.style(msg, fg="red"))
         else:
             return parse_results
 
@@ -211,17 +214,26 @@ def get_obograph_by_prefix(
                     path = os.path.join(d, name_from_url(iri))
                     download(iri, path=path)
                     parse_results = convert_to_obograph_local(
-                        path, json_path=json_path, from_iri=iri, check=check
+                        path,
+                        json_path=json_path,
+                        from_iri=iri,
+                        check=check,
+                        merge=merge,
+                        reason=reason,
                     )
             else:
                 parse_results = convert_to_obograph_remote(
-                    iri, json_path=json_path, check=check, reason=reason
+                    iri,
+                    json_path=json_path,
+                    check=check,
+                    reason=reason,
+                    merge=merge,
                 )
         except (subprocess.CalledProcessError, KeyError):
             msg = f"[{prefix}] could not parse {label} from {iri}"
             messages.append(msg)
             GETTER_MESSAGES.append(msg)
-            logger.warning(msg)
+            tqdm.write(click.style(msg, fg="red"))
             continue
         else:
             # stick all messages before
@@ -237,6 +249,8 @@ def convert_to_obograph_local(
     json_path: None | str | Path = None,
     from_iri: str | None = None,
     check: bool = True,
+    reason: bool = False,
+    merge: bool = False,
 ) -> ParseResults:
     """Convert a local OWL/OBO file to an OBO Graph JSON object.
 
@@ -255,7 +269,13 @@ def convert_to_obograph_local(
         output from the ROBOT conversion program
     """
     return convert_to_obograph(
-        input_path=path, input_flag="-i", json_path=json_path, from_iri=from_iri, check=check
+        input_path=path,
+        input_flag="-i",
+        json_path=json_path,
+        from_iri=from_iri,
+        check=check,
+        reason=reason,
+        merge=merge,
     )
 
 
@@ -265,6 +285,7 @@ def convert_to_obograph_remote(
     json_path: None | str | Path = None,
     check: bool = True,
     reason: bool = True,
+    merge: bool = True,
 ) -> ParseResults:
     """Convert a remote OWL/OBO file to an OBO Graph JSON object.
 
@@ -290,6 +311,7 @@ def convert_to_obograph_remote(
         input_is_iri=True,
         check=check,
         reason=reason,
+        merge=merge,
     )
 
 
@@ -301,9 +323,9 @@ def convert_to_obograph(
     input_is_iri: bool = False,
     extra_args: list[str] | None = None,
     from_iri: str | None = None,
-    merge: bool = True,
+    merge: bool = False,
     check: bool = True,
-    reason: bool = True,
+    reason: bool = False,
     debug: bool = False,
 ) -> ParseResults:
     """Convert a local OWL file to a JSON file.
@@ -402,7 +424,7 @@ def correct_raw_json(graph_document_raw) -> None:
     return graph_document_raw
 
 
-def _clean_raw_meta(element):
+def _clean_raw_meta(element: dict[str, Any]) -> None:
     meta = element.get("meta")
     if not meta:
         return
@@ -494,7 +516,7 @@ def convert(
     output_path: str | Path,
     input_flag: Literal["-i", "-I"] | None = None,
     *,
-    merge: bool = True,
+    merge: bool = False,
     fmt: str | None = None,
     check: bool = True,
     reason: bool = False,
