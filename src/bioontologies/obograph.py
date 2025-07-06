@@ -755,7 +755,9 @@ class Graph(BaseModel, StandardizeMixin):
             tqdm.write(f"No CURIE/label for {edge.pred}")
         return edge.pred
 
-    def get_edges_df(self, *, require_labels: bool = False) -> pd.DataFrame:
+    def get_edges_df(
+        self, *, require_labels: bool = False, append_definition_sources: bool = False
+    ) -> pd.DataFrame:
         """Get all triples as a dataframe."""
         self.raise_on_unstandardized()
         if self.prefix is None:
@@ -776,18 +778,19 @@ class Graph(BaseModel, StandardizeMixin):
             and edge.subject.prefix == self.prefix
         )
 
-        # Add provenance relations
-        rows.extend(
-            (
-                node.curie,
-                "definition_source",
-                "iao:0000119",
-                definition_p.curie,
+        if append_definition_sources:
+            # Add provenance relations
+            rows.extend(
+                (
+                    node.curie,
+                    "definition_source",
+                    "iao:0000119",
+                    definition_p.curie,
+                )
+                for node in self.nodes
+                if node.reference
+                for definition_p in node.definition_provenance
             )
-            for node in self.nodes
-            if node.reference
-            for definition_p in node.definition_provenance
-        )
         return pd.DataFrame(rows, columns=columns).drop_duplicates()
 
     def get_sssom_df(self) -> pd.DataFrame:
