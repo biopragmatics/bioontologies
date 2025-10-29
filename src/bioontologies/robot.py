@@ -42,7 +42,7 @@ __all__ = [
 logger = logging.getLogger(__name__)
 
 #: The default ROBOT version to download
-VERSION = "1.9.7"
+VERSION = "1.9.8"
 ROBOT_MODULE = pystow.module("robot")
 
 
@@ -126,7 +126,7 @@ class ParseResults:
     def guess(self, prefix: str) -> Graph:
         """Guess the right graph."""
         if self.graph_document is None:
-            raise ValueError("no graph document")
+            raise ValueError(f"no graph document found in {prefix}")
         return self.graph_document.guess(prefix)
 
     def guess_version(self, prefix: str) -> str | None:
