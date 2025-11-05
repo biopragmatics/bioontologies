@@ -102,7 +102,7 @@ def call_robot(args: list[str]) -> str:
             command=e.cmd,
             return_code=e.returncode,
             output=e.output.decode() if e.output is not None else None,
-            stderr=e.stderr.decode() if e.stderr is not None else None
+            stderr=e.stderr.decode() if e.stderr is not None else None,
         ) from None
 
     return ret.decode()
