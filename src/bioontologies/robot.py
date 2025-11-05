@@ -95,12 +95,14 @@ def call_robot(args: list[str]) -> str:
         ret = check_output(  # noqa:S603
             rr,
             cwd=os.path.dirname(__file__),
+            stderr=subprocess.PIPE,
         )
     except subprocess.CalledProcessError as e:
         raise ROBOTError(
             command=e.cmd,
             return_code=e.returncode,
             output=e.output.decode() if e.output is not None else None,
+            stderr=e.stderr.decode() if e.stderr is not None else None
         ) from None
 
     return ret.decode()
@@ -483,6 +485,7 @@ class ROBOTError(Exception):
         command: list[str],
         return_code: int,
         output: str | None = None,
+        stderr: str | None = None,
         preview_length: int = 500,
     ) -> None:
         """Initialize a wrapper around a ROBOT exception.
@@ -499,16 +502,19 @@ class ROBOTError(Exception):
         """
         self.command = command
         self.return_code = return_code
-        self.output = output or "<no output>"
+        self.stdout = output or "<no stdout>"
         self.preview_length = preview_length
+        self.stderr = stderr or "<no stderr>"
 
         # Create the error message
         command_str = " ".join(command)
-        output_preview = textwrap.indent(textwrap.shorten(self.output, preview_length), "  ")
+        stdout_preview = textwrap.indent(textwrap.shorten(self.stdout, preview_length), "  ")
+        stderr_preview = textwrap.indent(textwrap.shorten(self.stderr, preview_length), "  ")
 
         message = (
             f"Command `{command_str}` returned non-zero exit status {return_code}.\n\n"
-            f"Output:\n\n{output_preview}"
+            f"stderr:\n\n{stderr_preview}"
+            f"\n\nstdout:\n\n{stdout_preview}"
         )
 
         super().__init__(message)
