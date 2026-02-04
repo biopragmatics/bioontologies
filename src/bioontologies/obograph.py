@@ -12,18 +12,22 @@ from collections import Counter, defaultdict
 from collections.abc import Iterable, Mapping
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 import bioregistry
+import curies
 import pandas as pd
 from bioregistry import manager
-from curies import Reference, ReferenceTuple, vocabulary
-from pydantic import BaseModel, Field
+from curies import Reference, vocabulary
+from pydantic import BaseModel, Field, ValidationError
 from tqdm.auto import tqdm
 from typing_extensions import Self
 
 from .constants import CANONICAL, IRI_TO_PREFIX
 from .relations import get_normalized_label, ground_relation, label_norm
+
+if TYPE_CHECKING:
+    import networkx as nx
 
 __all__ = [
     "Definition",
@@ -47,17 +51,17 @@ PROVENANCE_PREFIXES = {"pubmed", "pmc", "doi", "arxiv", "biorxiv", "medrxiv", "a
 
 MISSING_PREDICATE_LABELS = set()
 
-MaybeCURIE = tuple[str, str] | tuple[None, None]
-
 
 class StandardizeMixin:
     """A mixin for classes representing standardizable data."""
+
+    standardized: bool
 
     def standardize(self) -> Self:
         """Standardize the data in this class."""
         raise NotImplementedError
 
-    def raise_on_unstandardized(self):
+    def raise_on_unstandardized(self) -> None:
         """Raise an exception if standarization has not occurred."""
         if not self.standardized:
             raise ValueError
@@ -177,7 +181,10 @@ class Synonym(BaseModel, StandardizeMixin):
     def standardize(self) -> Self:
         """Standardize the synoynm."""
         self.predicate = _get_reference(self.predicate_raw)
-        self.synonym_type = self.synonym_type_raw and _get_reference(self.synonym_type_raw)
+        if self.synonym_type_raw:
+            self.synonym_type = _get_reference(self.synonym_type_raw)
+        else:
+            self.synonym_type = None
         if self.value:
             self.value = self.value.strip().replace("\n", " ").replace("  ", " ")
         if self.xrefs_raw:
@@ -217,7 +224,7 @@ class Meta(BaseModel, StandardizeMixin):
     subsets: list[str] | None = None
     xrefs: list[Xref] | None = None
     synonyms: list[Synonym] | None = None
-    comments: list | None = None
+    comments: list[str] | None = None
     version: str | None = None
     properties: list[Property] | None = Field(None, alias="basicPropertyValues")
     deprecated: bool = False
@@ -305,7 +312,7 @@ class Edge(BaseModel):
         )
 
 
-def _help_get_properties(self, predicate_iris: str | list[str]) -> list[str]:
+def _help_get_properties(self: Graph | Node, predicate_iris: str | list[str]) -> list[str]:
     if not self.meta:
         return []
     if isinstance(predicate_iris, str):
@@ -332,18 +339,21 @@ class Node(BaseModel, StandardizeMixin):
     @property
     def prefix(self) -> str | None:
         """Get the prefix for the node if it has been standardized."""
-        return self.reference and self.reference.prefix
+        if self.reference:
+            return self.reference.prefix
+        return None
 
     @property
     def identifier(self) -> str | None:
         """Get the identifier for the node if it has been standardized."""
-        return self.reference and self.reference.identifier
+        if self.reference is not None:
+            return self.reference.identifier
+        return None
 
     def standardize(self) -> Self:
         """Ground the node to a standard prefix and luid based on its id (URI)."""
-        prefix, identifier = _parse_uri_or_curie_or_str(self.id)
-        if prefix and identifier:
-            self.reference = Reference(prefix=prefix, identifier=identifier)
+        if reference := _get_reference(self.id):
+            self.reference = reference
         if self.name:
             self.name = self.name.strip().replace("\n", " ").replace("  ", " ")
         if self.meta:
@@ -485,10 +495,6 @@ class Node(BaseModel, StandardizeMixin):
     def _get_properties(self, pred: str | list[str]) -> list[str]:
         return _help_get_properties(self, pred)
 
-    def parse_curie(self) -> MaybeCURIE:
-        """Parse the identifier into a pair, assuming it's a CURIE."""
-        return _parse_uri_or_curie_or_str(self.id)
-
     @property
     def definition_provenance(self) -> list[Reference]:
         """Get the provenance CURIEs for the definition."""
@@ -543,17 +549,23 @@ class Graph(BaseModel, StandardizeMixin):
     @property
     def license(self) -> str | None:
         """Get the license of the ontology."""
-        return self._get_property("http://purl.org/dc/terms/license")
+        return self._get_property(
+            ["http://purl.org/dc/terms/license", "http://purl.org/dc/elements/1.1/license"]
+        )
 
     @property
     def title(self) -> str | None:
         """Get the title of the ontology."""
-        return self._get_property("http://purl.org/dc/elements/1.1/title")
+        return self._get_property(
+            ["http://purl.org/dc/terms/title", "http://purl.org/dc/elements/1.1/title"]
+        )
 
     @property
     def description(self) -> str | None:
         """Get the license of the ontology."""
-        return self._get_property("http://purl.org/dc/elements/1.1/description")
+        return self._get_property(
+            ["http://purl.org/dc/terms/description", "http://purl.org/dc/elements/1.1/description"]
+        )
 
     @property
     def version_iri(self) -> str | None:
@@ -650,9 +662,9 @@ class Graph(BaseModel, StandardizeMixin):
 
         return self
 
-    def _standardize_prefix(self):
+    def _standardize_prefix(self) -> None:
         if not self.id:
-            return
+            return None
         if self.id in IRI_TO_PREFIX:
             self.prefix = IRI_TO_PREFIX[self.id]
         elif self.id.startswith("http://purl.obolibrary.org/obo/"):
@@ -663,10 +675,12 @@ class Graph(BaseModel, StandardizeMixin):
                     self.id.removeprefix("http://purl.obolibrary.org/obo/")
                     .removesuffix(suffix)
                     .removesuffix("_import")
+                    .removesuffix("_merged")
                 )
                 if prefix != bioregistry.normalize_prefix(prefix):
                     tqdm.write(f"could not guess prefix from {self.id}")
                     return
+                # FIXME check if clyh/clyh
                 self.prefix = prefix
                 return
 
@@ -692,7 +706,7 @@ class Graph(BaseModel, StandardizeMixin):
 
     def get_xrefs(self) -> list[tuple[Reference, Reference, Reference]]:
         """Get all database cross-references from the ontology."""
-        rv = []
+        rv: list[tuple[Reference, Reference, Reference]] = []
         for node in self.nodes:
             if node.reference is None:
                 continue
@@ -700,10 +714,14 @@ class Graph(BaseModel, StandardizeMixin):
                 if xref.value is None or " " in xref.value.identifier:
                     tqdm.write(f"node {node.id} with space in xref {xref.value_raw}")
                     continue
+                if not xref.predicate:
+                    continue
                 rv.append((node.reference, xref.predicate, xref.value))
         return rv
 
-    def _get_edge_predicate_label(self, edge: Edge, ctn, require_label: bool = False) -> str:
+    def _get_edge_predicate_label(
+        self, edge: Edge, ctn: Mapping[str, str], require_label: bool = False
+    ) -> str:
         if edge.predicate:
             label = get_normalized_label(edge.predicate.curie)
             if label:
@@ -839,16 +857,16 @@ class Graph(BaseModel, StandardizeMixin):
             rows.append(
                 (
                     node.curie,
-                    node.name,
+                    node.name or "",
                     sep.join(synonym_values),
                     sep.join(synonym_predicates),
                     sep.join(synonym_types),
-                    node.definition,
+                    node.definition or "",
                     "true" if node.deprecated else "false",
                     node.type,
                     sep.join(reference.curie for reference in node.get_provenance()),
                     sep.join(node.alternative_ids),
-                    node.replaced_by,
+                    node.replaced_by or "",
                     sep.join(xref_values),
                     sep.join(xref_types),
                     version,
@@ -877,7 +895,7 @@ class Graph(BaseModel, StandardizeMixin):
             node.curie: node.name for node in self.nodes if node.name and node.reference is not None
         }
 
-    def get_networkx(self):
+    def get_networkx(self) -> nx.MultiDiGraph:
         """Get a networkx multi-directional graph."""
         import networkx as nx
 
@@ -890,26 +908,6 @@ class Graph(BaseModel, StandardizeMixin):
             if node in names:
                 graph.nodes[node]["name"] = names[node]
         return graph
-
-
-def _parse_uri_or_curie_or_str(
-    s: str, *, debug: bool = False
-) -> tuple[str, str] | tuple[None, None]:
-    """Ground the node to a standard prefix and luid based on its id (URI)."""
-    reference_tuple = omni_parse(s, debug=debug)
-    if reference_tuple is None:
-        return None, None
-    resource = manager.get_resource(reference_tuple.prefix)
-    if resource is None:
-        return None, None
-    return resource.prefix, resource.standardize_identifier(reference_tuple.identifier)
-
-
-def _get_reference(s: str, *, debug: bool = False) -> Reference | None:
-    p, i = _parse_uri_or_curie_or_str(s, debug=debug)
-    if p and i:
-        return Reference(prefix=p, identifier=i)
-    return None
 
 
 def _get_references(strings: list[str]) -> list[Reference]:
@@ -928,37 +926,40 @@ def write_warned(path: str | Path) -> None:
     path.write_text("\n".join(f"{k}\t{v}" for k, v in sorted(WARNED.items())))
 
 
-def _parse_obo_rel(s: str, identifier: str) -> ReferenceTuple | None:
-    _, inner_identifier = identifier.split("#", 1)
-    _p, _i = ground_relation(inner_identifier)
-    if _p and _i:
-        return ReferenceTuple(_p, _i)
-    if s not in WARNED:
-        tqdm.write(f"could not parse OBO internal relation: {s}")
-    WARNED[s] += 1
-    return None
-
-
 @lru_cache(1)
-def _get_converter():
+def _get_converter() -> curies.Converter:
     return bioregistry.manager.get_converter(include_prefixes=True)
 
 
-def omni_parse(s: str, *, debug: bool = False) -> ReferenceTuple | None:  # noqa:C901
+def _get_reference(s: str, *, debug: bool = False) -> Reference | None:  # noqa:C901
     """Parse a string, CURIE, or IRI into a proper refernce, if possible."""
     from .upgrade import insert, upgrade
 
     s = s.replace(" ", "")
 
-    cv = upgrade(s)
-    if cv is not None:
-        return cv
+    upgraded_reference = upgrade(s)
+    if upgraded_reference is not None:
+        return upgraded_reference
 
-    prefix, identifier = _get_converter().parse_uri(s)
-    if prefix and identifier:
-        if prefix == "obo" and "#" in identifier:
-            return _parse_obo_rel(s, identifier)
-        return ReferenceTuple(prefix, identifier)
+    reference_tuple = _get_converter().parse_uri(s, return_none=True)
+    if reference_tuple is not None:
+        if not reference_tuple.identifier:
+            return None
+        if reference_tuple.prefix != "obo" or "#" not in reference_tuple.identifier:
+            try:
+                rv = Reference(prefix=reference_tuple.prefix, identifier=reference_tuple.identifier)
+            except ValidationError:
+                return None
+            else:
+                return rv
+
+        _, inner_identifier = reference_tuple.identifier.split("#", 1)
+        reference = ground_relation(inner_identifier)
+        if reference is not None:
+            return reference
+        if s not in WARNED:
+            logger.debug("could not parse OBO internal relation: %s", s)
+        WARNED[s] += 1
 
     if "upload.wikimedia.org" in s:
         return None
@@ -968,17 +969,17 @@ def omni_parse(s: str, *, debug: bool = False) -> ReferenceTuple | None:  # noqa
         "http://www.obofoundry.org/ro/ro.owl#",
     ]:
         if s.startswith(x):
-            prefix, identifier = ground_relation(s[len(x) :])
-            if prefix and identifier:
-                insert(s, prefix, identifier)
-                return ReferenceTuple(prefix, identifier)
+            reference = ground_relation(s[len(x) :])
+            if reference is not None:
+                insert(s, reference.prefix, reference.identifier, name=reference.name)
+                return reference
             if s not in WARNED:
                 tqdm.write(f"could not parse legacy RO: {s}")
             WARNED[s] += 1
 
-    prefix, identifier = ground_relation(s)
-    if prefix and identifier:
-        return ReferenceTuple(prefix, identifier)
+    reference = ground_relation(s)
+    if reference is not None:
+        return reference
 
     # couldn't parse anything...
     if debug and (

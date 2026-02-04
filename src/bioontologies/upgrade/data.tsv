@@ -13,7 +13,7 @@ dc-description	dc	description
 dc-license	dc	license
 dc-title	dc	title
 depicted_by	foaf	depicted_by
-develops_from	RO	0002202
+develops_from	ro	0002202
 editor_note	oboinowl	editor_note
 ends_at_start_of	ro	0002593
 exactMatch	skos	exactMatch
@@ -31,6 +31,7 @@ http://example.com/bfo-spec-label	bfo	0000179
 http://purl.obolibrary.org/obo/NCBITaxon#_species_group	debio	0000024
 http://purl.obolibrary.org/obo/OBO_REL#_agent_in	sio	000063
 http://purl.obolibrary.org/obo/OBO_REL#_bearer_of	ro	0000053
+http://purl.obolibrary.org/obo/OBO_REL#_contained_in	ro	0001018
 http://purl.obolibrary.org/obo/OBO_REL#_derived_into	sio	000245
 http://purl.obolibrary.org/obo/OBO_REL#_has_agent	sio	000139
 http://purl.obolibrary.org/obo/OBO_REL#_has_function	ro	0000085
@@ -41,6 +42,7 @@ http://purl.obolibrary.org/obo/OBO_REL#_has_quality	bfo	0000086
 http://purl.obolibrary.org/obo/OBO_REL#_has_role	ro	0000087
 http://purl.obolibrary.org/obo/OBO_REL#_has_vector	ro	0002460
 http://purl.obolibrary.org/obo/OBO_REL#_improper_part_of	bfo	0000050
+http://purl.obolibrary.org/obo/OBO_REL#_instance_of	rdf	type
 http://purl.obolibrary.org/obo/OBO_REL#_integral_part_of	bfo	0000050
 http://purl.obolibrary.org/obo/OBO_REL#_part_of	bfo	0000050
 http://purl.obolibrary.org/obo/OBO_REL#_proper_part_of	bfo	0000050
@@ -138,8 +140,14 @@ http://purl.obolibrary.org/obo/rbo#closeMatch	skos	closeMatch
 http://purl.obolibrary.org/obo/rbo#exactMatch	skos	exactMatch
 http://purl.obolibrary.org/obo/rbo#isDefinedBy	rdfs	isDefinedBy
 http://purl.obolibrary.org/obo/rbo#seeAlso 	rdf	seeAlso
+http://purl.obolibrary.org/obo/reto#is_a	rdfs	subClassOf
+http://purl.obolibrary.org/obo/rex#inverse_of	owl	inverseOf
+http://purl.obolibrary.org/obo/rex#is_a	rdfs	subClassOf
+http://purl.obolibrary.org/obo/rexo#is_a	rdfs	subClassOf
 http://purl.obolibrary.org/obo/so#derives_from	ro	0001000
+http://purl.obolibrary.org/obo/so#has_integral_part	bfo	0000051
 http://purl.obolibrary.org/obo/so#has_origin	debio	0000025
+http://purl.obolibrary.org/obo/so#integral_part_of	bfo	0000050
 http://purl.obolibrary.org/obo/so#member_of	ro	0002350
 http://purl.obolibrary.org/obo/so#overlaps	ro	0002131
 http://purl.obolibrary.org/obo/so#part_of	bfo	0000050
@@ -154,6 +162,8 @@ http://purl.obolibrary.org/obo/uberon/core#conduit_for	ro	0002570
 http://purl.obolibrary.org/obo/uberon/core#existence_starts_and_ends_during	ro	0002491
 http://purl.obolibrary.org/obo/uberon/core#synapsed_by	ro	0002103
 http://purl.obolibrary.org/obo/unfolds_in	bfo	0000066
+http://purl.obolibrary.org/obo/vsao#has_integral_part	bfo	0000051
+http://purl.obolibrary.org/obo/vsao#integral_part_of	bfo	0000050
 http://purl.obolibrary.org/obo/xao#PLURAL	omo	0003004
 http://purl.obolibrary.org/obo/zfa#PLURAL	omo	0003004
 http://purl.obolibrary.org/obo/zfs#PLURAL	omo	0003004
@@ -168,11 +178,14 @@ http://www.obofoundry.org/ro/#OBO_REL:located_in	ro	0001025
 http://www.obofoundry.org/ro/#OBO_REL:part_of	bfo	0000050
 http://www.obofoundry.org/ro/#OBO_REL:preceded_by	bfo	0000062
 http://www.obofoundry.org/ro/ro.owl#adjacent_to	ro	0002220
+http://www.obofoundry.org/ro/ro.owl#agent_in	sio	000063
 http://www.obofoundry.org/ro/ro.owl#bearer_of	ro	0000053
 http://www.obofoundry.org/ro/ro.owl#contained_in	ro	0001018
+http://www.obofoundry.org/ro/ro.owl#derived_into	sio	000245
 http://www.obofoundry.org/ro/ro.owl#derives_from	ro	0001000
 http://www.obofoundry.org/ro/ro.owl#has_agent	ro	0002218
 http://www.obofoundry.org/ro/ro.owl#has_disposition	ro	0000091
+http://www.obofoundry.org/ro/ro.owl#has_improper_part	bfo	0000050
 http://www.obofoundry.org/ro/ro.owl#has_integral_part	bfo	0000051
 http://www.obofoundry.org/ro/ro.owl#has_part	bfo	0000051
 http://www.obofoundry.org/ro/ro.owl#has_participant	ro	0000057
@@ -180,10 +193,12 @@ http://www.obofoundry.org/ro/ro.owl#has_proper_part	bfo	0000051
 http://www.obofoundry.org/ro/ro.owl#improper_part_of	bfo	0000050
 http://www.obofoundry.org/ro/ro.owl#inheres_in	ro	0004096
 http://www.obofoundry.org/ro/ro.owl#integral_part_of	bfo	0000050
+http://www.obofoundry.org/ro/ro.owl#located_in	ro	0001025
 http://www.obofoundry.org/ro/ro.owl#location_of	ro	0001015
 http://www.obofoundry.org/ro/ro.owl#part_of	bfo	0000050
 http://www.obofoundry.org/ro/ro.owl#participates_in	ro	0000056
 http://www.obofoundry.org/ro/ro.owl#preceded_by	bfo	0000062
+http://www.obofoundry.org/ro/ro.owl#precedes	bfo	0000063
 http://www.obofoundry.org/ro/ro.owl#proper_part_of	bfo	0000050
 http://www.obofoundry.org/ro/ro.owl#relationship	owl	ObjectProperty
 http://www.obofoundry.org/ro/ro.owl#transformation_of	ro	0002494

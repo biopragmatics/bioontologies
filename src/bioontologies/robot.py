@@ -9,21 +9,24 @@ import logging
 import os
 import subprocess
 import tempfile
+from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from subprocess import check_output
-from typing import Literal
+from typing import Any, Literal
 
 import bioregistry
-import pystow
+import click
 import requests
 from pystow.utils import download, name_from_url
+from robot_obo_tool import ROBOTError, convert, is_available
+from tqdm import tqdm
 
 from .obograph import Graph, GraphDocument
 
 __all__ = [
     "ParseResults",
+    "ROBOTError",
     "convert",
     "convert_to_obograph",
     "convert_to_obograph_local",
@@ -36,45 +39,6 @@ __all__ = [
 
 logger = logging.getLogger(__name__)
 
-VERSION = "1.9.7"
-ROBOT_URL = f"https://github.com/ontodev/robot/releases/download/v{VERSION}/robot.jar"
-ROBOT_MODULE = pystow.module("robot", VERSION)
-ROBOT_PATH = ROBOT_MODULE.ensure(url=ROBOT_URL)
-ROBOT_COMMAND = ["java", "-jar", str(ROBOT_PATH)]
-
-
-def is_available() -> bool:
-    """Check if ROBOT is available."""
-    from shutil import which
-
-    if which("java") is None:
-        # suggested in https://stackoverflow.com/questions/11210104/check-if-a-program-exists-from-a-python-script
-        logger.error("java is not on the PATH")
-        return False
-
-    try:
-        check_output(["java", "--help"])  # noqa:S607,S603
-    except Exception:
-        logger.error(
-            "java --help failed - this means the java runtime environment (JRE) "
-            "might not be configured properly"
-        )
-        return False
-
-    if not ROBOT_PATH.is_file():
-        logger.error("ROBOT was not successfully downloaded to %s", ROBOT_PATH)
-        # ROBOT was unsuccessfully downloaded
-        return False
-
-    try:
-        # Check
-        check_output([*ROBOT_COMMAND, "--help"])  # noqa:S603
-    except Exception:
-        logger.error("ROBOT was downloaded to %s but could not be run with --help", ROBOT_PATH)
-        return False
-
-    return True
-
 
 @dataclass
 class ParseResults:
@@ -84,19 +48,19 @@ class ParseResults:
     messages: list[str] = dataclasses.field(default_factory=list)
     iri: str | None = None
 
-    def squeeze(self, standardize: bool = False) -> Graph:
+    def squeeze(self, standardize: bool = False, **kwargs: Any) -> Graph:
         """Get the first graph."""
         if self.graph_document is None:
             raise ValueError(f"graph document was not successfully parsed: {self.messages}")
         rv = self.graph_document.graphs[0]
         if standardize:
-            rv = rv.standardize()
+            rv = rv.standardize(**kwargs)
         return rv
 
     def guess(self, prefix: str) -> Graph:
         """Guess the right graph."""
         if self.graph_document is None:
-            raise ValueError("no graph document")
+            raise ValueError(f"no graph document found in {prefix}")
         return self.graph_document.guess(prefix)
 
     def guess_version(self, prefix: str) -> str | None:
@@ -151,7 +115,8 @@ def get_obograph_by_prefix(
     json_path: None | str | Path = None,
     cache: bool = False,
     check: bool = True,
-    reason: bool = True,
+    reason: bool = False,
+    merge: bool = False,
 ) -> ParseResults:
     """Get an ontology by its Bioregistry prefix."""
     if prefix != bioregistry.normalize_prefix(prefix):
@@ -167,7 +132,7 @@ def get_obograph_by_prefix(
             msg = f"[{prefix}] could not parse JSON from {json_iri}: {e}"
             messages.append(msg)
             GETTER_MESSAGES.append(msg)
-            logger.warning(msg)
+            tqdm.write(click.style(msg, fg="red"))
         else:
             return parse_results
 
@@ -184,17 +149,26 @@ def get_obograph_by_prefix(
                     path = os.path.join(d, name_from_url(iri))
                     download(iri, path=path)
                     parse_results = convert_to_obograph_local(
-                        path, json_path=json_path, from_iri=iri, check=check
+                        path,
+                        json_path=json_path,
+                        from_iri=iri,
+                        check=check,
+                        merge=merge,
+                        reason=reason,
                     )
             else:
                 parse_results = convert_to_obograph_remote(
-                    iri, json_path=json_path, check=check, reason=reason
+                    iri,
+                    json_path=json_path,
+                    check=check,
+                    reason=reason,
+                    merge=merge,
                 )
         except (subprocess.CalledProcessError, KeyError):
             msg = f"[{prefix}] could not parse {label} from {iri}"
             messages.append(msg)
             GETTER_MESSAGES.append(msg)
-            logger.warning(msg)
+            tqdm.write(click.style(msg, fg="red"))
             continue
         else:
             # stick all messages before
@@ -210,6 +184,8 @@ def convert_to_obograph_local(
     json_path: None | str | Path = None,
     from_iri: str | None = None,
     check: bool = True,
+    reason: bool = False,
+    merge: bool = False,
 ) -> ParseResults:
     """Convert a local OWL/OBO file to an OBO Graph JSON object.
 
@@ -228,7 +204,13 @@ def convert_to_obograph_local(
         output from the ROBOT conversion program
     """
     return convert_to_obograph(
-        input_path=path, input_flag="-i", json_path=json_path, from_iri=from_iri, check=check
+        input_path=path,
+        input_flag="-i",
+        json_path=json_path,
+        from_iri=from_iri,
+        check=check,
+        reason=reason,
+        merge=merge,
     )
 
 
@@ -238,6 +220,7 @@ def convert_to_obograph_remote(
     json_path: None | str | Path = None,
     check: bool = True,
     reason: bool = True,
+    merge: bool = True,
 ) -> ParseResults:
     """Convert a remote OWL/OBO file to an OBO Graph JSON object.
 
@@ -263,6 +246,7 @@ def convert_to_obograph_remote(
         input_is_iri=True,
         check=check,
         reason=reason,
+        merge=merge,
     )
 
 
@@ -274,9 +258,9 @@ def convert_to_obograph(
     input_is_iri: bool = False,
     extra_args: list[str] | None = None,
     from_iri: str | None = None,
-    merge: bool = True,
+    merge: bool = False,
     check: bool = True,
-    reason: bool = True,
+    reason: bool = False,
     debug: bool = False,
 ) -> ParseResults:
     """Convert a local OWL file to a JSON file.
@@ -363,17 +347,19 @@ def convert_to_obograph(
         )
 
 
-def correct_raw_json(graph_document_raw) -> None:
+def correct_raw_json(graph_document_raw: dict[str, Any]) -> dict[str, Any]:
     """Correct issues in raw graph documents, in place."""
     for graph in graph_document_raw["graphs"]:
         _clean_raw_meta(graph)
         for node in graph["nodes"]:
             _clean_raw_meta(node)
+        for edge in graph["edges"]:
+            _clean_raw_meta(edge)
         graph["nodes"] = [node for node in graph["nodes"] if "type" in node]
     return graph_document_raw
 
 
-def _clean_raw_meta(element):
+def _clean_raw_meta(element: dict[str, Any]) -> None:
     meta = element.get("meta")
     if not meta:
         return
@@ -399,114 +385,15 @@ def _clean_raw_meta(element):
         meta["synonyms"] = [synonym for synonym in synonyms if synonym.get("val")]
 
 
-#: Prefixes that denote remote resources
-PROTOCOLS = {
-    "https://",
-    "http://",
-    "ftp://",
-    "ftps://",
-}
-
-
-def _is_remote(url: str | Path) -> bool:
-    return isinstance(url, str) and any(url.startswith(protocol) for protocol in PROTOCOLS)
-
-
 @contextmanager
-def _path_context(path: None | str | Path, name: str = "output.json"):
+def _path_context(
+    path: None | str | Path, name: str = "output.json"
+) -> Generator[Path, None, None]:
     if path is not None:
         yield Path(path).resolve()
     else:
         with tempfile.TemporaryDirectory() as directory:
             yield Path(directory).joinpath(name)
-
-
-def convert(
-    input_path: str | Path,
-    output_path: str | Path,
-    input_flag: Literal["-i", "-I"] | None = None,
-    *,
-    merge: bool = True,
-    fmt: str | None = None,
-    check: bool = True,
-    reason: bool = False,
-    extra_args: list[str] | None = None,
-    debug: bool = False,
-) -> str:
-    """Convert an OBO file to an OWL file with ROBOT.
-
-    :param input_path: Either a local file path or IRI. If a local file path
-        is used, pass ``"-i"`` to ``flag``. If an IRI is used, pass ``"-I"``
-        to ``flag``.
-    :param output_path: The local file path to save the converted ontology to.
-        Will infer format from the extension, otherwise, use the ``fmt`` param.
-    :param input_flag: The flag to denote if the file is local or remote.
-        Tries to infer from input string if none is given
-    :param merge: Use ROBOT's merge command to squash all graphs together
-    :param fmt: Explicitly set the format
-    :param check:
-        By default, the OBO writer strictly enforces
-        `document structure rules <http://owlcollab.github.io/oboformat/doc/obo-syntax.html#4>`.
-        If an ontology violates these, the convert to OBO operation will fail.
-        These checks can be ignored by setting this to false.
-    :param reason:
-        Turn on ontology reasoning
-    :param extra_args:
-        Extra positional arguments to pass in the command line
-    :param debug:
-        Turn on -vvv
-    :return: Output from standard out from running ROBOT
-    """
-    if input_flag is None:
-        input_flag = "-I" if _is_remote(input_path) else "-i"
-
-    args: list[str] = list(ROBOT_COMMAND)
-
-    if merge and not reason:
-        args.extend(["merge", str(input_flag), str(input_path), "convert"])
-    elif merge and reason:
-        args.extend(
-            [
-                "merge",
-                str(input_flag),
-                str(input_path),
-                "reason",
-                "convert",
-            ]
-        )
-    elif not merge and reason:
-        args.extend(
-            [
-                "reason",
-                str(input_flag),
-                str(input_path),
-                "convert",
-            ]
-        )
-    else:
-        args.extend(
-            [
-                "convert",
-                str(input_flag),
-                str(input_path),
-            ]
-        )
-
-    args.extend(("-o", str(output_path)))
-    if extra_args:
-        args.extend(extra_args)
-    if not check:
-        args.append("--check=false")
-    if fmt:
-        args.extend(("--format", fmt))
-    if debug:
-        args.append("-vvv")
-    logger.debug("Running shell command: %s", args)
-    ret = check_output(  # noqa:S603
-        args,
-        cwd=os.path.dirname(__file__),
-    )
-    return ret.decode()
 
 
 def write_getter_warnings(path: str | Path) -> None:

@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 @click.group()
 @click.version_option()
-def main():
+def main() -> None:
     """CLI for bioontologies."""
 
 
@@ -42,7 +42,7 @@ def main():
     is_flag=True,
     help="Save intermediate OBO Graph JSON file if conversion from OWL is required",
 )
-def index(prefix: str, graph_id: str | None, directory: Path | None, save_obograph: bool):
+def index(prefix: str, graph_id: str | None, directory: Path | None, save_obograph: bool) -> None:
     """Generate a node index file."""
     from .robot import get_obograph_by_prefix
 
