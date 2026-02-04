@@ -59,6 +59,7 @@ dependencies = [
     "pystow",
     "pandas",
     "ssslm",
+    "robot-obo-tool",
 ]
 
 [project.optional-dependencies]
