@@ -42,11 +42,13 @@ def main() -> None:
     is_flag=True,
     help="Save intermediate OBO Graph JSON file if conversion from OWL is required",
 )
-def index(prefix: str, graph_id: str | None, directory: Path | None, save_obograph: bool) -> None:
+@click.option("--strict", is_flag=True)
+def index(prefix: str, graph_id: str | None, directory: Path | None, save_obograph: bool, strict: bool) -> None:
     """Generate a node index file."""
     from .robot import get_obograph_by_prefix
 
     prefix = bioregistry.normalize_prefix(prefix)
+    converter =bioregistry.get_converter()
 
     if directory is None:
         directory = pystow.join("bioontologies", "index", prefix)
@@ -70,7 +72,7 @@ def index(prefix: str, graph_id: str | None, directory: Path | None, save_obogra
 
     graph = next(
         graph for graph in parse_results.graph_document.graphs if graph.id == graph_id
-    ).standardize(prefix=prefix)
+    ).standardize(strict=strict, converter=converter)
 
     nodes_tsv_path = directory.joinpath("nodes.tsv")
     summary_path = directory.joinpath("summary.json")
