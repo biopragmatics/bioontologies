@@ -2,9 +2,9 @@
 
 import unittest
 
-from bioontologies.robot import ParseResults, convert_to_obograph_remote
-
 from robot_obo_tool import is_available
+
+from bioontologies.robot import ParseResults, convert_to_obograph_remote
 
 
 @unittest.skipUnless(is_available(), "Robot is not available")
