@@ -52,10 +52,10 @@ license = { file = "LICENSE" }
 requires-python = ">=3.10"
 dependencies = [
     "bioregistry>=0.12.5",
-    "curies>=0.6.0",
+    "curies>=0.14.0",
     "requests",
     "pydantic>=2.0",
-    "typing_extensions",
+    "typing-extensions",
     "pystow",
     "pandas",
     "ssslm",
@@ -72,8 +72,6 @@ docs = [
     "sphinx-rtd-theme>=3.0",
     "sphinx-click", 
     "sphinx_automodapi",
-    # Include if your project uses Pydantic:
-    # "autodoc_pydantic",
 ]
 
 # See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#urls
