@@ -49,7 +49,7 @@ IDENTIFIERS_HTTP_PREFIX = "http://identifiers.org/"
 IDENTIFIERS_HTTPS_PREFIX = "https://identifiers.org/"
 PROVENANCE_PREFIXES = {"pubmed", "pmc", "doi", "arxiv", "biorxiv", "medrxiv", "agricola"}
 
-MISSING_PREDICATE_LABELS = set()
+MISSING_PREDICATE_LABELS: set[str] = set()
 
 
 class StandardizeMixin:
@@ -941,7 +941,7 @@ def _get_reference(s: str, *, debug: bool = False) -> Reference | None:  # noqa:
     if upgraded_reference is not None:
         return upgraded_reference
 
-    reference_tuple = _get_converter().parse_uri(s, return_none=True)
+    reference_tuple = _get_converter().parse_uri(s)
     if reference_tuple is not None:
         if not reference_tuple.identifier:
             return None
