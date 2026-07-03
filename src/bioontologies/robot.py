@@ -18,8 +18,9 @@ from typing import Any, Literal
 import bioregistry
 import click
 import requests
+import obographs
 from obographs import Graph, GraphDocument
-from pystow.utils import download, name_from_url
+from pystow.utils import download, name_from_url, write_pydantic_json
 from robot_obo_tool import ROBOTError, convert, is_available
 from tqdm import tqdm
 
@@ -47,7 +48,7 @@ class ParseResults:
     messages: list[str] = dataclasses.field(default_factory=list)
     iri: str | None = None
 
-    def squeeze(self, standardize: bool = False, **kwargs: Any) -> Graph:
+    def squeeze(self, standardize: bool = False, **kwargs: Any) -> obographs.StandardizedGraph:
         """Get the first graph."""
         if self.graph_document is None:
             raise ValueError(f"graph document was not successfully parsed: {self.messages}")
@@ -56,11 +57,11 @@ class ParseResults:
             rv = rv.standardize(**kwargs)
         return rv
 
-    def guess(self, prefix: str) -> Graph:
+    def guess(self, prefix: str) -> obographs.Graph:
         """Guess the right graph."""
         if self.graph_document is None:
             raise ValueError(f"no graph document found in {prefix}")
-        return self.graph_document.guess(prefix)
+        return obographs.guess_primary_graph(self.graph_document)
 
     def guess_version(self, prefix: str) -> str | None:
         """Guess the version."""
@@ -75,12 +76,7 @@ class ParseResults:
         """Write the graph document to a file in JSON."""
         if not self.graph_document:
             raise ValueError
-        path = Path(path)
-        path.write_text(
-            self.graph_document.json(
-                indent=2, sort_keys=True, exclude_unset=True, exclude_none=True
-            )
-        )
+        write_pydantic_json(self.graph_document, path, indent=2, exclude_unset=True, exclude_none=True)
 
 
 def get_obograph_by_iri(
