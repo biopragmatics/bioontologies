@@ -69,7 +69,7 @@ tests = [
     "coverage",
 ]
 docs = [
-    "sphinx>=8,<9",
+    "sphinx>=8",
     "sphinx-rtd-theme>=3.0",
     "sphinx-click", 
     "sphinx_automodapi",
