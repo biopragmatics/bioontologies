@@ -8,7 +8,7 @@ from bioontologies.relations import get_normalized_label
 class TestRelations(unittest.TestCase):
     """Test relationship name caching."""
 
-    def test_get_normalized_label(self):
+    def test_get_normalized_label(self) -> None:
         """Test getting a normalized label."""
         for expected, i in [
             (
