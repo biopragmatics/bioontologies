@@ -360,11 +360,12 @@ def correct_raw_json(graph_document_raw: dict[str, Any]) -> dict[str, Any]:
     """Correct issues in raw graph documents, in place."""
     for graph in graph_document_raw["graphs"]:
         _clean_raw_meta(graph)
-        for node in graph["nodes"]:
-            _clean_raw_meta(node)
-        for edge in graph["edges"]:
+        if "nodes" in graph:
+            graph["nodes"] = [node for node in graph["nodes"] if "type" in node]
+            for node in graph["nodes"]:
+                _clean_raw_meta(node)
+        for edge in graph.get("edges", []):
             _clean_raw_meta(edge)
-        graph["nodes"] = [node for node in graph["nodes"] if "type" in node]
     return graph_document_raw
 
 
