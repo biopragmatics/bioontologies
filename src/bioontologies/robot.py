@@ -13,7 +13,7 @@ from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal, cast, overload
+from typing import Any, Literal, overload
 
 import bioregistry
 import click
@@ -63,16 +63,15 @@ class ParseResults:
         if self.graph_document is None:
             raise ValueError(f"graph document was not successfully parsed: {self.messages}")
         rv = self.graph_document.graphs[0]
-        if standardize:
-            rv = rv.standardize(**kwargs)
-        return rv
+        if not standardize:
+            return rv
+        return rv.standardize(**kwargs)
 
     def guess(self, prefix: str) -> obographs.Graph:
         """Guess the right graph."""
         if self.graph_document is None:
             raise ValueError(f"no graph document found in {prefix}")
-        # graph_document is not standarfized
-        return cast(obographs.Graph, obographs.guess_primary_graph(self.graph_document))
+        return obographs.guess_primary_graph(self.graph_document, prefix)
 
     def guess_version(self, prefix: str) -> str | None:
         """Guess the version."""
