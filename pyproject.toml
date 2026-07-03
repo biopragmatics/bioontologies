@@ -1,7 +1,6 @@
-# See https://setuptools.readthedocs.io/en/latest/build_meta.html
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["uv_build>=0.11.2,<1.0"]
+build-backend = "uv_build"
 
 [project]
 name = "bioontologies"
@@ -129,6 +128,9 @@ source = [
 omit = [
     "tests/*",
     "docs/*",
+    "src/bioontologies/version.py",
+    "src/bioontologies/__main__.py",
+    "src/bioontologies/cli.py",
 ]
 
 [tool.coverage.paths]
@@ -174,7 +176,6 @@ extend-select = [
 ]
 ignore = [
     "D105", # Missing docstring in magic method
-    "E203", # Black conflicts with the following
 ]
 
 # See https://docs.astral.sh/ruff/settings/#per-file-ignores
