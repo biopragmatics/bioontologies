@@ -113,7 +113,7 @@ HEADER = ["prefix", "identifier", "label", "synonyms"]
 
 def main() -> None:
     """Download and process the relation ontology data."""
-    from obographs import GraphDocument
+    from obographs import GraphDocument, guess_primary_graph
 
     from bioontologies import get_obograph_by_prefix
     from bioontologies.robot import correct_raw_json
@@ -126,7 +126,7 @@ def main() -> None:
             res_json = res.json()
             correct_raw_json(res_json)
             graph_document = GraphDocument.parse_obj(res_json)
-            graph = graph_document.guess(source)
+            graph = guess_primary_graph(graph_document, source)
         else:
             try:
                 results = get_obograph_by_prefix(source)
