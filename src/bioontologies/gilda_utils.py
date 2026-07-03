@@ -5,8 +5,9 @@ import warnings
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any
 
+from obographs import Graph
+
 from .ner import literal_mappings_from_graph
-from .obograph import Graph
 from .robot import get_obograph_by_prefix
 
 if TYPE_CHECKING:

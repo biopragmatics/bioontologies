@@ -113,8 +113,9 @@ HEADER = ["prefix", "identifier", "label", "synonyms"]
 
 def main() -> None:
     """Download and process the relation ontology data."""
+    from obographs import GraphDocument
+
     from bioontologies import get_obograph_by_prefix
-    from bioontologies.obograph import GraphDocument
     from bioontologies.robot import correct_raw_json
 
     rows = []

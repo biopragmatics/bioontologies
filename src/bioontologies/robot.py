@@ -18,11 +18,10 @@ from typing import Any, Literal
 import bioregistry
 import click
 import requests
+from obographs import Graph, GraphDocument
 from pystow.utils import download, name_from_url
 from robot_obo_tool import ROBOTError, convert, is_available
 from tqdm import tqdm
-
-from .obograph import Graph, GraphDocument
 
 __all__ = [
     "ParseResults",

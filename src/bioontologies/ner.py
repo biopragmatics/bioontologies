@@ -6,16 +6,16 @@ from typing import Any
 import curies
 import ssslm
 from curies import vocabulary as v
+from obographs import Graph
 from ssslm import DEFAULT_PREDICATE
 from tqdm import tqdm
-
-from bioontologies.obograph import Graph
 
 from .robot import get_obograph_by_prefix
 
 __all__ = [
     "get_literal_mappings",
     "get_literal_mappings_subset",
+    "literal_mappings_from_graph",
 ]
 
 
