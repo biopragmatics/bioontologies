@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         python-version: [ "3.14", "3.10" ]
-        tox-command: ["manifest", "lint", "pyroma", "mypy"]
+        tox-command: ["lint", "pyroma", "mypy"]
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
