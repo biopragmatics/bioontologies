@@ -49,7 +49,7 @@ IDENTIFIERS_HTTP_PREFIX = "http://identifiers.org/"
 IDENTIFIERS_HTTPS_PREFIX = "https://identifiers.org/"
 PROVENANCE_PREFIXES = {"pubmed", "pmc", "doi", "arxiv", "biorxiv", "medrxiv", "agricola"}
 
-MISSING_PREDICATE_LABELS = set()
+MISSING_PREDICATE_LABELS: set[str] = set()
 
 
 class StandardizeMixin:

@@ -106,7 +106,7 @@ def get_obograph_by_path(path: str | Path, *, iri: str | None = None) -> ParseRe
     return ParseResults(graph_document=graph_document, iri=iri)
 
 
-GETTER_MESSAGES = []
+GETTER_MESSAGES: list[str] = []
 
 
 def get_obograph_by_prefix(
