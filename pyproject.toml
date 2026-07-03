@@ -20,7 +20,6 @@ classifiers = [
     "Development Status :: 1 - Planning",
     "Environment :: Console",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Framework :: Pytest",
     "Framework :: tox",
@@ -29,6 +28,8 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: 3 :: Only",
 ]
 keywords = [
@@ -46,7 +47,8 @@ keywords = [
 # License Information. This can be any valid SPDX identifiers that can be resolved
 # with URLs like https://spdx.org/licenses/MIT
 # See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICENSE"]
 
 requires-python = ">=3.10"
 dependencies = [
@@ -81,21 +83,8 @@ Homepage = "https://github.com/biopragmatics/bioontologies"
 Repository = "https://github.com/biopragmatics/bioontologies.git"
 Documentation = "https://bioontologies.readthedocs.io"
 
-[tool.setuptools]
-package-dir = { "" = "src" }
-
-[tool.setuptools.packages.find]
-# this implicitly sets `packages = ":find"`
-where = ["src"]  # list of folders that contain the packages (["."] by default)
-
-# See https://setuptools.pypa.io/en/latest/userguide/datafiles.html
-[tool.setuptools.package-data]
-"*" = ["*.*"]
-
-
 [project.scripts]
 bioontologies = "bioontologies.cli:main"
-
 
 [tool.cruft]
 skip = [
