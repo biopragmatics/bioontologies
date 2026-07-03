@@ -13,16 +13,16 @@ from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, overload
 
 import bioregistry
 import click
+import obographs
 import requests
-from pystow.utils import download, name_from_url
+from obographs import GraphDocument
+from pystow.utils import download, name_from_url, write_pydantic_json
 from robot_obo_tool import ROBOTError, convert, is_available
 from tqdm import tqdm
-
-from .obograph import Graph, GraphDocument
 
 __all__ = [
     "ParseResults",
@@ -48,20 +48,32 @@ class ParseResults:
     messages: list[str] = dataclasses.field(default_factory=list)
     iri: str | None = None
 
-    def squeeze(self, standardize: bool = False, **kwargs: Any) -> Graph:
+    # docstr-coverage:excused `overload`
+    @overload
+    def squeeze(
+        self, standardize: Literal[True] = ..., **kwargs: Any
+    ) -> obographs.StandardizedGraph: ...
+
+    # docstr-coverage:excused `overload`
+    @overload
+    def squeeze(self, standardize: Literal[False] = ..., **kwargs: Any) -> obographs.Graph: ...
+
+    def squeeze(
+        self, standardize: bool = False, **kwargs: Any
+    ) -> obographs.Graph | obographs.StandardizedGraph:
         """Get the first graph."""
         if self.graph_document is None:
             raise ValueError(f"graph document was not successfully parsed: {self.messages}")
         rv = self.graph_document.graphs[0]
-        if standardize:
-            rv = rv.standardize(**kwargs)
-        return rv
+        if not standardize:
+            return rv
+        return rv.standardize(**kwargs)
 
-    def guess(self, prefix: str) -> Graph:
+    def guess(self, prefix: str) -> obographs.Graph:
         """Guess the right graph."""
         if self.graph_document is None:
             raise ValueError(f"no graph document found in {prefix}")
-        return self.graph_document.guess(prefix)
+        return obographs.guess_primary_graph(self.graph_document, prefix)
 
     def guess_version(self, prefix: str) -> str | None:
         """Guess the version."""
@@ -76,11 +88,8 @@ class ParseResults:
         """Write the graph document to a file in JSON."""
         if not self.graph_document:
             raise ValueError
-        path = Path(path)
-        path.write_text(
-            self.graph_document.json(
-                indent=2, sort_keys=True, exclude_unset=True, exclude_none=True
-            )
+        write_pydantic_json(
+            self.graph_document, path, indent=2, exclude_unset=True, exclude_none=True
         )
 
 

@@ -60,6 +60,7 @@ dependencies = [
     "pandas",
     "ssslm",
     "robot-obo-tool",
+    "obographs>=0.0.13",
 ]
 
 [project.optional-dependencies]

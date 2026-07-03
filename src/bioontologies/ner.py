@@ -6,20 +6,21 @@ from typing import Any
 import curies
 import ssslm
 from curies import vocabulary as v
-from ssslm import DEFAULT_PREDICATE
+from obographs import StandardizedGraph, StandardizedNode
 from tqdm import tqdm
-
-from bioontologies.obograph import Graph
 
 from .robot import get_obograph_by_prefix
 
 __all__ = [
     "get_literal_mappings",
     "get_literal_mappings_subset",
+    "literal_mappings_from_graph",
 ]
 
 
-def get_literal_mappings(prefix: str, **kwargs: Any) -> Iterable[ssslm.LiteralMapping]:
+def get_literal_mappings(
+    prefix: str, *, converter: curies.Converter, strict: bool = False, **kwargs: Any
+) -> Iterable[ssslm.LiteralMapping]:
     """Get literal mappings for the given namespace.
 
     :param prefix:
@@ -56,39 +57,49 @@ def get_literal_mappings(prefix: str, **kwargs: Any) -> Iterable[ssslm.LiteralMa
     if parse_results.graph_document is None:
         return
     for graph in parse_results.graph_document.graphs:
-        graph.standardize(prefix=prefix, nodes=True, edges=False)
-        yield from literal_mappings_from_graph(prefix, graph)
+        for node in graph.nodes:
+            st_node = StandardizedNode.from_obograph_raw(node, converter, strict=strict)
+            if st_node is None:
+                continue
+            yield from _lm_from_node(st_node, prefix)
 
 
-def literal_mappings_from_graph(prefix: str, graph: Graph) -> Iterable[ssslm.LiteralMapping]:
+def literal_mappings_from_graph(
+    prefix: str, graph: StandardizedGraph
+) -> Iterable[ssslm.LiteralMapping]:
     """Get literal mappings from a given graph."""
     for node in tqdm(graph.nodes, leave=False, unit_scale=True, desc=f"{prefix} get synonyms"):
-        if node.reference is None:
-            continue
-        if node.reference.prefix != prefix:
-            # Don't add references from other namespaces
-            continue
+        yield from _lm_from_node(node, prefix)
 
-        reference = curies.NamableReference(
-            prefix=prefix,
-            identifier=node.reference.identifier,
-            name=node.name,
-        )
 
+def _lm_from_node(node: StandardizedNode, prefix: str) -> Iterable[ssslm.LiteralMapping]:
+    if node.reference is None:
+        return
+    if node.reference.prefix != prefix:
+        # Don't add references from other namespaces
+        return
+
+    reference = curies.NamableReference(
+        prefix=prefix,
+        identifier=node.reference.identifier,
+        name=node.label,
+    )
+
+    if node.label is not None:
         yield ssslm.LiteralMapping(
             reference=reference,
             predicate=v.has_label,
-            text=node.name,
+            text=node.label,
             source=prefix,
         )
-        for synonym in node.synonyms:
+    if node.meta is not None and node.meta.synonyms:
+        for synonym in node.meta.synonyms:
             yield ssslm.LiteralMapping(
                 reference=reference,
-                predicate=curies.Reference(prefix="oboInOwl", identifier=synonym.predicate_raw)
-                if synonym.predicate_raw
-                else DEFAULT_PREDICATE,
-                text=synonym.value,
+                predicate=synonym.predicate,
+                text=synonym.text,
                 source=prefix,
+                provenance=synonym.xrefs or [],
             )
 
 
@@ -106,7 +117,7 @@ def get_literal_mappings_subset(
     import networkx as nx
 
     parse_results = get_obograph_by_prefix(prefix, check=check, **kwargs)
-    obograph = parse_results.squeeze().standardize(prefix=prefix)
+    obograph = parse_results.squeeze(standardize=True, prefix=prefix)
     graph = nx.DiGraph()
     for edge in obograph.edges:
         if (
