@@ -77,10 +77,6 @@ extensions = [
     "sphinx_automodapi.smart_resolver",
 ]
 
-
-extensions.append("sphinx_click.ext")
-
-
 # generate autosummary pages
 autosummary_generate = True
 
