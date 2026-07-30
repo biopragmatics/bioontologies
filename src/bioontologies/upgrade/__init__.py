@@ -58,7 +58,7 @@ def insert(term: str, prefix: str, identifier: str, *, name: str | None = None) 
                 f"Conflict for inserting {term} between existing {existing} "
                 f"and reference {reference}. Skipping."
             )
-        return None
+        return
     terms[term] = reference
     write(terms)
     load.cache_clear()
