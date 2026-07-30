@@ -72,7 +72,6 @@ tests = [
 docs = [
     "sphinx>=8",
     "sphinx-rtd-theme>=3.0",
-    "sphinx-click", 
     "sphinx_automodapi",
 ]
 
@@ -82,9 +81,6 @@ docs = [
 Homepage = "https://github.com/biopragmatics/bioontologies"
 Repository = "https://github.com/biopragmatics/bioontologies.git"
 Documentation = "https://bioontologies.readthedocs.io"
-
-[project.scripts]
-bioontologies = "bioontologies.cli:main"
 
 [tool.cruft]
 skip = [
@@ -119,7 +115,6 @@ omit = [
     "docs/*",
     "src/bioontologies/version.py",
     "src/bioontologies/__main__.py",
-    "src/bioontologies/cli.py",
 ]
 
 [tool.coverage.paths]

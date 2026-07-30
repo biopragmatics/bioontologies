@@ -9,7 +9,6 @@ Table of Contents
 
    installation
    usage
-   cli
 
 Indices and Tables
 ------------------
