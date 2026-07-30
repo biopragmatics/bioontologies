@@ -1,5 +1,6 @@
 """NER utilities."""
 
+import warnings
 from collections.abc import Iterable, Sequence
 from typing import Any
 
@@ -16,6 +17,15 @@ __all__ = [
     "get_literal_mappings_subset",
     "literal_mappings_from_graph",
 ]
+
+# TODO upstream into obographs, then remove
+
+
+warnings.warn(
+    "bioontologies.ner is deprecated and will be removed in v0.1.0, use pyobo instead",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
 
 def get_literal_mappings(
@@ -118,7 +128,7 @@ def get_literal_mappings_subset(
 
     parse_results = get_obograph_by_prefix(prefix, check=check, **kwargs)
     obograph = parse_results.squeeze(standardize=True, prefix=prefix)
-    graph = nx.DiGraph()
+    graph: nx.DiGraph[curies.Reference] = nx.DiGraph()
     for edge in obograph.edges:
         if (
             edge.subject
