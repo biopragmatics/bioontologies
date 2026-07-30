@@ -5,7 +5,6 @@ from collections.abc import Mapping
 from functools import lru_cache
 from pathlib import Path
 
-import requests
 from bioregistry import NormalizedNamedReference
 from tqdm import tqdm
 
@@ -112,19 +111,15 @@ HEADER = ["prefix", "identifier", "label", "synonyms"]
 
 def main() -> None:
     """Download and process the relation ontology data."""
-    from obographs import GraphDocument, guess_primary_graph
-    from obographs.model import correct_raw_json
+    import obographs
+    from obographs import guess_primary_graph
 
-    from bioontologies import get_obograph_by_prefix
+    from ..robot import get_obograph_by_prefix
 
     rows = []
     for source, url in URLS:
         if url is not None:
-            res = requests.get(url, timeout=60)
-            res.raise_for_status()
-            res_json = res.json()
-            correct_raw_json(res_json)
-            graph_document = GraphDocument.parse_obj(res_json)
+            graph_document = obographs.read(url, timeout=60, clean=True, squeeze=False)
             graph = guess_primary_graph(graph_document, source)
         else:
             try:
