@@ -19,7 +19,6 @@ import bioregistry
 import click
 import obographs
 from obographs import GraphDocument
-from obographs.model import correct_raw_json
 from pystow.utils import download, name_from_url, write_pydantic_json
 from robot_obo_tool import ROBOTError, convert, is_available
 from tqdm import tqdm
@@ -349,7 +348,7 @@ def convert_to_obograph(
             if missing:
                 raise ValueError(f"{input_path} graphs missing IDs: {missing}")
 
-        correct_raw_json(graph_document_raw)
+        graph_document_raw = obographs.correct_raw_graph_document(graph_document_raw)
         graph_document = GraphDocument.model_validate(graph_document_raw)
         return ParseResults(
             graph_document=graph_document,
