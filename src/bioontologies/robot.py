@@ -18,8 +18,8 @@ from typing import Any, Literal, overload
 import bioregistry
 import click
 import obographs
-import requests
 from obographs import GraphDocument
+from obographs.model import correct_raw_json
 from pystow.utils import download, name_from_url, write_pydantic_json
 from robot_obo_tool import ROBOTError, convert, is_available
 from tqdm import tqdm
@@ -96,22 +96,24 @@ class ParseResults:
 def get_obograph_by_iri(
     iri: str,
     timeout: int | None = 60,
+    clean: bool = True,
 ) -> ParseResults:
     """Get an ontology by its OBO Graph JSON iri."""
-    res_json = requests.get(iri, timeout=timeout).json()
-    correct_raw_json(res_json)
-    graph_document = GraphDocument.model_validate(res_json)
+    graph_document = obographs.read(iri, timeout=timeout, clean=clean, squeeze=False)
     return ParseResults(graph_document=graph_document, iri=iri)
 
 
-def get_obograph_by_path(path: str | Path, *, iri: str | None = None) -> ParseResults:
+def get_obograph_by_path(
+    path: str | Path,
+    *,
+    iri: str | None = None,
+    timeout: int | None = 60,
+    clean: bool = True,
+) -> ParseResults:
     """Get an ontology by its OBO Graph JSON file path."""
-    res_json = json.loads(Path(path).resolve().read_text())
-    correct_raw_json(res_json)
-    graph_document = GraphDocument.model_validate(res_json)
-    if iri is None:
-        if graph_document.graphs and len(graph_document.graphs) == 1:
-            iri = graph_document.graphs[0].id
+    graph_document = obographs.read(path, timeout=timeout, clean=clean, squeeze=False)
+    if iri is None and graph_document.graphs and len(graph_document.graphs) == 1:
+        iri = graph_document.graphs[0].id
     return ParseResults(graph_document=graph_document, iri=iri)
 
 
@@ -121,7 +123,7 @@ GETTER_MESSAGES: list[str] = []
 def get_obograph_by_prefix(
     prefix: str,
     *,
-    json_path: None | str | Path = None,
+    json_path: str | Path | None = None,
     cache: bool = False,
     check: bool = True,
     reason: bool = False,
@@ -190,7 +192,7 @@ def get_obograph_by_prefix(
 def convert_to_obograph_local(
     path: str | Path,
     *,
-    json_path: None | str | Path = None,
+    json_path: str | Path | None = None,
     from_iri: str | None = None,
     check: bool = True,
     reason: bool = False,
@@ -226,7 +228,7 @@ def convert_to_obograph_local(
 def convert_to_obograph_remote(
     iri: str,
     *,
-    json_path: None | str | Path = None,
+    json_path: str | Path | None = None,
     check: bool = True,
     reason: bool = True,
     merge: bool = True,
@@ -263,7 +265,7 @@ def convert_to_obograph(
     input_path: str | Path,
     *,
     input_flag: Literal["-i", "-I"] | None = None,
-    json_path: None | str | Path = None,
+    json_path: str | Path | None = None,
     input_is_iri: bool = False,
     extra_args: list[str] | None = None,
     from_iri: str | None = None,
@@ -356,48 +358,9 @@ def convert_to_obograph(
         )
 
 
-def correct_raw_json(graph_document_raw: dict[str, Any]) -> dict[str, Any]:
-    """Correct issues in raw graph documents, in place."""
-    for graph in graph_document_raw["graphs"]:
-        _clean_raw_meta(graph)
-        if "nodes" in graph:
-            graph["nodes"] = [node for node in graph["nodes"] if "type" in node]
-            for node in graph["nodes"]:
-                _clean_raw_meta(node)
-        for edge in graph.get("edges", []):
-            _clean_raw_meta(edge)
-    return graph_document_raw
-
-
-def _clean_raw_meta(element: dict[str, Any]) -> None:
-    meta = element.get("meta")
-    if not meta:
-        return
-    basic_property_values = meta.get("basicPropertyValues")
-    if basic_property_values:
-        meta["basicPropertyValues"] = [
-            basic_property_value
-            for basic_property_value in basic_property_values
-            if basic_property_value.get("pred") and basic_property_value.get("val")
-        ]
-
-    definition = meta.get("definition")
-    if definition is not None and not definition.get("val"):
-        del meta["definition"]
-
-    xrefs = meta.get("xrefs")
-    if xrefs:
-        meta["xrefs"] = [xref for xref in xrefs if xref.get("val")]
-
-    # What's the point of a synonym with an empty value? Nothing!
-    synonyms = meta.get("synonyms")
-    if synonyms:
-        meta["synonyms"] = [synonym for synonym in synonyms if synonym.get("val")]
-
-
 @contextmanager
 def _path_context(
-    path: None | str | Path, name: str = "output.json"
+    path: str | Path | None, name: str = "output.json"
 ) -> Generator[Path, None, None]:
     if path is not None:
         yield Path(path).resolve()

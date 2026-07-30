@@ -61,7 +61,7 @@ dependencies = [
     "pandas",
     "ssslm",
     "robot-obo-tool",
-    "obographs>=0.0.13",
+    "obographs>=0.0.14",
 ]
 
 [project.optional-dependencies]
@@ -165,6 +165,7 @@ extend-select = [
 ]
 ignore = [
     "D105", # Missing docstring in magic method
+    "DTZ011",
 ]
 
 # See https://docs.astral.sh/ruff/settings/#per-file-ignores

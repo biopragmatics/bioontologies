@@ -54,7 +54,6 @@ LABELS = {
     "http://purl.obolibrary.org/obo/uberon/core#posteriorly_connected_to": "posteriorly_connected_to",  # noqa:E501
     "http://purl.obolibrary.org/obo/uberon/core#evolved_from": "evolved_from",
     "http://purl.obolibrary.org/obo/uberon/core#anteriorly_connected_to": "anteriorly_connected_to",
-    #
     "obi:0000304": "is_manufactured_by",
     "vo:0003355": "immunizes_against_microbe",
     "bao:0002846": "has_assay_protocol",
@@ -114,9 +113,9 @@ HEADER = ["prefix", "identifier", "label", "synonyms"]
 def main() -> None:
     """Download and process the relation ontology data."""
     from obographs import GraphDocument, guess_primary_graph
+    from obographs.model import correct_raw_json
 
     from bioontologies import get_obograph_by_prefix
-    from bioontologies.robot import correct_raw_json
 
     rows = []
     for source, url in URLS:
