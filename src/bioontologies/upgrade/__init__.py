@@ -1,21 +1,26 @@
 """A curated database of upgrades for outdated strings and IRIs appearing in ontologies."""
 
 import csv
+import warnings
 from collections.abc import Mapping
 from functools import lru_cache
 from pathlib import Path
 
 from bioregistry import NormalizedNamableReference
-from tqdm import tqdm
 
 __all__ = [
     "PATH",
     "Terms",
     "insert",
     "load",
-    "upgrade",
-    "write",
 ]
+
+warnings.warn(
+    "bioontologies.upgrade is deprecated and will be removed in v0.1.0, "
+    "use curies-processing instead",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
 HERE = Path(__file__).parent.resolve()
 PATH = HERE.joinpath("data.tsv")
@@ -37,32 +42,3 @@ def load() -> Terms:
             term: NormalizedNamableReference(prefix=prefix, identifier=identifier)
             for term, prefix, identifier in reader
         }
-
-
-def write(terms: Terms) -> None:
-    """Write the upgrade terms."""
-    with PATH.open("w") as file:
-        writer = csv.writer(file, delimiter="\t")
-        for term, reference in sorted(terms.items()):
-            writer.writerow((term, reference.prefix, reference.identifier))
-
-
-def insert(term: str, prefix: str, identifier: str, *, name: str | None = None) -> None:
-    """Insert a new upgrade term."""
-    terms = dict(load())
-    existing = terms.get(term)
-    reference = NormalizedNamableReference(prefix=prefix, identifier=identifier, name=name)
-    if existing:
-        if existing != reference:
-            tqdm.write(
-                f"Conflict for inserting {term} between existing {existing} "
-                f"and reference {reference}. Skipping."
-            )
-        return
-    terms[term] = reference
-    write(terms)
-    load.cache_clear()
-
-
-if __name__ == "__main__":
-    write(load())  # lints and sorts

@@ -6,7 +6,6 @@ from functools import lru_cache
 from pathlib import Path
 
 from bioregistry import NormalizedNamedReference
-from tqdm import tqdm
 
 __all__ = [
     "get_normalized_label",
@@ -104,54 +103,3 @@ def get_curie_to_norm_name() -> Mapping[str, str]:
         prefix, identifier, label = record["prefix"], record["identifier"], record["label"]
         curie_to_norm_name[f"{prefix}:{identifier}"] = label_norm(label)
     return curie_to_norm_name
-
-
-HEADER = ["prefix", "identifier", "label", "synonyms"]
-
-
-def main() -> None:
-    """Download and process the relation ontology data."""
-    import obographs
-    from obographs import guess_primary_graph
-
-    from ..robot import get_obograph_by_prefix
-
-    rows = []
-    for source, url in URLS:
-        if url is not None:
-            graph_document = obographs.read(url, timeout=60, clean=True, squeeze=False)
-            graph = guess_primary_graph(graph_document, source)
-        else:
-            try:
-                results = get_obograph_by_prefix(source)
-                graph = results.guess(source)
-            except ValueError as e:
-                tqdm.write(f"[{source}] error: {e}")
-                continue
-        for node in tqdm(graph.nodes, desc=source, unit="node"):
-            if node.type != "PROPERTY" or not node.name:
-                continue
-            node.standardize()
-            if not node.prefix:
-                tqdm.write(f"[{source}] could not parse node: {node.id}")
-                continue
-            rows.append(
-                (
-                    node.prefix,
-                    node.identifier,
-                    node.name,
-                    tuple(sorted(synonym.value for synonym in node.synonyms)),
-                )
-            )
-
-    for p in ["rdf", "rdfs", "owl"]:
-        j = json.loads(HERE.joinpath(f"data_{p}.json").read_text())
-        rows.extend(tuple(row.get(h, ()) for h in HEADER) for row in j)
-
-    rows = sorted(set(rows))
-    row_dicts = [{k: v for k, v in zip(HEADER, row, strict=False) if v} for row in rows]
-    PATH.write_text(json.dumps(row_dicts, indent=2, sort_keys=True))
-
-
-if __name__ == "__main__":
-    main()
