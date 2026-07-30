@@ -6,7 +6,6 @@ from functools import lru_cache
 from pathlib import Path
 
 from bioregistry import NormalizedNamedReference
-from tqdm import tqdm
 
 __all__ = [
     "get_normalized_label",
