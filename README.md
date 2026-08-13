@@ -33,7 +33,8 @@
     -->
 </p>
 
-Tools for biomedical ontologies
+Combine `robot-obo-tool`, `obographs`, and `bioregistry` to work with
+biomedical ontologies.
 
 ## 💪 Getting Started
 
@@ -64,13 +65,13 @@ The most recent release can be installed from
 [PyPI](https://pypi.org/project/bioontologies/) with:
 
 ```console
-python3 -m pip install bioontologies
+$ uv pip install bioontologies
 ```
 
 The most recent code and data can be installed directly from GitHub with:
 
 ```console
-python3 -m pip install git+https://github.com/biopragmatics/bioontologies.git
+$ uv pip install git+https://github.com/biopragmatics/bioontologies.git
 ```
 
 ## 👐 Contributing
@@ -85,15 +86,9 @@ for more information on getting involved.
 
 The code in this package is licensed under the MIT License.
 
-<!--
-### 📖 Citation
-
-Citation goes here!
--->
-
 ### 🎁 Support
 
-The Bioregistry was initially developed by the [INDRA Lab](https://indralab.github.io), a part of the
+Bioontologies was initially developed by the [INDRA Lab](https://indralab.github.io), a part of the
 [Laboratory of Systems Pharmacology](https://hits.harvard.edu/the-program/laboratory-of-systems-pharmacology/about/)
 and the [Harvard Program in Therapeutic Science (HiTS)](https://hits.harvard.edu)
 at [Harvard Medical School](https://hms.harvard.edu/).
