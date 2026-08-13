@@ -33,14 +33,15 @@
     -->
 </p>
 
-Tools for biomedical ontologies
+Combine `robot-obo-tool`, `obographs`, and `bioregistry` to work with biomedical
+ontologies.
 
 ## 💪 Getting Started
 
-This package lets you get OBO Graphs from ontologies based on their OWL
-files, OBO files, or [Bioregistry](https://bioregistry.io) prefixes. Internally,
-it uses [ROBOT](https://robot.obolibrary.org) to convert from these formats
-to [OBO Graph JSON](https://github.com/geneontology/obographs).
+This package lets you get OBO Graphs from ontologies based on their OWL files,
+OBO files, or [Bioregistry](https://bioregistry.io) prefixes. Internally, it
+uses [ROBOT](https://robot.obolibrary.org) to convert from these formats to
+[OBO Graph JSON](https://github.com/geneontology/obographs).
 
 ```python
 import bioontologies
@@ -64,18 +65,19 @@ The most recent release can be installed from
 [PyPI](https://pypi.org/project/bioontologies/) with:
 
 ```console
-python3 -m pip install bioontologies
+$ uv pip install bioontologies
 ```
 
 The most recent code and data can be installed directly from GitHub with:
 
 ```console
-python3 -m pip install git+https://github.com/biopragmatics/bioontologies.git
+$ uv pip install git+https://github.com/biopragmatics/bioontologies.git
 ```
 
 ## 👐 Contributing
 
-Contributions, whether filing an issue, making a pull request, or forking, are appreciated. See
+Contributions, whether filing an issue, making a pull request, or forking, are
+appreciated. See
 [CONTRIBUTING.md](https://github.com/biopragmatics/bioontologies/blob/master/.github/CONTRIBUTING.md)
 for more information on getting involved.
 
@@ -85,22 +87,19 @@ for more information on getting involved.
 
 The code in this package is licensed under the MIT License.
 
-<!--
-### 📖 Citation
-
-Citation goes here!
--->
-
 ### 🎁 Support
 
-The Bioregistry was initially developed by the [INDRA Lab](https://indralab.github.io), a part of the
+Bioontologies was initially developed by the
+[INDRA Lab](https://indralab.github.io), a part of the
 [Laboratory of Systems Pharmacology](https://hits.harvard.edu/the-program/laboratory-of-systems-pharmacology/about/)
-and the [Harvard Program in Therapeutic Science (HiTS)](https://hits.harvard.edu)
-at [Harvard Medical School](https://hms.harvard.edu/).
+and the
+[Harvard Program in Therapeutic Science (HiTS)](https://hits.harvard.edu) at
+[Harvard Medical School](https://hms.harvard.edu/).
 
 ### 💰 Funding
 
-The development of this package was partially funded by the DARPA Young Faculty Award W911NF2010255 (PI: Benjamin M. Gyori).
+The development of this package was partially funded by the DARPA Young Faculty
+Award W911NF2010255 (PI: Benjamin M. Gyori).
 
 ### 🍪 Cookiecutter
 
